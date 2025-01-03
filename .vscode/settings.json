@@ -26,7 +26,7 @@
         "**/local.properties": true,
         "**/README.md": true,
         "**/eslint.config.js": true,
-        "**/App.js": true,
+        "**/App.js": false,
         "**/index.js": true,
     }
 }
