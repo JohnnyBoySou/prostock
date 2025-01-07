@@ -1,5 +1,2 @@
-
-const getBaseURL = async () => {
-     return 'https://app.aocto.com/api/apppongo';
-}
-export default getBaseURL;
+export const baseURL = "https://api.mangadex.org";
+export const serverURL = "https://s2mangas.com/api";

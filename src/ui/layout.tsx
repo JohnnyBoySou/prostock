@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
 
 const Main = ({children, style,}) => {
   return (
-    <View style={[{ flex: 1, backgroundColor: colors.color.background, paddingTop: 20, }, style]}>
+    <View style={[{ flex: 1, backgroundColor: colors.color.background, }, style]}>
       {children}
     </View>
   )
@@ -167,7 +167,9 @@ const ScrollHorizontal = ({children, style, contentContainerStyle}) => {
 const ScrollVertical = ({children, style, contentContainerStyle }) => {
   return (
     <ScrollView style={style} showsVerticalScrollIndicator={false} contentContainerStyle={contentContainerStyle}>
+      <View style={{ height: 26, }}/>
       {children}
+      <View style={{ height: 100, }} />
     </ScrollView>
   )
 }

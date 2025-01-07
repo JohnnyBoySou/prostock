@@ -125,7 +125,7 @@ const Button: React.FC<ButtonProps> = ({
       accessibilityLabel={label}
       accessibilityRole="button"
     >
-      {loading ? <ActivityIndicator color="#000" size={18} /> : 
+      {loading ? <ActivityIndicator color="#FFF" size={24} /> : 
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
           {icon ? <View style={{ marginRight: 6, }}>{icon}</View> : null}
        <Text style={textStyles}>{label}</Text>

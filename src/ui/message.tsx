@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Text } from "react-native";
-import { Column } from "./layout";
+import { Column, Row } from "./layout";
 import { Check, X } from "lucide-react-native";
 import Animated, { useSharedValue, withSpring, useAnimatedStyle } from "react-native-reanimated";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
@@ -16,7 +16,7 @@ const Message: React.FC<MessageProps> = ({ success, error }) => {
   const offset = useSharedValue(0);
   const opacity = useSharedValue(1);
   const height = useSharedValue(72);
-  const pressed = useSharedValue(false); 
+  const pressed = useSharedValue(false);
 
   useEffect(() => {
     offset.value = 0;
@@ -29,7 +29,7 @@ const Message: React.FC<MessageProps> = ({ success, error }) => {
       pressed.value = true;
     })
     .onChange((event) => {
-      offset.value = event.translationX; 
+      offset.value = event.translationX;
     })
     .onFinalize(() => {
       if (offset.value > 200) {
@@ -41,7 +41,7 @@ const Message: React.FC<MessageProps> = ({ success, error }) => {
       }
       pressed.value = false;
     });
-  
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: offset.value }],
@@ -61,19 +61,16 @@ const Message: React.FC<MessageProps> = ({ success, error }) => {
   if (!success && !error) return null;
 
   return (
-    <GestureHandlerRootView>
-      <GestureDetector gesture={pan}>
-        <Animated.View style={[{}, animatedStyle]}>
-          <Column justify="center" align="center" style={{ width: 32, height: 32, borderRadius: 100, backgroundColor: "#ffffff40", alignSelf: "center" }} mh={12}>
-            {success && <Check size={24} color="#fff" />}
-            {error && <X size={24} color="#fff" />}
-          </Column>
-          <Text style={{ fontSize: 14, width: 220,  marginVertical: 12, color: "#fff", lineHeight: 16, fontFamily: "Font_Medium", marginRight: 12 }}>
-            {success || error}
-          </Text>
-        </Animated.View>
-      </GestureDetector>
-    </GestureHandlerRootView>
+    <Row style={{ backgroundColor: selectColor, borderRadius: 12, }} pv={12} >
+      <Column justify="center" align="center" style={{ width: 32, height: 32, borderRadius: 100, backgroundColor: "#ffffff40", alignSelf: "center" }} mh={12}>
+        {success && <Check size={24} color="#fff" />}
+        {error && <X size={24} color="#fff" />}
+      </Column>
+      <Text style={{ fontSize: 14, width: 220, marginVertical: 12, color: "#fff", lineHeight: 16, fontFamily: "Font_Medium", marginRight: 12 }}>
+        {success || error}
+      </Text>
+    </Row>
+
   );
 };
 

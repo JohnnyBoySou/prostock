@@ -50,7 +50,7 @@ const Input = forwardRef(({ focused = false, value, setValue, disabled, label, s
         style={{
           fontSize: 18,
           fontFamily:'Font_Book', 
-          color: disabled ? "#ffffff90" : "#fff", height: 64,
+          color: disabled ? "#00000090" : "#000", height: 64,
           borderRadius: 8,
           borderBottomWidth: 2,
           backgroundColor: '#fff',
