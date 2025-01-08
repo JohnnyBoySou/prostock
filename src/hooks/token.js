@@ -27,16 +27,4 @@ const excludeToken = async() => {
   }
 };
 
-/*const refreshToken = async () => {
-    const token = await getToken();
-    if (token) {
-        const response = await axios.post(`${BaseURL()}/refresh_token`, { token });
-        if (response.status === 200) {
-            await createToken(response.data.token);
-            return response.data.token;
-        }
-    }
-    return null;
-}*/
-
 export { getToken, createToken, excludeToken };

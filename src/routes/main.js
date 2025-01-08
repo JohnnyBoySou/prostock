@@ -14,6 +14,7 @@ import Minimal from "@/ui/Header/minimal";
 
 import ProductAddScreen from "@/screens/stack/product/add";
 import StackMenu from "@/ui/Header";
+import { Stacks } from "./stack";
 
 
 const Stack = createStackNavigator();
@@ -23,14 +24,10 @@ export function Main() {
 
   return (
     <NavigationContainer >
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="ProductAdd">
+      <Stack.Navigator screenOptions={{ headerShown: false }} >
         {isSignedIn ? (
           <>
             <Stack.Screen name="Drawer" component={Drawer} options={{ ...TransitionPresets.SlideFromRightIOS }} />
-            <Stack.Screen name="ProductAdd" component={ProductAddScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
-          
-          
-          
           </>
         ) : (
           <>
@@ -50,10 +47,11 @@ export function Main() {
                 ...TransitionPresets.SlideFromRightIOS
               }}
             />
-            <Stack.Screen name="ProductAdd" component={ProductAddScreen} options={{ 
-                header: ({ navigation, scene }) => (<StackMenu navigation={navigation} name="Novo produto" />),
-                headerShown: true,
-                ...TransitionPresets.SlideFromRightIOS }} />
+            <Stack.Screen name="ProductAdd" component={ProductAddScreen} options={{
+              header: ({ navigation, scene }) => (<StackMenu navigation={navigation} name="Novo produto" />),
+              headerShown: true,
+              ...TransitionPresets.SlideFromRightIOS
+            }} />
           </>
         )}
       </Stack.Navigator>

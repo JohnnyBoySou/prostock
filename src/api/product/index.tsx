@@ -1,0 +1,56 @@
+import { fetchWithAuth } from "../../hooks/api";
+
+interface Product extends Record<string, unknown> {
+    nome: string;
+    estoque_minimo: string;
+    estoque_maximo: string;
+    descricao: string;
+    status: string;
+    unidade: string;
+    categorias: string[];
+}
+
+export const listProduct = async (page: number = 1) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/produto" + "?page=" + page, { method: "GET" });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export const addProduct = async (params: Product) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/produto", { method: "POST", data: params });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+export const editProduct = async (id: number, params: Product) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/produto/" + id, { method: "PUT", data: params });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export const showProduct = async (id: number) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/produto/" + id, { method: "GET", });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export const deleteProduct = async (id: number) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/produto/" + id, { method: "DELETE", data: {} });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}

@@ -45,7 +45,7 @@ const getStyle = ({ size, align, color, mh, mv, mb, mt, mr, ml, fontFamily, spac
 export const HeadTitle = ({
   size = 32,
   align,
-  color = '#F3FAFF',
+  color = '#202020',
   mh,
   mv,
   mb,
@@ -74,7 +74,7 @@ export const HeadTitle = ({
 export const Title = ({
   size = 28,
   align,
-  color = "#FFF",
+  color = "#202020",
   mh,
   mv,
   mb,
@@ -103,7 +103,7 @@ export const Title = ({
 export const Label = ({
   size = 16,
   align,
-  color = "#B2B2B2",
+  color = "#484848",
   mh,
   mv,
   mb,
@@ -133,7 +133,7 @@ export const Label = ({
 export const SubLabel = ({
   size = 14,
   align,
-  color = "#B2B2B2",
+  color = "#484848",
   mh,
   mv,
   mb,
@@ -163,7 +163,7 @@ export const SubLabel = ({
 export const Description = ({
   size = 14,
   align,
-  color = "#B2B2B2",
+  color = "#606060",
   mh,
   mv,
   mb,

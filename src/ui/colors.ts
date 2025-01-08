@@ -2,16 +2,16 @@ export default {
   color: {
     background: "#EDF0F1",
 
-    primary: "#ED274A",
-    secundary: "#FF620A",
+    primary: "#EA1E2C",
+    secundary: "#fff",
     destructive: "#e74c3c", // Vermelho destrutivo
-    ghost: "#303030", // Azul-escuro ghost
-    link: "#3498db", // Cor do link
+    ghost: "#D1D1D1", // Azul-escuro ghost
+    link: "#EA1E2C", // Cor do link
 
-    blue: "#0092FF",
-    red: "#EB5757",
-    green: "#27AE60",
-    yellow: "#ebd557",
+    blue: "#3590F3",
+    red: "#EA1E2C",
+    green: "#43AA8B",
+    yellow: "#FFB238",
   
     alert: "#FF620A",
     warning: "#ebd557",

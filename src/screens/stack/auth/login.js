@@ -1,9 +1,14 @@
 import { useState, useRef } from "react";
 import { Main, Button, Message, Column, Input, Image } from "@/ui";
 
+import { loginUser } from '@/api/auth/index';
+import { useUser } from "@/context/user";
+
 export default function LoginScreen() {
-    const [password, setpassword] = useState();
-    const [email, setemail] = useState();
+
+    const { saveUser } = useUser();
+    const [password, setpassword] = useState('123456');
+    const [email, setemail] = useState('admin@admin.com');
     const [success, setSuccess] = useState();
     const [error, setError] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +28,8 @@ export default function LoginScreen() {
         }
         setIsLoading(true);
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            const res = await loginUser(email, password);
+            saveUser(res);
             setSuccess("Login realizado com sucesso!");
         } catch (e) {
             setError("Erro ao realizar o login. Tente novamente.");

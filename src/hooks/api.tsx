@@ -1,38 +1,29 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+
 import { getToken } from "./token";
-import { baseURL, serverURL } from "./urls";
-import { useTranslation } from "./translations";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-// Define a interface para opções da API
+import { getStore } from "./store";
+
+const baseURL = "https://stock.engenhariadigital.net/api";
+
 interface FetchApiOptions extends AxiosRequestConfig {
   headers?: Record<string, string>;
   data?: Record<string, unknown>;
   params?: Record<string, string | number | boolean | unknown> ;
 }
 
-// Define o tipo genérico para a resposta
 type ApiResponse<T> = T | null;
 
-// Criação do cliente Axios
 const apiClient = axios.create({
   baseURL: baseURL,
   headers: { "Content-Type": "application/json" },
 });
 
-const apiServer = axios.create({
-  baseURL: serverURL,
-  headers: { "Content-Type": "application/json" },
-});
-
-// Função genérica para chamadas API
 export async function fetchApi<T = unknown>(
   url: string,
   options: FetchApiOptions = {}
 ): Promise<ApiResponse<T>> {
   try {
     const method = options.method?.toUpperCase() || "GET";
-
-    // Valida que `data` é obrigatório para métodos diferentes de GET
     if (method !== "GET" && !options.data) {
       throw new Error(`Data is required for ${method} requests.`);
     }
@@ -49,79 +40,36 @@ export async function fetchApi<T = unknown>(
     return null;
   }
 }
-
-// Função genérica para chamadas autenticadas
 export async function fetchWithAuth<T = unknown>(
   url: string,
   options: FetchApiOptions = {}
 ): Promise<ApiResponse<T>> {
   try {
     const token = await getToken();
-
+    const store = await getStore();
     if (!token) {
       throw new Error("Authentication token not found.");
     }
 
-    const method = options.method?.toUpperCase() || "GET";
-
-    // Valida que `data` é obrigatório para métodos diferentes de GET
-    if (method !== "GET" && !options.data) {
-      throw new Error(`Data is required for ${method} requests.`);
-    }
-    const response: AxiosResponse<T> = await apiServer.request({
+    const response: AxiosResponse<T> = await apiClient.request({
       url,
-      method,
+      method: options.method || "GET",
       headers: {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
+        ...options.headers,
+        lojaid: store.id,
+        Authorization: `Bearer ${token}`,
       },
-      params: options.params,
-      data: options.data,
+      params: options.params || undefined, // Evita passar `undefined` desnecessariamente
+      data: options.data || undefined,
     });
 
     return response.data;
-  } catch (error) {
-    console.error(`Error fetching with auth at ${url}:`, error);
-    throw error;
+  } catch (error: any) {
+    console.error(`Error fetching with auth at ${url}:`, error.response?.data || error.message);
+    throw error.response?.data || error;
   }
 }
 
-export async function fetchWithAuthAndLang<T = unknown>(
-  url: string,
-  options: FetchApiOptions = {},
-  single: boolean = false
-): Promise<ApiResponse<T>> {
-  try {
-    const token = await getToken();
-    const language = await AsyncStorage.getItem("language")
-    console.log(language)
-    if (!token) {
-      throw new Error("Authentication token not found.");
-    }
-
-    const method = options.method?.toUpperCase() || "GET";
-
-    // Valida que `data` é obrigatório para métodos diferentes de GET
-    if (method !== "GET" && !options.data) {
-      throw new Error(`Data is required for ${method} requests.`);
-    }
-    const response: AxiosResponse<T> = await apiServer.request({
-      url: url + (single ? `?` : `&`) + `lang=${language}`,
-      method,
-      headers: {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-      },
-      params: options.params,
-      data: options.data,
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching with auth at ${url}:`, error);
-    throw error;
-  }
-}
 export async function fetchWithNoAuth<T = unknown>(
   url: string,
   options: FetchApiOptions = {}
@@ -130,12 +78,10 @@ export async function fetchWithNoAuth<T = unknown>(
     
 
     const method = options.method?.toUpperCase() || "GET";
-
-    // Valida que `data` é obrigatório para métodos diferentes de GET
     if (method !== "GET" && !options.data) {
       throw new Error(`Data is required for ${method} requests.`);
     }
-    const response: AxiosResponse<T> = await apiServer.request({
+    const response: AxiosResponse<T> = await apiClient.request({
       url,
       method,
       headers: {
@@ -153,10 +99,10 @@ export async function fetchWithNoAuth<T = unknown>(
 }
 
 // Exemplo de uso (sem autenticação):
-// fetchApi('/search/mangalist', { method: 'GET' });
+// fetchApi('/search/', { method: 'GET' });
 
 // Exemplo de uso (com autenticação):
-// fetchWithAuth('/search/mangalist', {
+// fetchWithAuth('/search/', {
 //   method: 'POST',
 //   data: {
 //     name: "string",
