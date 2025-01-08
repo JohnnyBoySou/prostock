@@ -7,6 +7,9 @@ import { View, LogBox, } from 'react-native';
 import { Main } from 'src/routes/main';
 import { UserProvider } from '@/context/user';
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+const queryClient = new QueryClient();
+
 preventAutoHideAsync();
 
 export default function App() {
@@ -42,9 +45,11 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <QueryClientProvider client={queryClient}>
       <UserProvider>
         <Main />
       </UserProvider>
+      </QueryClientProvider>
     </View>
   );
 }

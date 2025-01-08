@@ -11,14 +11,19 @@ import Sheet from './sheet';
 import Select from './select';
 import Loader from './loader';
 import Image from './image';
-
+import Medida from "./medida";
 import { Title, HeadTitle, Label, SubLabel, U, Description } from "./text";
-import Tabs  from "./tabs";
+import Tabs from "./tabs";
+import Status from "./status";
+
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export {
+    useQuery, useInfiniteQuery,
     Column, Row, Main, ScrollHorizontal, ScrollVertical,
     Title, HeadTitle, Label, SubLabel, U, Description,
     Button, Avatar, Switch, colors, 
@@ -27,6 +32,7 @@ export {
     SCREEN_WIDTH, SCREEN_HEIGHT,
     Input, Message,
     Sheet, Select, Loader,
-    Image,
+    Image, Medida,
+    Status
 };
     

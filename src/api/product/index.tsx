@@ -1,12 +1,12 @@
 import { fetchWithAuth } from "../../hooks/api";
 
 interface Product extends Record<string, unknown> {
-    nome: string;
+    nome: string; 
+    descricao: string;
+    unidade: string;
     estoque_minimo: string;
     estoque_maximo: string;
-    descricao: string;
     status: string;
-    unidade: string;
     categorias: string[];
 }
 

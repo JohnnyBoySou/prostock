@@ -1,38 +1,98 @@
-import { useState, useRef } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Tabs } from "@/ui";
+import React, { memo, useState, useRef, useEffect, useCallback } from "react";
+import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Medida, Status, Label, Title, Row, colors, Loader } from "@/ui";
 
-export default function ProductAddScreen() {
+import { listCategory } from "@/api/category";
+import { Pressable } from "react-native";
+import { Check } from 'lucide-react-native';
+import { addProduct } from "@/api/product";
+
+export default function ProductAddScreen({ navigation }) {
     const [tab, settab] = useState("Sobre");
     const types = ["Sobre", "Categorias", "Estoque"];
+    const values = ['KG', 'GRAMA', 'LITRO', 'SACA', 'TONELADA']
+
+    const [medida, setmedida] = useState(values[0]);
+    const [status, setstatus] = useState("Ativo");
+    const [aboutValues, setaboutValues] = useState({
+        name: "",
+        description: "",
+    });
+    const [stockValues, setstockValues] = useState({
+        estoque_minimo: "",
+        estoque_maximo: "",
+    });
+    const [selectCategory, setselectCategory] = useState();
+    
+    const [category, setcategory] = useState([]);
+    const [isLoading, setIsLoading] = useState();
+    const fecthCategory = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const res = await listCategory();
+            setcategory(res.data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fecthCategory();
+    }, [fecthCategory]);
+
+    const [success, setsuccess] = useState();
+    const [error, seterror] = useState();
+    const handleCreate = async () => {
+        seterror('')
+        setsuccess('')
+        setIsLoading(true);
+        try {
+            const params = {
+                nome: aboutValues.name,
+                descricao: aboutValues.description,
+                unidade: medida,
+                estoque_minimo: stockValues.min,
+                estoque_maximo: stockValues.max,
+                status: status,
+                categorias: selectCategory
+            }
+            const res = await addProduct(params)
+            console.log(res);
+            setsuccess('Produto cadastrado com sucesso');
+            setTimeout(() => {
+                navigation.navigate('ProductSuccess')
+            }, 1000);
+        } catch (error) {
+            seterror(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
     return (<Main>
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
         </Column>
         <ScrollVertical>
-            <About />
+            {tab === "Sobre" && <About values={values} setmedida={setmedida} medida={medida} settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
+            {tab === "Categorias" && <Categories category={category} settab={settab} selectCategory={selectCategory} setselectCategory={setselectCategory} />}
+            {tab === "Estoque" && <Stock isLoading={isLoading} setstatus={setstatus} status={status} stockValues={stockValues} setstockValues={setstockValues} handleCreate={handleCreate} />}
+            <Column mh={26} mv={26}>
+                <Message error={error} success={success} />
+            </Column>
         </ScrollVertical>
     </Main>)
 }
 
-
-const About = () => {
-    const [formValues, setFormValues] = useState({
-        name: "",
-        description: "",
-        medida: "",
-        price: "",
-    });
-
-    const [error, setError] = useState(""); // Agora é uma única string para erro
-
+const About = React.memo(({ settab, aboutValues, setaboutValues, values, setmedida, medida }) => {
+    const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
 
     const refs = useRef({
         name: null,
         description: null,
-        medida: null,
-        price: null,
     });
 
     const fieldProperties = {
@@ -46,31 +106,18 @@ const About = () => {
             placeholder: "Ex.: Uma breve descrição",
             keyboardType: "default",
         },
-        medida: {
-            label: "Unidade de Medida",
-            placeholder: "Ex.: Kg",
-            keyboardType: "default",
-        },
-        price: {
-            label: "Preço",
-            placeholder: "Ex.: 99.99",
-            keyboardType: "numeric",
-        },
     };
 
     // Validações dinâmicas
     const validations = {
         name: (value) => !!value || "Por favor, insira o nome do produto.",
         description: (value) => !!value || "Por favor, insira uma descrição.",
-        medida: (value) => !!value || "Por favor, insira a unidade de medida.",
-        price: (value) =>
-            /^[0-9]+(\.[0-9]{1,2})?$/.test(value) || "Por favor, insira um preço válido.",
     };
 
     // Função para validar todos os campos
     const validateForm = () => {
         for (const field of Object.keys(validations)) {
-            const error = validations[field](formValues[field]);
+            const error = validations[field](aboutValues[field]);
             if (error !== true) {
                 setError(error); // Define o erro do primeiro campo inválido
                 return false;
@@ -81,25 +128,17 @@ const About = () => {
     };
     // Atualiza o estado dinamicamente
     const handleChange = (field, value) => {
-        setFormValues((prev) => ({ ...prev, [field]: value }));
+        setaboutValues((prev) => ({ ...prev, [field]: value }));
         setError(""); // Limpa os erros ao alterar o valor
     };
 
     // Função para lidar com o cadastro
-    const handleAddProduct = async () => {
+    const handleNext = async () => {
         setSuccess("");
         setError(""); // Limpa os erros ao tentar submeter
         if (!validateForm()) return;
-
-        setIsLoading(true);
-        try {
-            // Simula uma chamada de API
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            setSuccess("Cadastro do produto realizado com sucesso!");
-        } catch (e) {
-            setError("Erro ao realizar o cadastro. Tente novamente.");
-        } finally {
-            setIsLoading(false);
+        else {
+            settab("Categorias");
         }
     };
 
@@ -110,7 +149,7 @@ const About = () => {
                 <Input
                     key={field}
                     label={fieldProperties[field].label}
-                    value={formValues[field]}
+                    value={aboutValues[field]}
                     setValue={(value) => handleChange(field, value)}
                     placeholder={fieldProperties[field].placeholder}
                     keyboardType={fieldProperties[field].keyboardType}
@@ -120,17 +159,180 @@ const About = () => {
                         if (nextField) {
                             refs.current[nextField]?.focus();
                         } else {
-                            handleAddProduct();
+                            handleNext();
                         }
                     }}
                 />
             ))}
+            <Medida values={values} setvalue={setmedida} value={medida} />
             <Message success={success} error={error} />
             <Button
-                label="Criar produto"
-                onPress={handleAddProduct}
+                label="Próximo"
+                onPress={handleNext}
+            />
+        </Column>
+    )
+})
+
+const Categories = React.memo(({ settab, setselectCategory, selectCategory, category }) => {
+
+    const [error, setError] = useState("");
+
+    const handleNext = async () => {
+        if (categoryArray.length === 0) {
+            setError('Selecione ao menos uma categoria');
+            return;
+        }
+        else {
+            setselectCategory(categoryArray);
+            settab("Estoque");
+        }
+    };
+
+    const [categoryArray, setCategoryArray] = useState(selectCategory ? selectCategory : []);
+    const toggleCategory = (categoryId) => {
+        setCategoryArray((prev) => {
+            if (prev.includes(categoryId)) {
+                return prev.filter((id) => id !== categoryId);
+            } else {
+                return [...prev, categoryId];
+            }
+        });
+    };
+
+    const Item = ({ category }) => {
+        const { nome, status, id, } = category;
+        return (
+            <Pressable onPress={() => toggleCategory(id)} style={{
+                backgroundColor: "#fff",
+                borderColor: categoryArray.includes(id) ? colors.color.green : "#fff",
+                borderWidth: 2,
+                paddingVertical: 12, paddingHorizontal: 12,
+                borderRadius: 6,
+            }}>
+                <Row justify='space-between'>
+                    <Title size={18} fontFamily='Font_Book'>{nome}</Title>
+                    <Column style={{ width: 36, height: 36, borderColor: categoryArray.includes(id) ? colors.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: categoryArray.includes(id) ? colors.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>
+                        <Check color='#FFF' size={24} />
+                    </Column>
+                </Row>
+            </Pressable>
+        )
+    }
+
+    return (
+        <Column mh={26} gv={26}>
+            <Column gv={12}>
+                <Label>Resultados</Label>
+                {category && category?.map((item, index) => (
+                    <Item key={index} category={item} />
+                ))}
+            </Column>
+            <Message error={error} />
+            <Button
+                label="Próximo"
+                onPress={handleNext}
+            />
+        </Column>
+    )
+})
+
+
+const Stock = React.memo(({ stockValues, isLoading, setstockValues, handleCreate, status, setstatus }) => {
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState(""); 
+
+    const refs = useRef({
+        min: null,
+        max: null,
+    });
+
+    const fieldProperties = {
+        min: {
+            label: "Estoque minímo",
+            placeholder: "Ex.: 200",
+            keyboardType: "numeric",
+        },
+        max: {
+            label: "Estoque máximo",
+            placeholder: "Ex.: 500",
+            keyboardType: "numeric",
+        },
+    };
+
+    // Validações dinâmicas
+    const validations = {
+        min: (value) => {
+            if (!value) return "Por favor, insira o estoque mínimo.";
+            if (value < 0) return "O estoque mínimo não pode ser menor que 0.";
+            if (parseInt(value) > parseInt(stockValues.max)) return "O estoque mínimo não pode ser maior que o estoque máximo.";
+            return true;
+        },
+        max: (value) => {
+            if (!value) return "Por favor, insira o estoque máximo.";
+            if (value < 0) return "O estoque máximo não pode ser menor que 0.";
+            if (parseInt(value) < parseInt(stockValues.min)) return "O estoque máximo não pode ser menor que o estoque mínimo.";
+            return true;
+        },
+    };
+
+    // Função para validar todos os campos
+    const validateForm = () => {
+        for (const field of Object.keys(validations)) {
+            const error = validations[field](stockValues[field]);
+            if (error !== true) {
+                setError(error); // Define o erro do primeiro campo inválido
+                return false;
+            }
+        }
+        setError(""); // Nenhum erro
+        return true;
+    };
+    // Atualiza o estado dinamicamente
+    const handleChange = (field, value) => {
+        setstockValues((prev) => ({ ...prev, [field]: value }));
+        setError(""); // Limpa os erros ao alterar o valor
+    };
+
+    // Função para lidar com o cadastro
+    const handleNext = async () => {
+        setSuccess("");
+        setError(""); // Limpa os erros ao tentar submeter
+        if (!validateForm()) return;
+        else {
+            handleCreate();
+        }
+    };
+
+
+    return (
+        <Column mh={26} gv={26}>
+            {Object.keys(fieldProperties).map((field, index, fields) => (
+                <Input
+                    key={field}
+                    label={fieldProperties[field].label}
+                    value={stockValues[field]}
+                    setValue={(value) => handleChange(field, value)}
+                    placeholder={fieldProperties[field].placeholder}
+                    keyboard={fieldProperties[field].keyboardType}
+                    ref={(el) => (refs.current[field] = el)}
+                    onSubmitEditing={() => {
+                        const nextField = fields[index + 1];
+                        if (nextField) {
+                            refs.current[nextField]?.focus();
+                        } else {
+                            handleNext();
+                        }
+                    }}
+                />
+            ))}
+            <Status setvalue={setstatus} value={status} />
+            <Message success={success} error={error} />
+            <Button
+                label="Próximo"
+                onPress={handleNext}
                 loading={isLoading}
             />
         </Column>
     )
-}
+})

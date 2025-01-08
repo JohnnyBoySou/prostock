@@ -13,11 +13,10 @@ import ProductListScreen from "@/screens/stack/product/list";
 
 export function Stacks() {
   return (
-    <Stack.Navigator initialRouteName="ProductSuccess" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="ProductList" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProductSuccess" component={ProductSuccessScreen} options={{ header: ({ navigation,  }) => (<Minimal navigation={navigation} scene="Criar conta" />), headerShown: true,}} />
       <Stack.Screen name="ProductAdd" component={ProductAddScreen} options={{ header: ({ navigation,  }) => (<StackMenu navigation={navigation} name="Criar produto" />),headerShown: true,}} />
       <Stack.Screen name="ProductList" component={ProductListScreen} options={{ header: ({ navigation,  }) => (<StackMenu navigation={navigation} name="Listar produtos" />), headerShown: true,}} />
-     
       <Stack.Screen name="Home" component={HomeScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
     </Stack.Navigator>
   );
