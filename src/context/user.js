@@ -64,10 +64,12 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+
   const isSignedIn = !!user;
+  const role = user?.tipo;
 
   return (
-    <UserContext.Provider value={{ user, saveUser, logout, updateUser, isSignedIn, isLoading }}>
+    <UserContext.Provider value={{ user, role, saveUser, logout, updateUser, isSignedIn, isLoading }}>
       {children}
     </UserContext.Provider>
   );

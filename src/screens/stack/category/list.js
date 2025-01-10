@@ -48,6 +48,7 @@ export default function ProductListScreen() {
 }
 
 const Items = ({ data }) => {
+
     const navigation = useNavigation();
     const Card = ({ item }) => {
         const { nome, status, unidade, id, categorias, descricao, estoque_maximo, estoque_minimo } = item;
@@ -81,7 +82,6 @@ const Items = ({ data }) => {
 }
 
 const Categories = ({ data }) => {
-    const navigation = useNavigation();
     const Card = ({ category }) => {
         const { nome, status, id, } = category;
         return (
@@ -90,9 +90,7 @@ const Categories = ({ data }) => {
                 paddingVertical: 20, paddingHorizontal: 20,
                 borderRadius: 8,
                 marginVertical: 8,
-            }}
-            onPress={() => { navigation.navigate('CategoryEdit', { id: id }) }}
-            >
+            }}>
                 <Row justify='space-between'>
                     <Column gv={4}>
                         <Title size={20} fontFamily='Font_Medium'>{nome}</Title>
@@ -112,7 +110,6 @@ const Categories = ({ data }) => {
                 ListHeaderComponent={<Column mb={12}>
                     <Label>Resultados</Label>
                 </Column>}
-                showsVerticalScrollIndicator={false}
                 style={{ marginHorizontal: 26, paddingVertical: 26, }}
                 ListFooterComponent={<Column style={{ height: 200, }}/>}
             />

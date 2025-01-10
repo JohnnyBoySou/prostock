@@ -2,7 +2,7 @@ export default {
   color: {
     background: "#EDF0F1",
 
-    primary: "#EA1E2C",
+    primary: "#019866",
     secundary: "#fff",
     destructive: "#e74c3c", // Vermelho destrutivo
     ghost: "#D1D1D1", // Azul-escuro ghost

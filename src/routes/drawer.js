@@ -49,42 +49,42 @@ function CustomDrawerContent({ navigation }) {
     {
       icon: <House color="#484848" size={20} />,
       label: "Início",
-      onPress: () => navigation.navigate("Home")
+      onPress: () => navigation.navigate("Stacks", { screen: "Home" })
     },
     {
       icon: <Store color="#484848" size={20} />,
       label: "Lojas",
-      onPress: () => navigation.navigate("StoreList")
+      onPress: () => navigation.navigate("Stacks", { screen: "StoreList" })
     },
     {
       icon: <Users color="#484848" size={20} />,
       label: "Usuários",
-      onPress: () => navigation.navigate("UserList")
+      onPress: () => navigation.navigate("Stacks", { screen: "UserList" })
     },
     {
       icon: <Truck color="#484848" size={20} />,
       label: "Fornecedores",
-      onPress: () => navigation.navigate("SupplierList")
+      onPress: () => navigation.navigate("Stacks", { screen: "SupplierList" })
     },
     {
       icon: <LayoutGrid color="#484848" size={20} />,
       label: "Produtos",
-      onPress: () => navigation.navigate("ProductList")
+      onPress: () => navigation.navigate("Stacks", { screen: "ProductList" })
     },
     {
       icon: <GitCompareArrows color="#484848" size={20} />,
       label: "Movimentações",
-      onPress: () => navigation.navigate("MoveList")
+      onPress: () => navigation.navigate("Stacks", { screen: "MoveList" })
     },
     {
       icon: <ChartPie color="#484848" size={20} />,
       label: "Relatórios",
-      onPress: () => navigation.navigate("ReportList")
+      onPress: () => navigation.navigate("Stacks", { screen: "ReportList" })
     },
     {
       icon: <Brain color="#484848" size={20} />,
       label: "Inteligência Artificial",
-      onPress: () => navigation.navigate("AI")
+      onPress: () => navigation.navigate("Stacks", { screen: "AI" })
     },
     {
       icon: <CircleUserRound color="#484848" size={20} />,

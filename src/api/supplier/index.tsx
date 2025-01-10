@@ -3,16 +3,18 @@ import { fetchWithAuth } from "../../hooks/api";
 interface Supplier extends Record<string, unknown> {
     razao_social: string;
     nome_fantasia: string;
-    email_responsavel: string;
     cnpj: number;
+    
+    nome_responsavel: string;
+    email_responsavel: string;
     cpf_responsavel: number;
     telefone_responsavel: number;
+
     endereco: string;
     cidade: string;
     estado: string;
     cep: number;
     status: string;
-    nome_responsavel: string;
 }
 
 export const listSupplier = async (page: number = 1) => {
@@ -33,6 +35,7 @@ export const addSupplier = async (params: Supplier) => {
             data: params,
            
         });
+        console.log(res);
         return res;
     } catch (error) {
         throw new Error(error.message);
