@@ -11,7 +11,7 @@ export default function UserEditScreen({ navigation, route }) {
     const types = ["Sobre", "Loja", "Tipo", ];
     const values = [ { name: "NORMAL", id: "regular" }, { name: "ADMIN DE LOJA", id: "adminloja" }, { name: "SUPER ADMIN", id: "superadmin" }, ];
     const [tipo, settipo] = useState(values[0].id);
-    const [status, setstatus] = useState("Ativo");
+    const [status, setstatus] = useState("ativo");
     const [aboutValues, setaboutValues] = useState({
         name: "",
         last_name: "",

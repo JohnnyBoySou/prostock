@@ -15,7 +15,7 @@ export const listUser = async (page: number = 1) => {
     try {
         const res = await fetchWithAuth("/usuarios/usuario" + "?page=" + page, {
             method: "GET", 
-         });
+        });
         return res;
     } catch (error) {
         throw new Error(error.message);

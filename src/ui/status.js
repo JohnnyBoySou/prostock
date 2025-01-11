@@ -2,7 +2,7 @@ import { Row, Column, Label, Title, Button, colors } from '@/ui'
 import { Pressable } from 'react-native'
 
 export default function Status({ setvalue, value,  }) {
-    const values  = ['Ativo', 'Inativo', ]
+    const values  = ['ativo', 'inativo', ]
     return (
         <Column>
             <Label>Status</Label>
@@ -11,7 +11,7 @@ export default function Status({ setvalue, value,  }) {
                     <Pressable key={index} onPress={() => { setvalue(item) }}
                         style={{ backgroundColor: value == item ? colors.color.primary : '#EDF0F1', flexGrow: 1, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 6, justifyContent: 'center', alignItems: 'center', }}
                     >
-                        <Label size={18} fontFamily="Font_Medium" color={item ==value? '#fff': '#000' }>{item}</Label>
+                        <Label size={18} fontFamily="Font_Medium" color={item ==value? '#fff': '#000' } style={{ textTransform: 'uppercase' }}>{item}</Label>
                     </Pressable>
                 ))}
             </Row>

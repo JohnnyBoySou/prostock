@@ -8,7 +8,7 @@ import { addCategory } from "@/api/category";
 
 export default function CategoryAddScreen({ navigation }) {
 
-    const [status, setstatus] = useState("Ativo");
+    const [status, setstatus] = useState("ativo");
     const [aboutValues, setaboutValues] = useState({
         name: "",
     });

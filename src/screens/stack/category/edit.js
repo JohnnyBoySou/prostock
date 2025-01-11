@@ -12,7 +12,7 @@ export default function CategoryEditScreen({ navigation, route }) {
         }
     });
 
-    const [status, setstatus] = useState("Ativo");
+    const [status, setstatus] = useState("ativo");
     const [aboutValues, setaboutValues] = useState({
         name: "",
     });

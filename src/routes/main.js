@@ -14,8 +14,6 @@ import Minimal from "@/ui/Header/minimal";
 
 import ProductAddScreen from "@/screens/stack/product/add";
 import StackMenu from "@/ui/Header";
-import { Stacks } from "./stack";
-
 
 const Stack = createStackNavigator();
 
@@ -31,6 +29,7 @@ export function Main() {
           </>
         ) : (
           <>
+            <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
             <Stack.Screen name="Login" component={LoginScreen}
               options={{
                 title: "Entrar",
@@ -39,7 +38,6 @@ export function Main() {
                 ...TransitionPresets.SlideFromRightIOS
               }}
             />
-            <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
             <Stack.Screen name="Register" component={RegisterScreen}
               options={{
                 header: ({ navigation, scene }) => (<Minimal navigation={navigation} scene="Criar conta" />),

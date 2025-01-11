@@ -32,7 +32,6 @@ export default function ReportProductScreen({ route, navigation }) {
 }
 
 const Store = ({ item }) => {
-    console.log(item)
     const { nome, status, descricao, estoque_maximo, estoque_minimo, unidade} = item;
     return (
         <Column gv={6} style={{ backgroundColor: '#FFF', borderRadius: 8 }} pv={16} ph={16}>

@@ -22,7 +22,7 @@ export default function ProductEditScreen({ route, navigation }) {
             const res = await listCategory(); return res.data;
         }
     });
-    const [status, setstatus] = useState("Ativo");
+    const [status, setstatus] = useState("ativo");
     const [aboutValues, setaboutValues] = useState({
         name: "",
         description: "",

@@ -41,7 +41,7 @@ export default function LoginScreen() {
     return (<Main>
         <Column mh={26} gv={26}>
             <Image src={require('@/imgs/logo.png')} w={124} h={124} r={12} />
-            <Input label='Email' value={email} setValue={setemail} placeholder="Ex.: exemplo@email.com" onSubmitEditing={() => { refPassword.current.focus() }} />
+            <Input label='Email' value={email} setValue={setemail} keyboard="email-address" placeholder="Ex.: exemplo@email.com" onSubmitEditing={() => { refPassword.current.focus() }} />
             <Input label='Senha' ref={refPassword} pass value={password} setValue={setpassword} placeholder="Ex.: ********" onSubmitEditing={handleLogin} />
             <Message success={success} error={error} />
             <Column>

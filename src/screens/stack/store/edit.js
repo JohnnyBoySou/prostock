@@ -17,7 +17,7 @@ export default function StoreEditScreen({ navigation, route }) {
 
    
 
-    const [status, setstatus] = useState("Ativo");
+    const [status, setstatus] = useState("ativo");
 
     const [aboutValues, setaboutValues] = useState();
     const [addressValues, setaddressValues] = useState({

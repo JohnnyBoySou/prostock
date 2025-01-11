@@ -4,6 +4,7 @@ import { FlatList } from 'react-native';
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { listMove } from '@/api/move';
+import { MoveEmpty } from "../../../ui/Emptys/move";
 
 export default function MoveListScreen() {
     const { data, isLoading } = useQuery({
@@ -75,6 +76,7 @@ const Items = ({ data }) => {
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={<Column style={{ height: 200, }} />}
                 renderItem={({ item }) => <Card item={item} />}
+                ListEmptyComponent={<MoveEmpty />}
             />
         </Column>
     )

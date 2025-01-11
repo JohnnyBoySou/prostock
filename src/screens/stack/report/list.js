@@ -100,11 +100,13 @@ const Items = ({ data }) => {
         )
     }
     return (
-        <Column>
+        <Column >
             <FlatList
+                style={{ paddingTop: 12, }}
                 data={data}
                 renderItem={({ item }) => <Card item={item} />}
                 keyExtractor={item => item.id}
+                ListFooterComponent={<Column pv={40} />}
             />
         </Column>
     )

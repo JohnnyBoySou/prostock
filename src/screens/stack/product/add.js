@@ -13,7 +13,7 @@ export default function ProductAddScreen({ navigation }) {
     const values = ['KG', 'GRAMA', 'LITRO', 'SACA', 'TONELADA']
 
     const [medida, setmedida] = useState(values[0]);
-    const [status, setstatus] = useState("Ativo");
+    const [status, setstatus] = useState("ativo");
     const [aboutValues, setaboutValues] = useState({
         name: "",
         description: "",

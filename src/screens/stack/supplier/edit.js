@@ -10,7 +10,7 @@ export default function SupplierEditScreen({ navigation, route }) {
     const id = route?.params?.id ? route.params.id : 1;
     const [tab, settab] = useState("Sobre");
     const types = ["Sobre","Responsável", "Endereço",];
-    const [status, setstatus] = useState("Ativo");
+    const [status, setstatus] = useState("ativo");
 
     const { data: supplier , isLoading: loadingSupplier } = useQuery({
         queryKey: [`supplier edit ${id}`],

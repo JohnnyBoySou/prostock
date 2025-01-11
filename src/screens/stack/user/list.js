@@ -5,6 +5,7 @@ import { FlatList } from 'react-native';
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { listUser } from '@/api/user';
+import { UserEmpty } from "../../../ui/Emptys/user";
 
 export default function UserListScreen() {
 
@@ -60,6 +61,7 @@ const Items = ({ data }) => {
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={<Column style={{ height: 200, }}/>}
                 renderItem={({ item }) => <Card item={item} />}
+                ListEmptyComponent={<UserEmpty />}
             />
         </Column>
     )

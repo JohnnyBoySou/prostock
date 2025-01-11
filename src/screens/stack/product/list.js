@@ -7,6 +7,7 @@ import { listCategory } from "@/api/category";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { CategoryEmpty } from "../../../ui/Emptys/category";
+import { ProductEmpty } from "../../../ui/Emptys/product";
 
 export default function ProductListScreen() {
     const [tab, settab] = useState("Items");
@@ -76,6 +77,7 @@ const Items = ({ data }) => {
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={<Column style={{ height: 200, }}/>}
                 renderItem={({ item }) => <Card item={item} />}
+                ListEmptyComponent={<ProductEmpty />}
             />
         </Column>
     )

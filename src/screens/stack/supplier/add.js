@@ -8,7 +8,7 @@ import { addSupplier } from "@/api/supplier";
 export default function SupplierAddScreen({ navigation }) {
     const [tab, settab] = useState("Sobre");
     const types = ["Sobre","Responsável", "Endereço",];
-    const [status, setstatus] = useState("Ativo");
+    const [status, setstatus] = useState("ativo");
 
     const [aboutValues, setaboutValues] = useState();
     const [responsibleValues, setresponsibleValues] = useState();

@@ -4,6 +4,7 @@ import { FlatList } from 'react-native';
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { listSupplier } from '@/api/supplier';
+import { SupplierEmpty } from "@/ui/Emptys/supplier";
 
 export default function SupplierListScreen() {
     const { data, isLoading } = useQuery({
@@ -57,6 +58,7 @@ const Items = ({ data }) => {
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={<Column style={{ height: 200, }} />}
                 renderItem={({ item }) => <Card item={item} />}
+                ListEmptyComponent={<SupplierEmpty />}
             />
         </Column>
     )
