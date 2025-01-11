@@ -1,19 +1,15 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { Camera } from 'expo-camera';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'; 
+import { CameraView, useCameraPermissions } from 'expo-camera';
+
 
 export default function OCRScreen() {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [permission, requestPermission] = useCameraPermissions();
+ 
   const [image, setImage] = useState(null);
   const [text, setText] = useState(null);
   const cameraRef = useRef(null);
 
-  React.useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
 
   const takePicture = async () => {
     if (cameraRef.current) {
@@ -58,11 +54,17 @@ export default function OCRScreen() {
     });
   };
 
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission...</Text>;
+  if (!permission) {
+    return <View />;
   }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+
+  if (!permission.granted) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
   }
 
   return (
@@ -76,13 +78,13 @@ export default function OCRScreen() {
           </TouchableOpacity>
         </View>
       ) : (
-        <Camera style={{ flex: 1 }} ref={cameraRef}>
+        <CameraView style={{ flex: 1 }} ref={cameraRef} facing='back'>
           <View style={styles.cameraOverlay}>
             <TouchableOpacity onPress={takePicture} style={styles.button}>
               <Text style={styles.buttonText}>Capture</Text>
             </TouchableOpacity>
           </View>
-        </Camera>
+        </CameraView>
       )}
     </View>
   );
