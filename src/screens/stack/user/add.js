@@ -50,7 +50,6 @@ export default function UserAddScreen({ navigation }) {
         seterror('')
         setsuccess('')
         setIsLoading(true);
-        console.log(tipo)
         try {
             const params = {
                 nome: aboutValues.name,

@@ -39,8 +39,6 @@ export default function RegisterScreen() {
     const handleRegister = async () => {
         setError("");
         setSuccess("");
-        console.log(cpf.length)
-        console.log(phone.length)
         // Validações de cada campo
         if (!name) {
             setError("Por favor, insira seu nome.");

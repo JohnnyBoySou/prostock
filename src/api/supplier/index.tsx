@@ -35,7 +35,6 @@ export const addSupplier = async (params: Supplier) => {
             data: params,
            
         });
-        console.log(res);
         return res;
     } catch (error) {
         throw new Error(error.message);

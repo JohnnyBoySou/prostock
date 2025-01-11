@@ -28,7 +28,7 @@ export default function MoveEditScreen({ navigation, route }) {
             setobservation(move.observacoes);
             setProductValues({
                 quantidade: String(move.quantidade),
-                preco: 'R$ ' + move.preco.replace('.', ','),
+                preco: move.preco,
             });
             setSupplierValues({
                 lote: move.lote,
@@ -127,7 +127,6 @@ const Product = ({ productId, setproductId, data, settab, setvalue, value, setti
         'preco',
     ];
 
-    console.log(value.quantidade)
     const Card = ({ item }) => {
         const { id, status, nome, unidade } = item;
         return (

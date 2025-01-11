@@ -13,6 +13,7 @@ import StackMenu from "@/ui/Header";
 
 
 import { Stacks } from "./stack";
+import { useIsFocused } from "@react-navigation/native";
 
 const Drawers = createDrawerNavigator();
 
@@ -30,6 +31,8 @@ function CustomDrawerContent({ navigation }) {
   const [loading, setloading] = useState(true);
   const [store, setstore] = useState();
 
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     const fetchStore = async () => {
       setloading(true)
@@ -42,8 +45,10 @@ function CustomDrawerContent({ navigation }) {
         setloading(false);
       }
     }
-    fetchStore();
-  }, []);
+    if (isFocused) {
+      fetchStore();
+    }
+  }, [isFocused]);
 
   const account = [
     {

@@ -30,8 +30,6 @@ export default function MoveAddScreen({ navigation }) {
         seterror('')
         setsuccess('')
         setIsLoading(true);
-        console.log(productValues)
-        console.log(supplierValues)
         try {
             const formatDate = (date) => {
                 const [day, month, year] = date.split('/');
@@ -41,7 +39,7 @@ export default function MoveAddScreen({ navigation }) {
             const params = {
                 tipo: tipo,
                 quantidade: productValues.quantidade,
-                preco: productValues.preco.slice(3, 0).replace(',', '').replace('.', ''),
+                preco: productValues.preco,
                 produto_id: productId,
                 
                 fornecedor_id: supplierId,

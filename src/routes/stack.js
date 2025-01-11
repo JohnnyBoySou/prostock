@@ -34,18 +34,25 @@ import MoveEditScreen from "@/screens/stack/move/edit";
 
 import AIScreen from "@/screens/stack/ai";
 
-
-import ReportScreen from "@/screens/stack/report";
+import ReportListScreen from "@/screens/stack/report/list";
+import ReportSingleScreen from "@/screens/stack/report/single";
+import ReportProductScreen from '@/screens/stack/report/product';
 
 export function Stacks() {
 
   const { role } = useUser();
 
   return (
-    <Stack.Navigator initialRouteName="AI" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
 
       <Stack.Screen name="AI" component={AIScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="AI" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+
+      <Stack.Group>
+        <Stack.Screen name="ReportList" component={ReportListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar relatórios" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+        <Stack.Screen name="ReportSingle" component={ReportSingleScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+        <Stack.Screen name="ReportProduct" component={ReportProductScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório de produtos" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+      </Stack.Group>
 
       <Stack.Group>
         <Stack.Screen name="ProductSuccess" component={ProductSuccessScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Criar conta" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />

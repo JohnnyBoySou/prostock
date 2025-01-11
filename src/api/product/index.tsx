@@ -1,4 +1,4 @@
-import { fetchWithAuth } from "../../hooks/api";
+import { fetchWithAuth, fetchWithAuthOtherStore } from "../../hooks/api";
 
 interface Product extends Record<string, unknown> {
     nome: string; 
@@ -49,6 +49,18 @@ export const showProduct = async (id: number) => {
 export const deleteProduct = async (id: number) => {
     try {
         const res = await fetchWithAuth("/usuarios/produto/" + id, { method: "DELETE", data: {} });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+
+
+
+export const listProductStore = async (id: number, page: number = 1, ) => {
+    try {
+        const res = await fetchWithAuthOtherStore("/usuarios/produto" + "?page=" + page, { method: "GET", headers: { "lojaid": id.toString()} },);
         return res;
     } catch (error) {
         throw new Error(error.message);

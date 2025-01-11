@@ -31,7 +31,6 @@ export const addMove = async (params: Move) => {
             data: params,
            
         });
-        console.log(res);
         return res;
     } catch (error) {
         throw new Error(error.message);

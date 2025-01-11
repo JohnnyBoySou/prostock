@@ -39,7 +39,6 @@ const Items = ({ data }) => {
         };
 
         const formatPrice = (price) => {
-            console.log(price)
             const numericPrice = parseFloat(price);
         
             if (isNaN(numericPrice)) {

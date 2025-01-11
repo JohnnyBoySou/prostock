@@ -25,7 +25,6 @@ export default function CategoryAddScreen({ navigation }) {
                 status: status,
             }
             const res = await addCategory(params)
-            console.log(res);
             setsuccess('Categoria criada com sucesso!');
             setTimeout(() => {
                 navigation.navigate('ProductList');

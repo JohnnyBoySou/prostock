@@ -95,7 +95,7 @@ const fields = {
         label: "Preço",
         placeholder: "Ex.: R$ 100,00",
         keyboardType: "numeric",
-        mask:"PRICE",
+      //  mask:"PRICE",
     },
     quantidade: {
         label: "Quantidade",

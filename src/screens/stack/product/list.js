@@ -1,15 +1,16 @@
 import { useState, useRef } from "react";
 import { Main, Row, Loader, colors, Title, Column, Label, ScrollVertical, Tabs, useQuery, Button } from "@/ui";
-import { ChevronRight, PenLine } from "lucide-react-native";
+import { ChevronRight, CircleDashed, MessageCircleDashed, PenLine, SquareDashed, Plus } from "lucide-react-native";
 import { FlatList } from 'react-native';
 import { listProduct } from '@/api/product';
 import { listCategory } from "@/api/category";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { CategoryEmpty } from "../../../ui/Emptys/category";
 
 export default function ProductListScreen() {
     const [tab, settab] = useState("Items");
-    const types = ["Items", "Categorias", "Estoque"];
+    const types = ["Items", "Categorias"];
 
     const { data: product, isLoading: loadingProduct } = useQuery({
         queryKey: ["product"],
@@ -114,7 +115,8 @@ const Categories = ({ data }) => {
                 </Column>}
                 showsVerticalScrollIndicator={false}
                 style={{ marginHorizontal: 26, paddingVertical: 26, }}
-                ListFooterComponent={<Column style={{ height: 200, }}/>}
+                ListFooterComponent={<Column style={{ height: 200, }} />}
+                ListEmptyComponent={<CategoryEmpty />}
             />
         </Column>
     )

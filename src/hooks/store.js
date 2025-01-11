@@ -10,7 +10,7 @@ const getStore = async() => {
   return null;
 };
 
-const selectStore = async(token) => {
+const selectStore = async (token) => {
   try {
     await AsyncStorage.setItem(KEY_DATA, JSON.stringify(token));
     return true;

@@ -72,7 +72,6 @@ export default function UserEditScreen({ navigation, route }) {
         seterror('')
         setsuccess('')
         setIsLoading(true);
-        console.log(tipo)
         try {
             const params = {
                 nome: aboutValues.name,

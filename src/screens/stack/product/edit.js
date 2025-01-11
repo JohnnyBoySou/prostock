@@ -86,7 +86,6 @@ export default function ProductEditScreen({ route, navigation }) {
     const handleExclude = async() => {
         try {
             const res = await deleteProduct(id)
-            console.log(res);
         } catch (error) {
             console.log(error)
         }

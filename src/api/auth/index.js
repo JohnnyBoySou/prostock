@@ -16,7 +16,6 @@ export const loginUser = async (email, password) => {
 export const listUser = async () => {
     try {
         const res = await fetchWithAuth("/usuarios/user", { method: "GET"});
-        console.log(res)
         return res;
     } catch (error) {
         throw new Error(error.message);

@@ -70,6 +70,35 @@ export async function fetchWithAuth<T = unknown>(
   }
 }
 
+
+export async function fetchWithAuthOtherStore<T = unknown>(
+  url: string,
+  options: FetchApiOptions = {}
+): Promise<ApiResponse<T>> {
+  try {
+    const token = await getToken(); 
+    if (!token) {
+      throw new Error("Authentication token not found.");
+    }
+
+    const response: AxiosResponse<T> = await apiClient.request({
+      url,
+      method: options.method || "GET",
+      headers: {
+        ...options.headers, 
+        Authorization: `Bearer ${token}`,
+      },
+      params: options.params || undefined, 
+      data: options.data || undefined,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    console.error(`Error fetching with auth at ${url}:`, error.response?.data || error.message);
+    throw error.response?.data || error;
+  }
+}
+
 export async function fetchWithNoAuth<T = unknown>(
   url: string,
   options: FetchApiOptions = {}
