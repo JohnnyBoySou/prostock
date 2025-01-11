@@ -1,9 +1,6 @@
 import React, { memo, useState, useRef, useEffect, useCallback } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Medida, Status, Label, Title, Row, colors, Loader } from "@/ui";
 
-import { listCategory } from "@/api/category";
-import { Pressable } from "react-native";
-import { Check } from 'lucide-react-native';
 import { addCategory } from "@/api/category";
 
 export default function CategoryAddScreen({ navigation }) {

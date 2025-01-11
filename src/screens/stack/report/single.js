@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { showReportStore } from '@/api/report';
 import { listProductStore } from '@/api/product';
 import { BarChart } from "react-native-gifted-charts";
+import { ProductEmpty } from './../../../ui/Emptys/product';
 
 export default function ReportSingleScreen({ route, navigation }) {
     const id = route.params.id;
@@ -190,6 +191,7 @@ const Items = ({ data }) => {
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={<Column style={{ height: 200, }}/>}
                 renderItem={({ item }) => <Card item={item} />}
+                ListEmptyComponent={<ProductEmpty />}
             />
         </Column>
     )

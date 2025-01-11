@@ -29,7 +29,7 @@ export default function HomeScreen({ navigation, }) {
     return (
         <Main >
             <ScrollVertical>
-                <Column ph={26} gv={16}>
+                <Column ph={26} gv={16} pv={16}>
                     <Row justify='space-between'>
                         <Pressable onPress={() => {navigation.toggleDrawer()}}  style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
                             <Menu color='#8A8A8A' size={24} />

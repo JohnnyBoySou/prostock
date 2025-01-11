@@ -3,11 +3,11 @@ import { Main, Button, Message, Row, Title, Column, colors, TextArea, Loader, La
 import { FlatList, Pressable, } from "react-native";
 import { Check, } from "lucide-react-native";
 
-
 import { addMove } from "@/api/move";
 import { listSupplier } from '@/api/supplier';
 import { listProduct } from '@/api/product';
-import { useUser } from '@/context/user';
+import { ProductEmpty } from "@/ui/Emptys/product";
+import { SupplierEmpty } from '@/ui/Emptys/supplier';
 
 export default function MoveAddScreen({ navigation }) {
 
@@ -129,6 +129,7 @@ const Product = ({ productId, setproductId, data, settab, setvalue, value, setti
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => <Card item={item} />}
+                ListEmptyComponent={<ProductEmpty />}
             />
             <Column mh={26} mv={16}>
                 <Tipo setvalue={settipo} value={tipo} />
@@ -179,6 +180,7 @@ const Supplier = React.memo(({ supplierId, setsupplierId, data, settab, setvalue
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => <Card item={item} />}
+                ListEmptyComponent={<SupplierEmpty />}
             />
             <Column mv={8} />
             <Form fieldKeys={fieldKeys} initialValues={value} onSubmit={(value) => {

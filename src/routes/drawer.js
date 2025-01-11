@@ -94,7 +94,7 @@ function CustomDrawerContent({ navigation }) {
     {
       icon: <CircleUserRound color="#484848" size={20} />,
       label: "Meu perfil",
-      onPress: () => navigation.navigate("Profile")
+      onPress: () => navigation.navigate("Stacks", { screen: "Profile"})
     },
     {
       icon: <LogOut color="#484848" size={20} />,

@@ -32,14 +32,15 @@ import MoveAddScreen from "@/screens/stack/move/add";
 import MoveListScreen from "@/screens/stack/move/list";
 import MoveEditScreen from "@/screens/stack/move/edit";
 
-import AIScreen from "@/screens/stack/ai";
-
 import ReportListScreen from "@/screens/stack/report/list";
 import ReportSingleScreen from "@/screens/stack/report/single";
 import ReportProductScreen from '@/screens/stack/report/product';
 
+import AIScreen from "@/screens/stack/ai";
 import OCRTesseractScreen from "@/screens/stack/ai/tesseract";
 import OCRScreen from "@/screens/stack/ai/google";
+
+import ProfileScreen from "@/screens/stack/profile";
 
 export function Stacks() {
 
@@ -49,6 +50,7 @@ export function Stacks() {
     <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
 
+      <Stack.Screen name="Profile" component={ProfileScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Perfil" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} /> 
 
       <Stack.Group>
         <Stack.Screen name="AI" component={AIScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="AI" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
