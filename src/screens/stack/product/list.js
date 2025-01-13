@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Main, Row, colors, Title, Column, Label, ScrollVertical,Tabs, Button, ListSearch } from "@/ui";
+import { Main, Row, colors, Title, Column, Label, Tabs, Button, ListSearch } from "@/ui";
 import { PenLine } from "lucide-react-native";
 import { Pressable } from 'react-native';
 
@@ -20,10 +20,8 @@ export default function ProductListScreen() {
                 <Tabs types={types} value={tab} setValue={settab} />
             </Column>
             <Column style={{ flex: 1 }}>
-                <ScrollVertical>
                     {tab === "Produtos" && <Product />}
                     {tab === "Categorias" && <Categories />}
-                </ScrollVertical>
                 <Column style={{ position: 'absolute', bottom: 40, flexGrow: 1, left: 26, right: 26, }}>
                     {tab == "Produtos" && <Button label='Criar produto' route="ProductAdd" />}
                     {tab == "Categorias" && <Button label='Criar categoria' route="CategoryAdd" />}
@@ -50,7 +48,7 @@ const Product = () => {
     }
     return (
         <Column>
-            <ListSearch renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
+            <ListSearch top spacing renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
         </Column>
     )
 }
@@ -80,7 +78,7 @@ const Categories = () => {
     }
     return (
         <Column>
-            <ListSearch renderItem={({ item }) => <Card category={item} />} getSearch={searchCategory} getList={listCategory} empty={<CategoryEmpty />} />
+            <ListSearch top spacing renderItem={({ item }) => <Card category={item} />} getSearch={searchCategory} getList={listCategory} empty={<CategoryEmpty />} />
         </Column>
     )
 }

@@ -8,18 +8,19 @@ const Stack = createStackNavigator();
 
 import HomeScreen from "@/screens/stack/home";
 
-import ProductSuccessScreen from "@/screens/stack/product/success";
 import ProductAddScreen from "@/screens/stack/product/add";
 import ProductListScreen from "@/screens/stack/product/list";
 import ProductEditScreen from '@/screens/stack/product/edit';
 
 import CategoryAddScreen from "@/screens/stack/category/add";
 import CategoryEditScreen from "@/screens/stack/category/edit";
+import CategoryListScreen from "@/screens/stack/category/list";
 
 import UserAddScreen from "@/screens/stack/user/add";
 import UserListScreen from "@/screens/stack/user/list";
 import UserEditScreen from "@/screens/stack/user/edit";
 
+import StoreSelectScreen from "@/screens/stack/store/select";
 import StoreAddScreen from "@/screens/stack/store/add";
 import StoreListScreen from "@/screens/stack/store/list";
 import StoreEditScreen from "@/screens/stack/store/edit";
@@ -46,9 +47,8 @@ export function Stacks() {
   const { role } = useUser();
 
   return (
-    <Stack.Navigator initialRouteName="ProductList" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
-
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Perfil" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} /> 
 
       <Stack.Group>
@@ -63,13 +63,13 @@ export function Stacks() {
       </Stack.Group>
 
       <Stack.Group>
-        <Stack.Screen name="ProductSuccess" component={ProductSuccessScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Criar conta" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="ProductAdd" component={ProductAddScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Criar produto" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="ProductList" component={ProductListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar produtos" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="ProductEdit" component={ProductEditScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Editar produto" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
       </Stack.Group>
 
       <Stack.Group>
+        <Stack.Screen name="CategoryList" component={CategoryListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar categorias" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="CategoryAdd" component={CategoryAddScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Criar categoria" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="CategoryEdit" component={CategoryEditScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Editar categoria" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
       </Stack.Group>
@@ -94,6 +94,7 @@ export function Stacks() {
             <Stack.Screen name="UserEdit" component={UserEditScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Editar usuário" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
           </Stack.Group>
           <Stack.Group>
+            <Stack.Screen name="StoreSelect" component={StoreSelectScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Selecionar loja" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
             <Stack.Screen name="StoreAdd" component={StoreAddScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Criar loja" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
             <Stack.Screen name="StoreList" component={StoreListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar lojas" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
             <Stack.Screen name="StoreEdit" component={StoreEditScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Editar loja" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />

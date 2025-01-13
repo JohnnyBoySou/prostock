@@ -1,4 +1,4 @@
-import { Main, Row, colors, Title, Column, Label, ListSearch, Button, ScrollVertical } from "@/ui";
+import { Main, Row, colors, Title, Column, Label, ListSearch, Button,  } from "@/ui";
 import { PenLine } from "lucide-react-native";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -8,9 +8,7 @@ import { MoveEmpty } from "@/ui/Emptys/move";
 export default function MoveListScreen() {
     return (
         <Main>
-            <ScrollVertical>
-                <Items />
-            </ScrollVertical>
+            <Items />
             <Column style={{ position: 'absolute', bottom: 40, flexGrow: 1, left: 26, right: 26, }}>
                 <Button label='Criar movimentação' route="MoveAdd" />
             </Column>
@@ -40,7 +38,7 @@ const Items = () => {
     }
     return (
         <Column>
-            <ListSearch id='move' renderItem={({ item }) => <Card item={item} />} getSearch={searchMove} getList={listMove} empty={<MoveEmpty />} />
+            <ListSearch id='move' top spacing renderItem={({ item }) => <Card item={item} />} getSearch={searchMove} getList={listMove} empty={<MoveEmpty />} />
         </Column>
     )
 }

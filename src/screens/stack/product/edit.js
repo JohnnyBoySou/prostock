@@ -1,5 +1,5 @@
-import React, { memo, useState, useRef, useEffect, useCallback } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, useQuery, Tabs, Medida, Status, Label, Title, Row, colors, Loader } from "@/ui";
+import React, { useState, useRef, useEffect } from "react";
+import { Main, Button, Message, Column, Input, ScrollVertical, useQuery, Tabs, Medida, Status, ListSearch, Title, Row, colors, Loader } from "@/ui";
 
 import { listCategory } from "@/api/category";
 import { Pressable } from "react-native";
@@ -74,7 +74,7 @@ export default function ProductEditScreen({ route, navigation }) {
             const res = await editProduct(id, params)
             setsuccess(res.message);
             setTimeout(() => {
-                navigation.navigate('ProductSuccess', {message: res.message})
+                navigation.navigate('ProductList')
             }, 1000);
         } catch (error) {
             seterror(error.message);
@@ -233,6 +233,7 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
                 borderWidth: 2,
                 paddingVertical: 12, paddingHorizontal: 12,
                 borderRadius: 6,
+                marginVertical: 6,
             }}>
                 <Row justify='space-between'>
                     <Title size={18} fontFamily='Font_Book'>{nome}</Title>
@@ -245,19 +246,16 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
     }
 
     return (
+        <Column gv={26}>
+        <ListSearch id="add product" spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchCategory} getList={listCategory} empty={<CategoryEmpty />} />
         <Column mh={26} gv={26}>
-            <Column gv={12}>
-                <Label>Resultados</Label>
-                {category && category?.map((item, index) => (
-                    <Item key={index} category={item} />
-                ))}
-            </Column>
             <Message error={error} />
             <Button
                 label="Próximo"
                 onPress={handleNext}
             />
         </Column>
+    </Column>
     )
 })
 

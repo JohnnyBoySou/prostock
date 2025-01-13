@@ -1,17 +1,15 @@
-import React from 'react';
-import { Main, ScrollVertical, Column, Row, Title, HeadTitle, Image, Label, useQuery, colors, } from '@/ui';
+import React, { useState, useEffect } from 'react';
+import { Main, ScrollVertical, Column, Row, Title, HeadTitle, Image, Label, useQuery, colors, Loader } from '@/ui';
 import { useUser } from '@/context/user';
 import { Pressable } from 'react-native';
 import { GitCompareArrows, Menu, PieChart as Pie, Users, ChevronRight, ScanText } from 'lucide-react-native';
-import { useNavigation } from '@react-navigation/native';
-import { listReportStore } from '@/api/report';
-import { FlatList } from 'react-native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { showReportStore } from '@/api/report';
 import { PieChart } from "react-native-gifted-charts";
+import { getStore } from "@/hooks/store";
 
 export default function HomeScreen({ navigation, }) {
-
     const { user } = useUser();
-
     const greatings = () => {
         const date = new Date();
         const hour = date.getHours();
@@ -20,18 +18,34 @@ export default function HomeScreen({ navigation, }) {
         return 'Boa noite';
     }
 
-    const { data, isLoading } = useQuery({
-        queryKey: ["stores report"],
-        queryFn: async () => {
-            const res = await listReportStore(); return res.data;
+    const isFocused = useIsFocused();
+    const [loading, setloading] = useState(true);
+    const [store, setstore] = useState();
+
+    useEffect(() => {
+        const fetchStore = async () => {
+            setloading(true)
+            try {
+                const res = await getStore();
+                setstore(res);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setloading(false);
+            }
         }
-    });
+        if (isFocused) {
+            fetchStore();
+        }
+    }, [isFocused]);
+
+
     return (
         <Main >
             <ScrollVertical>
                 <Column ph={26} gv={16} pv={16}>
                     <Row justify='space-between'>
-                        <Pressable onPress={() => {navigation.toggleDrawer()}}  style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                        <Pressable onPress={() => { navigation.toggleDrawer() }} style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
                             <Menu color='#8A8A8A' size={24} />
                         </Pressable>
                         <Image src={require('@/imgs/logo_red.png')} w={64} h={64} />
@@ -41,26 +55,36 @@ export default function HomeScreen({ navigation, }) {
                         <HeadTitle>{greatings()},</HeadTitle>
                         <HeadTitle fontFamily="Font_Bold" mt={-5}>{user?.name}</HeadTitle>
                     </Column>
+                    <Pressable style={{ marginVertical: 4, backgroundColor: '#fff', paddingVertical: 16, paddingHorizontal: 16, borderRadius: 6 }} onPress={() => navigation.navigate("StoreSelect")}>
+                        {loading ? <Label>Carregando...</Label> :
+                            <Row align="center" justify='space-between'>
+                                <Column gv={4}>
+                                    <Title size={18}>{store?.nome}</Title>
+                                    <Label size={12}>ALTERAR LOJA</Label>
+                                </Column>
+                                <ChevronRight color="#484848" size={24} />
+                            </Row>}
+                    </Pressable>
 
                     <Row justify='space-between' gh={12}>
-                        <Pressable onPress={() => {navigation.navigate('MoveAdd')}}  style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12,backgroundColor: '#FFF0D7',}}>
+                        <Pressable onPress={() => { navigation.navigate('MoveAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FFF0D7', }}>
                             <GitCompareArrows size={32} color='#FFB238' />
                             <Title size={16} fontFamily="Font_Medium" color='#FFB238'>Criar {'\n'}Movimentação</Title>
                         </Pressable>
-                        <Pressable onPress={() => {navigation.navigate('AI')}}  style={{ padding: 16, flexGrow: 2, borderRadius: 12, rowGap: 12,backgroundColor: '#D7E9FD',}}>
+                        <Pressable onPress={() => { navigation.navigate('AI') }} style={{ padding: 16, flexGrow: 2, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
                             <ScanText size={32} color='#3590F3' />
                             <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Escanear {'\n'}Documento</Title>
                         </Pressable>
                     </Row>
-                    <Items data={data?.slice(0, 1)} />
-                    
+                    <Items store={store} />
+
                     <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
                     <Row justify='space-between' gh={12}>
-                        <Pressable onPress={() => {navigation.navigate('UserAdd')}}  style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12,backgroundColor: '#D9EEE8',}}>
+                        <Pressable onPress={() => { navigation.navigate('UserAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D9EEE8', }}>
                             <Users size={32} color='#43AA8B' />
                             <Title size={16} fontFamily="Font_Medium" color='#43AA8B'>Adicionar {'\n'}Usuário</Title>
                         </Pressable>
-                        <Pressable onPress={() => {navigation.navigate('ReportList')}}  style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12,backgroundColor: '#EADAFF',}}>
+                        <Pressable onPress={() => { navigation.navigate('ReportList') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#EADAFF', }}>
                             <Pie size={32} color='#9747FF' />
                             <Title size={16} fontFamily="Font_Medium" color='#9747FF'>Acessar {'\n'}Relatórios</Title>
                         </Pressable>
@@ -72,15 +96,34 @@ export default function HomeScreen({ navigation, }) {
 }
 
 
-const Items = ({ data }) => {
-    if(!data) return null;
+const Items = ({ store }) => {
+
+    const { data, isLoading, refetch } = useQuery({
+        queryKey: ["home store report"],
+        queryFn: async () => {
+            const res = await showReportStore(store.id); return res;
+        },
+        enabled: false,
+    });
+
+    useEffect(() => {
+        if (store) {
+            refetch();
+        }
+    }, [store])
+
+
+
+    if (!data) return null;
     const navigation = useNavigation();
     const Card = ({ item }) => {
-        const { nome_loja, id, entrada, saida, entrada_saida_porcentagem, estoque_maximo, estoque_ocupado, estoque_porcentagem, status } = item;
+        const { nome, id, status } = item;
+        const { entrada_saida_porcentagem, estoque_porcentagem, } = item.meses[2]
+
         const porcentagem1 = parseFloat(entrada_saida_porcentagem.toString().replace(',', '.'));
         const porcentagem2 = parseFloat(estoque_porcentagem.toString().replace(',', '.'));
 
-        const ocupacao = 100 - porcentagem2 
+        const ocupacao = 100 - porcentagem2
         const entradaxsaida = 100 - porcentagem1
 
         const pieData = [
@@ -91,12 +134,14 @@ const Items = ({ data }) => {
             { value: porcentagem1, color: '#43AA8B' },
             { value: entradaxsaida, color: '#FFB238' },
         ];
+
+        if(isLoading) return <Loader size={32} color={colors.color.primary} />
         return (
-            <Pressable onPress={() => { navigation.navigate('ReportSingle', { id: id }) }} style={{ backgroundColor: '#FFF', borderRadius: 8,   paddingBottom: 20, paddingTop: 20,}}>
+            <Pressable onPress={() => { navigation.navigate('ReportSingle', { id: id }) }} style={{ backgroundColor: '#FFF', borderRadius: 8, paddingBottom: 20, paddingTop: 20, }}>
                 <Row justify="space-between" ph={20} mb={20} >
                     <Column>
                         <Label size={12}>Loja • {status}</Label>
-                        <Title size={16}>{nome_loja}</Title>
+                        <Title size={16}>{nome}</Title>
                     </Column>
                     <ChevronRight color={colors.color.primary} />
                 </Row>
@@ -147,11 +192,7 @@ const Items = ({ data }) => {
     }
     return (
         <Column>
-            <FlatList
-                data={data}
-                renderItem={({ item }) => <Card item={item} />}
-                keyExtractor={item => item.id}
-            />
+            <Card item={data} />
         </Column>
     )
 }

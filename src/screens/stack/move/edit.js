@@ -4,8 +4,10 @@ import { Pressable, } from "react-native";
 import { Check, } from "lucide-react-native";
 
 import { editMove, showMove } from "@/api/move";
-import { listSupplier } from '@/api/supplier';
-import { listProduct } from '@/api/product';
+import { listSupplier, searchSupplier } from '@/api/supplier';
+import { listProduct, searchProduct } from '@/api/product';
+import ProductEmpty from "@/ui/Emptys/product";
+import SupplierEmpty from "@/ui/Emptys/supplier";
 
 export default function MoveEditScreen({ navigation, route }) {
 
@@ -128,7 +130,7 @@ const Product = ({ productId, setproductId,settab, setvalue, value, settipo, tip
             }}>
                 <Row justify="space-between" style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
                     <Column gv={6}>
-                        <Title size={20} fontFamily='Font_Medium'>{nome.length > 16 ? nome.slice(0, 16) + '...' : nome}</Title>
+                        <Title size={20} fontFamily='Font_Medium'>{nome?.length > 16 ? nome?.slice(0, 16) + '...' : nome}</Title>
                         <Label>{unidade} • {status}</Label>
                     </Column>
                     <Column style={{ width: 36, height: 36, borderColor: productId == item?.id ? colors.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: productId == item?.id ? colors.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>
@@ -169,7 +171,7 @@ const Supplier = React.memo(({ supplierId, setsupplierId,  settab, setvalue, val
             }}>
                 <Row justify="space-between" style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
                     <Column gv={6}>
-                        <Title size={20} fontFamily='Font_Medium'>{nome_fantasia.length > 16 ? nome_fantasia.slice(0, 16) + '...' : nome_fantasia}</Title>
+                        <Title size={20} fontFamily='Font_Medium'>{nome_fantasia?.length > 16 ? nome_fantasia?.slice(0, 16) + '...' : nome_fantasia}</Title>
                         <Label>{cidade} • {status} </Label>
                     </Column>
                     <Column style={{ width: 36, height: 36, borderColor: supplierId == item?.id ? colors.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: supplierId == item?.id ? colors.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>

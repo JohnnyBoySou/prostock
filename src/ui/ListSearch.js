@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Column, Loader, Search, colors, Label, useQuery, useInfiniteQuery, Button } from "@/ui";
-import { FlatList } from "react-native";
+import { RefreshControl, FlatList } from "react-native-gesture-handler";
 
-export default function ListSearch({ renderItem, getSearch, getList, empty, spacing = true, id = 'id' }) {
-    const [termo, settermo] = useState();
+export default function ListSearch({ renderItem, getSearch, getList, empty, spacing = true, top = false, id = 'id' }) {
+    const [termo, settermo] = useState('');
 
     const { data: result, isLoading: loadingSearch, refetch: handleSearch } = useQuery({
         queryKey: [`search ${id}`],
@@ -11,9 +11,9 @@ export default function ListSearch({ renderItem, getSearch, getList, empty, spac
             const res = await getSearch(termo); return res.data;
         },
         enabled: false,
-        //cacheTime: 0,
+        cacheTime: 0,
     });
-    const { data: data, isLoading, fetchNextPage: nextProduct } = useInfiniteQuery({
+    const { data: data, isLoading, fetchNextPage: nextProduct, refetch } = useInfiniteQuery({
         queryKey: [`infinite ${id}`],
         queryFn: async ({ pageParam = 1 }) => {
             const res = await getList(pageParam);
@@ -22,20 +22,21 @@ export default function ListSearch({ renderItem, getSearch, getList, empty, spac
         getNextPageParam: (lastPage) => {
             return lastPage.nextPage ?? false;
         },
-       // cacheTime: 0,
+        cacheTime: 0,
     });
-    const listData = result || data?.pages.flat();
+    const listData = termo?.length > 1 ? result : data?.pages.flat()
     return (
         <Column >
-            {isLoading || loadingSearch ? <Loader size={32} color={colors.color.primary} /> :
+            {isLoading || loadingSearch ? <Column mv={50}><Loader size={32} color={colors.color.primary} /></Column> :
                 <FlatList
                     data={listData}
                     keyExtractor={(index) => index}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
-                    style={{  paddingHorizontal: 26, }}
+                    refreshControl={<RefreshControl refreshing={isLoading} onRefresh={() => { refetch() }} />}
+                    style={{  paddingHorizontal: 26, paddingVertical: top ? 26 : 0 }}
                     ListFooterComponent={<Column>
-                        {listData.length >= 20 && <Button onPress={() => { nextProduct() }} title="Carregar mais" />}
+                        {listData?.length >= 20 && <Button onPress={() => { nextProduct() }} title="Carregar mais" />}
                         {spacing && 
                         <Column style={{height: 200, }} />
                         }

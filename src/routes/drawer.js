@@ -2,18 +2,12 @@ import React, { useEffect, useState } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { View, Pressable } from "react-native";
-import { Column, Row, Title, Label, Image } from "@/ui";
+import { Column, Row, Title, Label, Image, colors } from "@/ui";
 
-import { LogOut, ChevronRight, X, CircleUserRound, Brain, ChartPie, GitCompareArrows, LayoutGrid, Truck, Users, Store, House } from "lucide-react-native";
+import { LogOut, ChevronRight, X, CircleUserRound, Brain, ChartPie, GitCompareArrows, LayoutGrid, Truck, Users, Store, House, LayoutList } from "lucide-react-native";
 import { useUser } from "@/context/user";
-import { getStore } from "@/hooks/store";
-
-import StoreSelectScreen from "../screens/stack/store/select";
-import StackMenu from "@/ui/Header";
-
 
 import { Stacks } from "./stack";
-import { useIsFocused } from "@react-navigation/native";
 
 const Drawers = createDrawerNavigator();
 
@@ -21,34 +15,13 @@ export function Drawer() {
   return (
     <Drawers.Navigator initialRouteName="Stacks" screenOptions={{ headerShown: false, drawerType: "slide", swipeEdgeWidth: 100 }} drawerContent={(props ) => <CustomDrawerContent {...props} />} >
       <Drawers.Screen name="Stacks" component={Stacks} />
-      <Drawers.Screen name="StoreSelect" component={StoreSelectScreen} options={{ header: ({ navigation,  }) => (<StackMenu navigation={navigation} name="Selecionar loja" />), headerShown: true,  }} />
     </Drawers.Navigator>
   );
 }
 
 function CustomDrawerContent({ navigation }) {
   const { user, logout } = useUser();
-  const [loading, setloading] = useState(true);
-  const [store, setstore] = useState();
-
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    const fetchStore = async () => {
-      setloading(true)
-      try {
-        const res = await getStore();
-        setstore(res);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setloading(false);
-      }
-    }
-    if (isFocused) {
-      fetchStore();
-    }
-  }, [isFocused]);
+ 
 
   const account = [
     {
@@ -75,6 +48,11 @@ function CustomDrawerContent({ navigation }) {
       icon: <LayoutGrid color="#484848" size={20} />,
       label: "Produtos",
       onPress: () => navigation.navigate("Stacks", { screen: "ProductList" })
+    },
+    {
+      icon: <LayoutList color="#484848" size={20} />,
+      label: "Categorias",
+      onPress: () => navigation.navigate("Stacks", { screen: "CategoryList" })
     },
     {
       icon: <GitCompareArrows color="#484848" size={20} />,
@@ -111,19 +89,12 @@ function CustomDrawerContent({ navigation }) {
           <X size={24} color="#00000050" />
         </Pressable>
       </Row>
-      
-      <Pressable style={{ marginVertical: 20, borderWidth: 1, borderColor: '#d1d1d1', paddingVertical: 12, paddingHorizontal: 12, borderRadius: 6 }} onPress={() => navigation.navigate("StoreSelect")}>
-        {loading ? <Label>Carregando...</Label> :
-        <Row align="center" justify='space-between'>
-          <Column gv={4}>
-            <Title size={18}>{store?.nome}</Title>
-            <Label size={12}>ALTERAR</Label>
-          </Column>
-          <ChevronRight color="#484848" size={20} />
-        </Row>}
-      </Pressable>
 
-      <Column style={{ paddingVertical: 16 }} mb={50}>
+      <Column mv={12} mh={10}>
+        <Title color={colors.color.primary}>ProStock</Title>
+      </Column>
+  
+      <Column style={{ paddingVertical: 16 }} mb={50} mt={10}>
         {account.map((item, index) => (
           <Pressable key={index} style={{ paddingVertical: 14, paddingHorizontal: 12, borderRadius: 6, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} onPress={item.onPress}>
             <Row align="center" >

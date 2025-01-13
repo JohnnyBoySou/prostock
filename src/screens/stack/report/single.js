@@ -1,5 +1,5 @@
 import { Main, Row, Loader, colors, Title, Column, Label, useQuery, ScrollVertical } from "@/ui";
-import { ChevronRight, LayoutGrid, Truck, Users, PenLine} from "lucide-react-native";
+import { ChevronRight, LayoutGrid, Truck, Users, } from "lucide-react-native";
 import { FlatList } from 'react-native';
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";

@@ -47,7 +47,6 @@ export async function fetchWithAuth<T = unknown>(
   try {
     const token = await getToken();
     const store = await getStore();
-    console.log(store.id)
     if (!token) {
       throw new Error("Authentication token not found.");
     }

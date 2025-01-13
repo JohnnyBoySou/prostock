@@ -23,6 +23,15 @@ export const listMove = async (page: number = 1) => {
         throw new Error(error.message);
     }
 }
+export const searchMove = async (name: string) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/movimentacao" + "?busca=" + name, { method: "GET" });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 
 export const addMove = async (params: Move) => {
     try {

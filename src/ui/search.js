@@ -56,7 +56,7 @@ const Search = forwardRef(({ focused = false, defaultValue, loading = false, val
         placeholder={placeholder}
         placeholderTextColor='#808080'
       />
-      <Pressable onPress={onSearch} style={{ position: "absolute", zIndex: 9, backgroundColor: focus ? '#019866' : '#f7F7f7', borderRadius: 8, right: 4, bottom: 4, zIndex: 99, width: 60, height: 56, justifyContent: "center", alignItems: "center" }}>
+      <Pressable onPress={onSearch} style={{ position: "absolute", zIndex: 9, backgroundColor: focus ? '#019866' : '#f7F7f7', borderRadius: 6, right: 4, bottom: 4, zIndex: 99, width: 60, height: 56, justifyContent: "center", alignItems: "center" }}>
         {loading ? <Loader size={24} color='#019866' /> : <Searc size={24} color={focus ? '#fff' : '#7B7B7B'} />}
       </Pressable>
     </Column>

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Medida, Status, Label, Title, Row, colors } from "@/ui";
+import { Main, Button, Message, Column, Input, ScrollVertical, ListSearch, Tabs, Medida, Status, Label, Title, Row, colors } from "@/ui";
 
-import { listCategory } from "@/api/category";
+import { listCategory, searchCategory } from "@/api/category";
 import { Pressable } from "react-native";
 import { Check } from 'lucide-react-native';
 import { addProduct } from "@/api/product";
@@ -60,9 +60,9 @@ export default function ProductAddScreen({ navigation }) {
                 categorias: selectCategory
             }
             const res = await addProduct(params)
-            setsuccess('Produto cadastrado com sucesso');
+            setsuccess(res.message);
             setTimeout(() => {
-                navigation.navigate('ProductSuccess')
+                navigation.navigate('ProductList')
             }, 1000);
         } catch (error) {
             seterror(error.message);
@@ -177,9 +177,7 @@ const About = React.memo(({ settab, aboutValues, setaboutValues, values, setmedi
 
 const Categories = React.memo(({ settab, setselectCategory, selectCategory, category }) => {
 
-    const navigation = useNavigation();
     const [error, setError] = useState("");
-
     const handleNext = async () => {
         if (categoryArray.length === 0) {
             setError('Selecione ao menos uma categoria');
@@ -190,7 +188,6 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
             settab("Estoque");
         }
     };
-
     const [categoryArray, setCategoryArray] = useState(selectCategory ? selectCategory : []);
     const toggleCategory = (categoryId) => {
         setCategoryArray((prev) => {
@@ -202,8 +199,8 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
         });
     };
 
-    const Item = ({ category }) => {
-        const { nome, status, id, } = category;
+    const Card = ({ item }) => {
+        const { nome, status, id, } = item;
         return (
             <Pressable onPress={() => toggleCategory(id)} style={{
                 backgroundColor: "#fff",
@@ -211,6 +208,7 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
                 borderWidth: 2,
                 paddingVertical: 12, paddingHorizontal: 12,
                 borderRadius: 6,
+                marginVertical: 6,
             }}>
                 <Row justify='space-between'>
                     <Title size={18} fontFamily='Font_Book'>{nome}</Title>
@@ -223,21 +221,15 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
     }
 
     return (
-        <Column mh={26} gv={26}>
-            <Column gv={12}>
-                <Label>Resultados</Label>
-                {category && category?.map((item, index) => (
-                    <Item key={index} category={item} />
-                ))}
-                {category?.length === 0 &&
-                    <CategoryEmpty />
-                }
+        <Column gv={26}>
+            <ListSearch id="add product" spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchCategory} getList={listCategory} empty={<CategoryEmpty />} />
+            <Column mh={26} gv={26}>
+                <Message error={error} />
+                <Button
+                    label="Próximo"
+                    onPress={handleNext}
+                />
             </Column>
-            <Message error={error} />
-            <Button
-                label="Próximo"
-                onPress={handleNext}
-            />
         </Column>
     )
 })
