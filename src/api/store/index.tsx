@@ -23,6 +23,16 @@ export const listStore = async (page: number = 1) => {
         throw new Error(error.message);
     }
 }
+export const searchStore = async (name: string) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/loja" + "?busca=" + name, {
+            method: "GET", 
+         });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 export const getCep = async (cep:string) =>{
     try {
         const res = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);

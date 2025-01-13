@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Main, Button, Message, Row, Title, Column, colors, TextArea, Loader, Label, useQuery, Tipo, ScrollVertical, Tabs, Status, fields, validations, Form } from "@/ui";
-import { FlatList, Pressable, } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Main, Button, Message, Row, Title, ListSearch, Column, colors, TextArea, Loader, Label, useQuery, Tipo, ScrollVertical, Tabs, Form } from "@/ui";
+import { Pressable, } from "react-native";
 import { Check, } from "lucide-react-native";
 
 import { editMove, showMove } from "@/api/move";
@@ -87,30 +87,18 @@ export default function MoveEditScreen({ navigation, route }) {
         }
     }
 
-    const { data: suppliers, isLoading: loadingSupplier } = useQuery({
-        queryKey: ["supplier"],
-        queryFn: async () => {
-            const res = await listSupplier(); return res.data;
-        }
-    });
-    const { data: products, isLoading: loadingProduct } = useQuery({
-        queryKey: ["product"],
-        queryFn: async () => {
-            const res = await listProduct(); return res.data;
-        }
-    });
 
     return (<Main>
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
         </Column>
-        {loadingMove && loadingSupplier && loadingProduct ? <Column style={{ flex: 1, }} justify="center" align='center'>
+        {loadingMove  ? <Column style={{ flex: 1, }} justify="center" align='center'>
             <Loader size={32} color={colors.color.primary} /></Column> :
             <ScrollVertical>
                 {!loadingMove && <>
-                    {tab === "Produto" && <Product setproductId={setproductId} productId={productId} data={products} settipo={settipo} tipo={tipo} settab={settab} value={productValues} setvalue={setProductValues} />}
+                    {tab === "Produto" && <Product setproductId={setproductId} productId={productId} settipo={settipo} tipo={tipo} settab={settab} value={productValues} setvalue={setProductValues} />}
                 </>}
-                {tab === "Fornecedor" && <Supplier data={suppliers} setsupplierId={setsupplierId} supplierId={supplierId} settab={settab} value={supplierValues} setvalue={setSupplierValues} />}
+                {tab === "Fornecedor" && <Supplier setsupplierId={setsupplierId} supplierId={supplierId} settab={settab} value={supplierValues} setvalue={setSupplierValues} />}
                 {tab === "Observação" && <Observation isLoading={isLoading} value={observation} setvalue={setobservation} handleCreate={handleCreate} />}
                 <Column mh={26} mv={26}>
                     <Message error={error} success={success} />
@@ -119,9 +107,9 @@ export default function MoveEditScreen({ navigation, route }) {
     </Main>)
 }
 
-const Product = ({ productId, setproductId, data, settab, setvalue, value, settipo, tipo }) => {
-   
-    if(!value) return null;
+const Product = ({ productId, setproductId,settab, setvalue, value, settipo, tipo }) => {
+
+    if (!value) return null;
     const fieldKeys = [
         'quantidade',
         'preco',
@@ -152,16 +140,7 @@ const Product = ({ productId, setproductId, data, settab, setvalue, value, setti
     }
     return (
         <Column>
-            <FlatList
-                data={productId ? [data.find(item => item?.id === productId)] : data}
-                ListHeaderComponent={<Column mb={12}>
-                    <Label>Produto</Label>
-                </Column>}
-                style={{ marginHorizontal: 26, }}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => <Card item={item} />}
-            />
+            <ListSearch spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
             <Column mh={26} mv={16}>
                 <Tipo setvalue={settipo} value={tipo} />
             </Column>
@@ -172,7 +151,7 @@ const Product = ({ productId, setproductId, data, settab, setvalue, value, setti
         </Column>
     )
 }
-const Supplier = React.memo(({ supplierId, setsupplierId, data, settab, setvalue, value, }) => {
+const Supplier = React.memo(({ supplierId, setsupplierId,  settab, setvalue, value, }) => {
     const fieldKeys = [
         'lote',
         'validade',
@@ -202,16 +181,7 @@ const Supplier = React.memo(({ supplierId, setsupplierId, data, settab, setvalue
     }
     return (
         <Column>
-            <FlatList
-                data={supplierId ? [data.find(item => item.id === supplierId)] : data}
-                ListHeaderComponent={<Column mb={12}>
-                    <Label>Fornecedores</Label>
-                </Column>}
-                style={{ marginHorizontal: 26, }}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => <Card item={item} />}
-            />
+            <ListSearch spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchSupplier} getList={listSupplier} empty={<SupplierEmpty />} />
             <Column mv={8} />
             <Form fieldKeys={fieldKeys} initialValues={value} onSubmit={(value) => {
                 setvalue(value);

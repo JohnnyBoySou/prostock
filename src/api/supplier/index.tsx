@@ -28,6 +28,16 @@ export const listSupplier = async (page: number = 1) => {
     }
 }
 
+export const searchSupplier = async (name: string) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/fornecedor" + "?busca=" + name, {
+            method: "GET", 
+         });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 export const addSupplier = async (params: Supplier) => {
     try {
         const res = await fetchWithAuth("/usuarios/fornecedor", {

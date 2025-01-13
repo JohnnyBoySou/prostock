@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Main, Button, Message, Row, Title, Column, colors, TextArea, Loader, Label, useQuery, Tipo, ScrollVertical, Tabs, Status, fields, validations, Form } from "@/ui";
+import React, { useState } from "react";
+import { Main, Button, Message, Row, Search, Title, Column, colors, TextArea, Loader, Label, ListSearch, useInfiniteQuery, useQuery, Tipo, ScrollVertical, Tabs, Status, fields, validations, Form } from "@/ui";
 import { FlatList, Pressable, } from "react-native";
 import { Check, } from "lucide-react-native";
 
 import { addMove } from "@/api/move";
-import { listSupplier } from '@/api/supplier';
-import { listProduct } from '@/api/product';
+import { listSupplier, searchSupplier } from '@/api/supplier';
+import { listProduct, searchProduct } from '@/api/product';
 import { ProductEmpty } from "@/ui/Emptys/product";
 import { SupplierEmpty } from '@/ui/Emptys/supplier';
 
@@ -35,17 +35,16 @@ export default function MoveAddScreen({ navigation }) {
                 const [day, month, year] = date.split('/');
                 return `${year}-${month}-${day}`;
             };
-
             const params = {
                 tipo: tipo,
                 quantidade: productValues.quantidade,
                 preco: productValues.preco,
                 produto_id: productId,
-                
+
                 fornecedor_id: supplierId,
                 lote: supplierValues.lote,
                 validade: formatDate(supplierValues.validade),
-                
+
                 observacoes: observation,
             }
             const res = await addMove(params)
@@ -60,42 +59,28 @@ export default function MoveAddScreen({ navigation }) {
         }
     }
 
-    const { data: suppliers, isLoading: loadingSupplier } = useQuery({
-        queryKey: ["supplier"],
-        queryFn: async () => {
-            const res = await listSupplier(); return res.data;
-        }
-    });
-    const { data: products, isLoading: loadingProduct } = useQuery({
-        queryKey: ["product"],
-        queryFn: async () => {
-            const res = await listProduct(); return res.data;
-        }
-    });
-
     return (<Main>
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
         </Column>
-        {loadingProduct || loadingSupplier ? <Column style={{ flex: 1, }} justify="center" align='center'>
-            <Loader size={32} color={colors.color.primary} /></Column> :
-            <ScrollVertical>
-                {tab === "Produto" && <Product setproductId={setproductId} productId={productId} data={products} settipo={settipo} tipo={tipo} settab={settab} value={productValues} setvalue={setProductValues} />}
-                {tab === "Fornecedor" && <Supplier data={suppliers} setsupplierId={setsupplierId} supplierId={supplierId} settab={settab} value={supplierValues} setvalue={setSupplierValues} />}
-                {tab === "Observação" && <Observation isLoading={isLoading} value={observation} setvalue={setobservation} handleCreate={handleCreate} />}
-                <Column mh={26} mv={26}>
-                    <Message error={error} success={success} />
-                </Column>
-            </ScrollVertical>}
+        <ScrollVertical>
+            {tab === "Produto" && <Product setproductId={setproductId} productId={productId} settipo={settipo} tipo={tipo} settab={settab} value={productValues} setvalue={setProductValues} />}
+            {tab === "Fornecedor" && <Supplier setsupplierId={setsupplierId} supplierId={supplierId} settab={settab} value={supplierValues} setvalue={setSupplierValues} />}
+            {tab === "Observação" && <Observation isLoading={isLoading} value={observation} setvalue={setobservation} handleCreate={handleCreate} />}
+            <Column mh={26} mv={26}>
+                <Message error={error} success={success} />
+            </Column>
+        </ScrollVertical>
     </Main>)
 }
 
-const Product = ({ productId, setproductId, data, settab, setvalue, value, settipo, tipo }) => {
+const Product = ({ productId, setproductId, settab, setvalue, value, settipo, tipo }) => {
     const fieldKeys = [
         'quantidade',
         'preco',
     ];
     const Card = ({ item }) => {
+        if (!item) return null;
         const { id, status, nome, unidade } = item;
         return (
             <Pressable onPress={() => { productId ? setproductId() : setproductId(id) }} style={{
@@ -108,7 +93,7 @@ const Product = ({ productId, setproductId, data, settab, setvalue, value, setti
             }}>
                 <Row justify="space-between" style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
                     <Column gv={6}>
-                        <Title size={20} fontFamily='Font_Medium'>{nome.length > 16 ? nome.slice(0, 16) + '...' : nome}</Title>
+                        <Title size={20} fontFamily='Font_Medium'>{nome?.length > 16 ? nome?.slice(0, 16) + '...' : nome}</Title>
                         <Label>{unidade} • {status}</Label>
                     </Column>
                     <Column style={{ width: 36, height: 36, borderColor: productId == item?.id ? colors.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: productId == item?.id ? colors.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>
@@ -120,17 +105,7 @@ const Product = ({ productId, setproductId, data, settab, setvalue, value, setti
     }
     return (
         <Column>
-            <FlatList
-                data={productId ? [data.find(item => item.id === productId)] : data}
-                ListHeaderComponent={<Column mb={12}>
-                    <Label>Produto</Label>
-                </Column>}
-                style={{ marginHorizontal: 26, }}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => <Card item={item} />}
-                ListEmptyComponent={<ProductEmpty />}
-            />
+            <ListSearch spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
             <Column mh={26} mv={16}>
                 <Tipo setvalue={settipo} value={tipo} />
             </Column>
@@ -141,13 +116,14 @@ const Product = ({ productId, setproductId, data, settab, setvalue, value, setti
         </Column>
     )
 }
-const Supplier = React.memo(({ supplierId, setsupplierId, data, settab, setvalue, value, }) => {
+
+const Supplier = React.memo(({ supplierId, setsupplierId, settab, setvalue, value, }) => {
     const fieldKeys = [
         'lote',
         'validade',
     ];
     const Card = ({ item }) => {
-        const { id, status, cep, cidade, cnpj, email, endereco, estado, telefone, cpf_responsavel, email_responsavel, id_loja, nome_fantasia, nome_responsavel, telefone_responsavel } = item;
+        const { id, status, cidade, nome_fantasia } = item;
         return (
             <Pressable onPress={() => { supplierId ? setsupplierId() : setsupplierId(id) }} style={{
                 backgroundColor: "#fff",
@@ -159,7 +135,7 @@ const Supplier = React.memo(({ supplierId, setsupplierId, data, settab, setvalue
             }}>
                 <Row justify="space-between" style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
                     <Column gv={6}>
-                        <Title size={20} fontFamily='Font_Medium'>{nome_fantasia.length > 16 ? nome_fantasia.slice(0, 16) + '...' : nome_fantasia}</Title>
+                        <Title size={20} fontFamily='Font_Medium'>{nome_fantasia?.length > 16 ? nome_fantasia?.slice(0, 16) + '...' : nome_fantasia}</Title>
                         <Label>{cidade} • {status} </Label>
                     </Column>
                     <Column style={{ width: 36, height: 36, borderColor: supplierId == item?.id ? colors.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: supplierId == item?.id ? colors.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>
@@ -171,17 +147,7 @@ const Supplier = React.memo(({ supplierId, setsupplierId, data, settab, setvalue
     }
     return (
         <Column>
-            <FlatList
-                data={supplierId ? [data.find(item => item.id === supplierId)] : data}
-                ListHeaderComponent={<Column mb={12}>
-                    <Label>Fornecedores</Label>
-                </Column>}
-                style={{ marginHorizontal: 26, }}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => <Card item={item} />}
-                ListEmptyComponent={<SupplierEmpty />}
-            />
+            <ListSearch spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchSupplier} getList={listSupplier} empty={<SupplierEmpty />} />
             <Column mv={8} />
             <Form fieldKeys={fieldKeys} initialValues={value} onSubmit={(value) => {
                 setvalue(value);
@@ -189,8 +155,6 @@ const Supplier = React.memo(({ supplierId, setsupplierId, data, settab, setvalue
             }} />
         </Column>
     )
-
-
 })
 
 const Observation = React.memo(({ setvalue, value, isLoading, handleCreate }) => {
@@ -209,7 +173,7 @@ const Observation = React.memo(({ setvalue, value, isLoading, handleCreate }) =>
                 placeholder="Ex.: Produto com defeito"
                 value={value}
                 setValue={setvalue}
-                focused={true} 
+                focused={true}
             />
             <Message success={success} error={error} />
             <Button

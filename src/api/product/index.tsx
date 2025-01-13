@@ -1,7 +1,7 @@
 import { fetchWithAuth, fetchWithAuthOtherStore } from "../../hooks/api";
 
 interface Product extends Record<string, unknown> {
-    nome: string; 
+    nome: string;
     descricao: string;
     unidade: string;
     estoque_minimo: string;
@@ -18,6 +18,15 @@ export const listProduct = async (page: number = 1) => {
         throw new Error(error.message);
     }
 }
+export const searchProduct = async (name: string) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/produto" + "?busca=" + name, { method: "GET" });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 
 export const addProduct = async (params: Product) => {
     try {
@@ -58,9 +67,9 @@ export const deleteProduct = async (id: number) => {
 
 
 
-export const listProductStore = async (id: number, page: number = 1, ) => {
+export const listProductStore = async (id: number, page: number = 1,) => {
     try {
-        const res = await fetchWithAuthOtherStore("/usuarios/produto" + "?page=" + page, { method: "GET", headers: { "lojaid": id.toString()} },);
+        const res = await fetchWithAuthOtherStore("/usuarios/produto" + "?page=" + page, { method: "GET", headers: { "lojaid": id.toString() } },);
         return res;
     } catch (error) {
         throw new Error(error.message);

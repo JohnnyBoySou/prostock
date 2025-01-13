@@ -1,10 +1,8 @@
 import { fetchWithAuth } from "../../hooks/api";
-
 interface Category extends Record<string, unknown> {
     nome: string;
     status: string;
 }
-
 export const listCategory = async (page: number = 1) => {
     try {
         const res = await fetchWithAuth("/usuarios/categoria"+"?page="+page, { method: "GET"});
@@ -13,7 +11,14 @@ export const listCategory = async (page: number = 1) => {
         throw new Error(error.message);
     }
 }
-
+export const searchCategory = async (name: string) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/categoria" + "?busca=" + name, { method: "GET" });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 export const addCategory = async ( params: Category) => {
     try {
         const res = await fetchWithAuth("/usuarios/categoria", { method: "POST", data: params });
@@ -22,7 +27,6 @@ export const addCategory = async ( params: Category) => {
         throw new Error(error.message);
     }
 };
-
 export const editCategory = async (id: number, params: Category) => {
     try {
         const res = await fetchWithAuth("/usuarios/categoria/"+id, { method: "PUT", data: params });
@@ -31,7 +35,6 @@ export const editCategory = async (id: number, params: Category) => {
         throw new Error(error.message);
     }
 }
-
 export const showCategory = async (id: number, ) => {
     try {
         const res = await fetchWithAuth("/usuarios/categoria/"+id, { method: "GET",  });
@@ -40,7 +43,6 @@ export const showCategory = async (id: number, ) => {
         throw new Error(error.message);
     }
 }
-
 export const deleteCategory = async (id: number, ) => {
     try {
         const res = await fetchWithAuth("/usuarios/categoria/"+id, { method: "DELETE", data: {}  });

@@ -21,7 +21,14 @@ export const listUser = async (page: number = 1) => {
         throw new Error(error.message);
     }
 }
-
+export const searchUser = async (name: string) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/categoria" + "?busca=" + name, { method: "GET" });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 export const addUser = async (params: User) => {
     try {
         const res = await fetchWithAuth("/usuarios/usuario", {

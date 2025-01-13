@@ -5,6 +5,7 @@ import Avatar from "./avatar";
 import Skeleton from "./skeleton";
 import Switch from "./switch";
 import Input from "./input";
+import Search from './search'
 import colors from "./colors";
 import Message from "./message";
 import Sheet from './sheet';
@@ -24,7 +25,7 @@ import validations from "./validation";
 import TextArea from "./textarea";
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-
+import ListSearch from "./ListSearch";
 export {
     useQuery, useInfiniteQuery,
     Column, Row, Main, ScrollHorizontal, ScrollVertical,
@@ -36,6 +37,6 @@ export {
     Input, Message,
     Sheet, Select, Loader,
     Image, Medida, Users, Tipo,
-    Status, fields, validations, Form, TextArea,
+    Status, fields, validations, Form, TextArea, Search, ListSearch
 }
     

@@ -1,7 +1,7 @@
 
 import { Row, colors, Title, Column, Label } from "@/ui";
 import { useNavigation } from "@react-navigation/native";
-import { CircleDashed, MessageCircleDashed, SquareDashed, Plus, ArrowDownUp, Grid, LayoutGrid } from "lucide-react-native";
+import { Plus, LayoutGrid } from "lucide-react-native";
 import { Pressable } from "react-native";
 export const ProductEmpty = ({ }) => {
     const navigation = useNavigation()
@@ -10,7 +10,7 @@ export const ProductEmpty = ({ }) => {
             <Row gh={8} mv={12} justify='center'>
                 <LayoutGrid size={52} color='#FFB238' />
             </Row>
-            <Title align='center' size={22} fontFamily="Font_Medium">Nenhuma produto encontrado...</Title>
+            <Title align='center' size={22} fontFamily="Font_Medium">Nenhum produto encontrado...</Title>
             <Pressable style={{ backgroundColor: colors.color.blue, borderRadius: 8, }} onPress={() => { navigation.navigate('ProductAdd') }} >
                 <Row justify="space-between" ph={14} align='center' gh={8} pv={14}>
                     <Label size={18} color='#fff'>Criar produto</Label>
