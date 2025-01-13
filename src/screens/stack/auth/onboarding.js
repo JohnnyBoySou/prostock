@@ -51,7 +51,7 @@ export default function OnboardingScreen() {
             </Column>
 
             <Column style={{ position: 'absolute', bottom: 0, top: 0, zIndex: 0, opacity: .8, }} >
-                <Image src={require('@/imgs/blur.png')} w={SCREEN_WIDTH + 100} h={SCREEN_HEIGHT} />
+                <Image src={require('@/imgs/blur.png')} w={SCREEN_WIDTH + 100} h={SCREEN_HEIGHT + 100} />
             </Column>
         </Main>
     )

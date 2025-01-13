@@ -37,7 +37,6 @@ import ReportSingleScreen from "@/screens/stack/report/single";
 import ReportProductScreen from '@/screens/stack/report/product';
 
 import AIScreen from "@/screens/stack/ai";
-import OCRTesseractScreen from "@/screens/stack/ai/tesseract";
 import OCRScreen from "@/screens/stack/ai/google";
 
 import ProfileScreen from "@/screens/stack/profile";
@@ -47,15 +46,14 @@ export function Stacks() {
   const { role } = useUser();
 
   return (
-    <Stack.Navigator initialRouteName="AI" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
 
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Perfil" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} /> 
 
       <Stack.Group>
-        <Stack.Screen name="AI" component={AIScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="AI" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
-        <Stack.Screen name="OCR" component={OCRScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="OCR" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
-        <Stack.Screen name="OCRTesseract" component={OCRTesseractScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="OCR Tesseract" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+        <Stack.Screen name="AI" component={AIScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Inteligência Artificial" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+        <Stack.Screen name="OCR" component={OCRScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Inteligência Artificial" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
       </Stack.Group>
 
       <Stack.Group>

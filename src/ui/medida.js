@@ -1,5 +1,7 @@
-import { ScrollHorizontal, Column, Label, Title, Button, colors } from '@/ui'
+import colors  from './colors'
 import { Pressable } from 'react-native'
+import { Column, ScrollHorizontal, } from './layout'
+import { Label, Title } from './text'
 
 export default function Medida({ setvalue, value, values }) {
     return (

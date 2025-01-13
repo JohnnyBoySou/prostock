@@ -111,6 +111,7 @@ function CustomDrawerContent({ navigation }) {
           <X size={24} color="#00000050" />
         </Pressable>
       </Row>
+      
       <Pressable style={{ marginVertical: 20, borderWidth: 1, borderColor: '#d1d1d1', paddingVertical: 12, paddingHorizontal: 12, borderRadius: 6 }} onPress={() => navigation.navigate("StoreSelect")}>
         {loading ? <Label>Carregando...</Label> :
         <Row align="center" justify='space-between'>

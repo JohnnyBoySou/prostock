@@ -1,12 +1,12 @@
-import React, { memo, useState, useRef, useEffect, useCallback } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Medida, Status, Label, Title, Row, colors, Loader } from "@/ui";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Medida, Status, Label, Title, Row, colors } from "@/ui";
 
 import { listCategory } from "@/api/category";
 import { Pressable } from "react-native";
-import { Check, Plus, SquareDashed, CircleDashed, MessageCircleDashed } from 'lucide-react-native';
+import { Check } from 'lucide-react-native';
 import { addProduct } from "@/api/product";
 import { useNavigation } from "@react-navigation/native";
-import { CategoryEmpty } from './../../../ui/Emptys/category';
+import { CategoryEmpty } from '@/ui/Emptys/category';
 
 export default function ProductAddScreen({ navigation }) {
     const [tab, settab] = useState("Sobre");

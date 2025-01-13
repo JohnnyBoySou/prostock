@@ -1,15 +1,21 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'; 
+import { View,  StyleSheet, Pressable,  } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 
+import { Main, Column, Label, Title, Button, Image, SCREEN_WIDTH, SCREEN_HEIGHT, colors, Loader, TextArea } from '@/ui';
+import { Check, } from 'lucide-react-native';
+import * as Clipboard from 'expo-clipboard';
 
 export default function OCRScreen() {
   const [permission, requestPermission] = useCameraPermissions();
- 
+  const [loading, setloading] = useState(false);
   const [image, setImage] = useState(null);
-  const [text, setText] = useState(null);
+  const [text, setText] = useState('');
   const cameraRef = useRef(null);
 
+  const handleCopy = () => {
+    Clipboard.setStringAsync(text);
+  }
 
   const takePicture = async () => {
     if (cameraRef.current) {
@@ -20,12 +26,12 @@ export default function OCRScreen() {
   };
 
   const recognizeText = async (imageUri) => {
-    const apiKey = 'SUA_CHAVE_API_AQUI';
+    const apiKey = 'AIzaSyAtcOwdHVfC_lOVc3WHtWkpYkBmnXMGnnk';
     const imageBase64 = await convertToBase64(imageUri);
-
-    const response = await fetch(
-      `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`,
-      {
+    setloading(true);
+    try {
+      const response = await fetch(
+        `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -37,11 +43,16 @@ export default function OCRScreen() {
           ],
         }),
       }
-    );
+      );
 
-    const result = await response.json();
-    const detectedText = result.responses[0]?.fullTextAnnotation?.text || 'No text found';
-    setText(detectedText);
+      const result = await response.json();
+      const detectedText = result.responses[0]?.fullTextAnnotation?.text || 'No text found';
+      setText(detectedText);
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setloading(true);
+    }
   };
 
   const convertToBase64 = async (uri) => {
@@ -54,39 +65,52 @@ export default function OCRScreen() {
     });
   };
 
-  if (!permission) {
-    return <View />;
-  }
-
-  if (!permission.granted) {
+  if (!permission?.granted) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
+      <Column style={{ flex: 1, }} justify='center' align='center'>
+        <Title >Você precisa liberar o acesso à câmera para prosseguir.</Title>
+        <Button onPress={requestPermission} label="Solicitar permissão" />
+      </Column>
     );
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      {image ? (
-        <View style={{ flex: 1 }}>
-          <Image source={{ uri: image }} style={{ flex: 1 }} />
-          <Text style={styles.textResult}>{text || 'Processing...'}</Text>
-          <TouchableOpacity onPress={() => setImage(null)} style={styles.button}>
-            <Text style={styles.buttonText}>Retake</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <CameraView style={{ flex: 1 }} ref={cameraRef} facing='back'>
-          <View style={styles.cameraOverlay}>
-            <TouchableOpacity onPress={takePicture} style={styles.button}>
-              <Text style={styles.buttonText}>Capture</Text>
-            </TouchableOpacity>
-          </View>
+    <Main >
+      {image && !text ?
+        <Column style={{ flex: 1, }} justify='center' align="center">
+          <Column mh={10} gv={16} pv={20} ph={20} style={{ backgroundColor: '#fff', borderRadius: 12, }}>
+            <Image source={{ uri: image }} />
+            <Loader color={colors.color.primary} size={32} />
+            <Column>
+              <Title size={22} fontFamily="Font_Medium">Processando dados...</Title>
+              <Label>Aguarde enquanto buscamos as informações no documento.</Label>
+            </Column>
+            <Button onPress={() => setImage(null)} label="Tirar outra foto" />
+          </Column>
+        </Column> : null}
+
+      {!text && !loading ? <Column mh={26} style={{ flex: 1, }} justify='center' align="center">
+        <CameraView style={{ width: SCREEN_WIDTH - 52, height: SCREEN_HEIGHT * .8, borderRadius: 32, }} ref={cameraRef} facing='back'>
+          <Column style={{ flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: 20,
+    alignItems: 'center', }}>
+            <Pressable onPress={takePicture} style={{ width: 64, height: 64, borderRadius: 100, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', }}>
+              <Check size={32} color={colors.color.green} />
+            </Pressable>
+          </Column>
         </CameraView>
-      )}
-    </View>
+      </Column> : null}
+
+      {text?.length > 0 ?
+        <Column gv={16} mh={26} mv={20}>
+          <TextArea value={text} />
+          <Button label='Copiar resultado' onPress={handleCopy} />
+          <Button variant='destructive' onPress={() => { setText(false); setImage(null)}} label="Tirar outra foto" />
+        </Column>
+        : null
+      }
+    </Main>
   );
 }
 
