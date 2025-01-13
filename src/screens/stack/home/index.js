@@ -149,11 +149,11 @@ const Items = ({ store }) => {
                     <Column gv={6}>
                         <Row gh={8}>
                             <Column style={{ width: 16, height: 16, backgroundColor: '#43AA8B', }} />
-                            <Label size={14} color='#43AA8B'>Saídas</Label>
+                            <Label size={14} color='#43AA8B'>Entrada</Label>
                         </Row>
                         <Row gh={8}>
                             <Column style={{ width: 16, height: 16, backgroundColor: '#FFB238', }} />
-                            <Label size={14} color='#FFB238'>Perdas</Label>
+                            <Label size={14} color='#FFB238'>Saída</Label>
                         </Row>
                         <Row gh={8}>
                             <Column style={{ width: 16, height: 16, backgroundColor: '#3590F3', }} />

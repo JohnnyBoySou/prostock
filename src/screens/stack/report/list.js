@@ -30,6 +30,7 @@ const Items = ({ data }) => {
     if(!data) return null;
     const navigation = useNavigation();
     const Card = ({ item }) => {
+        
         const { nome_loja, id, entrada, saida, entrada_saida_porcentagem, estoque_maximo, estoque_ocupado, estoque_porcentagem, status } = item;
         const porcentagem1 = parseFloat(entrada_saida_porcentagem.toString().replace(',', '.'));
         const porcentagem2 = parseFloat(estoque_porcentagem.toString().replace(',', '.'));
@@ -56,13 +57,13 @@ const Items = ({ data }) => {
                 </Row>
                 <Row ph={20} justify='space-between'>
                     <Column gv={6}>
-                        <Row gh={8}>
+                    <Row gh={8}>
                             <Column style={{ width: 16, height: 16, backgroundColor: '#43AA8B', }} />
-                            <Label size={14} color='#43AA8B'>Saídas</Label>
+                            <Label size={14} color='#43AA8B'>Entrada</Label>
                         </Row>
                         <Row gh={8}>
                             <Column style={{ width: 16, height: 16, backgroundColor: '#FFB238', }} />
-                            <Label size={14} color='#FFB238'>Perdas</Label>
+                            <Label size={14} color='#FFB238'>Saída</Label>
                         </Row>
                         <Row gh={8}>
                             <Column style={{ width: 16, height: 16, backgroundColor: '#3590F3', }} />
