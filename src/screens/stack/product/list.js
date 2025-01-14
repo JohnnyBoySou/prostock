@@ -55,6 +55,8 @@ const Product = () => {
 
 const Categories = () => {
     const Card = ({ category }) => {
+        
+        if(!category) return null;
         const navigation = useNavigation();
         const { nome, status, id, } = category;
         return (

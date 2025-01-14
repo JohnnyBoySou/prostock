@@ -17,6 +17,8 @@ export default function MoveListScreen() {
 
 const Items = () => {
     const Card = ({ item }) => {
+        
+        if(!item) return null;
         const navigation = useNavigation();
         const { id, quantidade, produto_name, validade } = item;
         const formatDate = (dateString) => {

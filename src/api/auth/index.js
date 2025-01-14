@@ -22,10 +22,6 @@ export const listUser = async () => {
     }
 }
 
-
-
-
-//NOT USABLE
 export const updateUser = async (params) => {
     try {
         const res = await fetchWithAuth("/usuarios/user", { method: "PUT", data: params});
@@ -35,7 +31,6 @@ export const updateUser = async (params) => {
     }
 };
 
-//NOT USABLE
 export const excludeUser = async (password) => {
     try {
         const res = await fetchWithAuth("/usuarios/user", { method: "DELETE", data: {password: password}});

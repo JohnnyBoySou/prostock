@@ -1,15 +1,16 @@
 import React, { memo, useState, useRef, useEffect, useCallback } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Users, Status, Label, Title, Row, colors, Loader } from "@/ui";
+import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Users, Status, Label, Title, Row, colors, ListSearch } from "@/ui";
 
-import { listStore } from "@/api/store";
+import { listStore, searchStore } from "@/api/store";
 import { Pressable } from "react-native";
 import { Check } from 'lucide-react-native';
 import { addUser } from "@/api/user";
+import { UserEmpty } from '@/ui/Emptys/user';
 
 export default function UserAddScreen({ navigation }) {
     const [tab, settab] = useState("Sobre");
-    const types = ["Sobre", "Loja", "Tipo", ];
-    const values = [ { name: "NORMAL", id: "regular" }, { name: "ADMIN DE LOJA", id: "adminloja" }, { name: "SUPER ADMIN", id: "superadmin" }, ];
+    const types = ["Sobre", "Loja", "Tipo",];
+    const values = [{ name: "NORMAL", id: "regular" }, { name: "ADMIN DE LOJA", id: "adminloja" }, { name: "SUPER ADMIN", id: "superadmin" },];
 
     const [tipo, settipo] = useState(values[0].id);
     const [status, setstatus] = useState("ativo");
@@ -24,25 +25,8 @@ export default function UserAddScreen({ navigation }) {
     });
 
     const [selectCategory, setselectCategory] = useState();
-
-    const [category, setcategory] = useState([]);
     const [isLoading, setIsLoading] = useState();
 
-    const fecthCategory = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const res = await listStore();
-            setcategory(res.data);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        fecthCategory();
-    }, [fecthCategory]);
 
     const [success, setsuccess] = useState();
     const [error, seterror] = useState();
@@ -65,7 +49,7 @@ export default function UserAddScreen({ navigation }) {
             const res = await addUser(params)
             setsuccess(res.message);
             setTimeout(() => {
-                navigation.navigate('UserList');
+                navigation.replace('UserList');
             }, 1000);
         } catch (error) {
             seterror(error.message);
@@ -81,8 +65,8 @@ export default function UserAddScreen({ navigation }) {
         </Column>
         <ScrollVertical>
             {tab === "Sobre" && <About values={values} settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
-            {tab === "Loja" && <Store category={category} settab={settab} selectCategory={selectCategory} setselectCategory={setselectCategory} handleCreate={handleCreate}/>}
-            {tab === "Tipo" && <Tipo isLoading={isLoading} tipos={values} settab={settab} setstatus={setstatus} status={status} settipo={settipo} tipo={tipo} handleCreate={handleCreate}  />}
+            {tab === "Loja" && <Store settab={settab} selectCategory={selectCategory} setselectCategory={setselectCategory} />}
+            {tab === "Tipo" && <Tipo isLoading={isLoading} tipos={values} settab={settab} setstatus={setstatus} status={status} settipo={settipo} tipo={tipo} handleCreate={handleCreate} />}
             <Column mh={26} mv={26}>
                 <Message error={error} success={success} />
             </Column>
@@ -205,13 +189,13 @@ const About = React.memo(({ settab, aboutValues, setaboutValues, }) => {
     )
 })
 
-const Store = React.memo(({setselectCategory, selectCategory, category, settab }) => {
+const Store = React.memo(({ setselectCategory, selectCategory, settab }) => {
 
     const [error, setError] = useState("");
 
     const handleNext = async () => {
         if (categoryArray.length === 0) {
-            setError('Selecione ao menos uma categoria');
+            setError('Selecione ao menos uma loja');
             return;
         }
         else {
@@ -231,8 +215,8 @@ const Store = React.memo(({setselectCategory, selectCategory, category, settab }
         });
     };
 
-    const Item = ({ category }) => {
-        const { nome, status, id, } = category;
+    const Card = ({ category }) => {
+        const { nome, status, id, endereco } = category;
         return (
             <Pressable onPress={() => toggleCategory(id)} style={{
                 backgroundColor: "#fff",
@@ -240,9 +224,13 @@ const Store = React.memo(({setselectCategory, selectCategory, category, settab }
                 borderWidth: 2,
                 paddingVertical: 12, paddingHorizontal: 12,
                 borderRadius: 6,
+                marginVertical: 6,
             }}>
                 <Row justify='space-between'>
-                    <Title size={18} fontFamily='Font_Book'>{nome}</Title>
+                    <Column gv={4}>
+                        <Title size={22}>{nome.length > 20 ? nome.slice(0,20) + '...' : nome}</Title>
+                        <Label>{endereco.length > 24 ? endereco.slice(0,24) + '...' : endereco} • {status}</Label>
+                    </Column>
                     <Column style={{ width: 36, height: 36, borderColor: categoryArray.includes(id) ? colors.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: categoryArray.includes(id) ? colors.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>
                         <Check color='#FFF' size={24} />
                     </Column>
@@ -252,18 +240,15 @@ const Store = React.memo(({setselectCategory, selectCategory, category, settab }
     }
 
     return (
-        <Column mh={26} gv={26}>
-            <Column gv={12}>
-                <Label>Resultados</Label>
-                {category && category?.map((item, index) => (
-                    <Item key={index} category={item} />
-                ))}
+        <Column  >
+            <ListSearch spacing={false} renderItem={({ item }) => <Card category={item} />} getSearch={searchStore} getList={listStore} empty={<UserEmpty />} />
+            <Column mh={26} gv={26} mv={26}>
+                <Message error={error} />
+                <Button
+                    label="Próximo"
+                    onPress={handleNext}
+                />
             </Column>
-            <Message error={error} />
-            <Button
-                label="Próximo"
-                onPress={handleNext}
-            />
         </Column>
     )
 })
@@ -274,7 +259,7 @@ const Tipo = React.memo(({ settipo, tipo, isLoading, status, setstatus, tipos, h
 
     const handleNext = async () => {
         setSuccess("");
-        setError("");  
+        setError("");
         handleCreate()
     };
 

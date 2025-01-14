@@ -24,8 +24,8 @@ export default function CategoryAddScreen({ navigation }) {
             const res = await addCategory(params)
             setsuccess('Categoria criada com sucesso!');
             setTimeout(() => {
-                navigation.navigate('ProductList');
-            }, 1500);
+                navigation.replace('CategoryList');
+            }, 1000);
            
         } catch (error) {
             seterror(error.message);
@@ -37,7 +37,7 @@ export default function CategoryAddScreen({ navigation }) {
 
     return (<Main>
         <ScrollVertical>
-            <About setstatus={setstatus} status={status} aboutValues={aboutValues} setaboutValues={setaboutValues} handleCreate={handleCreate} />
+            <About setstatus={setstatus} status={status} loading={isLoading} aboutValues={aboutValues} setaboutValues={setaboutValues} handleCreate={handleCreate} />
             <Column mh={26} mv={26}>
                 <Message error={error} success={success} />
             </Column>
@@ -45,7 +45,7 @@ export default function CategoryAddScreen({ navigation }) {
     </Main>)
 }
 
-const About = React.memo(({ aboutValues, setaboutValues, setstatus, status, handleCreate}) => {
+const About = React.memo(({ aboutValues, setaboutValues, setstatus, status, handleCreate, loading}) => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
@@ -62,7 +62,7 @@ const About = React.memo(({ aboutValues, setaboutValues, setstatus, status, hand
 
     // Validações dinâmicas
     const validations = {
-        name: (value) => !!value || "Por favor, insira o nome do produto.",
+        name: (value) => !!value || "Por favor, insira o nome da categoria.",
     };
 
     // Função para validar todos os campos
@@ -118,7 +118,8 @@ const About = React.memo(({ aboutValues, setaboutValues, setstatus, status, hand
             <Status setvalue={setstatus} value={status} />
             <Message success={success} error={error} />
             <Button
-                label="Próximo"
+                label="Criar categoria"
+                loading={loading}
                 onPress={handleNext}
             />
         </Column>

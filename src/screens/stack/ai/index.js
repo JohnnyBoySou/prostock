@@ -13,16 +13,16 @@ export default function Screen({ navigation, }) {
                     <Label align='center'>Com nossa inteligência artificial tudo fica mais fácil, siga essas recomendações para que dê tudo certo:</Label>
                     <Column gv={12} mv={12}>
                         <Row gh={12}>
-                            <Column style={{ width: 44, height: 44, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#3590F320', }}><Title size={24} style={{ lineHeight: 24, marginTop: 6, }} color='#3590F3'>1</Title></Column>
+                            <Column style={{ width: 44, height: 44, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#01986620', }}><Title size={24} style={{ lineHeight: 24, marginTop: 6, }} color='#019866'>1</Title></Column>
                             <Label style={{ width: 250, }}>Deixe o documento em uma superfície iluminada e sem sombras. </Label>
                         </Row>
                         <Row gh={12}>
-                            <Column style={{ width: 44, height: 44, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#3590F320', }}><Title size={24} style={{ lineHeight: 24, marginTop: 6, }} color='#3590F3'>2</Title></Column>
+                            <Column style={{ width: 44, height: 44, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#01986620', }}><Title size={24} style={{ lineHeight: 24, marginTop: 6, }} color='#019866'>2</Title></Column>
                             <Label style={{ width: 250, }}>Aproxime a câmera até focar no documento e deixar os dados nítidos.</Label>
                         </Row>
                         <Row gh={12}>
-                            <Column style={{ width: 44, height: 44, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#3590F320', }}><Title size={24} style={{ lineHeight: 24, marginTop: 6, }} color='#3590F3'>3</Title></Column>
-                            <Label style={{ width: 250, }}>Tire a foto de maneira nítida sem tremidos.</Label>
+                            <Column style={{ width: 44, height: 44, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#01986620', }}><Title size={24} style={{ lineHeight: 24, marginTop: 6, }} color='#019866'>3</Title></Column>
+                            <Label  style={{ width: 250, }}>Tire a foto de maneira nítida sem tremidos.</Label>
                         </Row>
                     </Column>
                     <Button onPress={() => navigation.navigate('OCR')} label='Escanear agora' />

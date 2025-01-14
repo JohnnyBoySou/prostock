@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Main, ScrollVertical, Column, Row, Title, HeadTitle, Image, Label, useQuery, colors, Loader } from '@/ui';
+import { Main, ScrollVertical, Column, Row, Title, HeadTitle, Image, Label, useQuery, colors, Loader, SCREEN_WIDTH, SCREEN_HEIGHT } from '@/ui';
 import { useUser } from '@/context/user';
 import { Pressable } from 'react-native';
-import { GitCompareArrows, Menu, PieChart as Pie, Users, ChevronRight, ScanText } from 'lucide-react-native';
+import { GitCompareArrows, Menu, PieChart as Pie, Users, ChevronRight, ScanText, LayoutGrid, Truck, LayoutList } from 'lucide-react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { showReportStore } from '@/api/report';
 import { PieChart } from "react-native-gifted-charts";
 import { getStore } from "@/hooks/store";
+import { MotiView } from 'moti';
 
 export default function HomeScreen({ navigation, }) {
     const { user } = useUser();
@@ -27,6 +28,7 @@ export default function HomeScreen({ navigation, }) {
             setloading(true)
             try {
                 const res = await getStore();
+                console.log(res)
                 setstore(res);
             } catch (error) {
                 console.log(error);
@@ -42,7 +44,7 @@ export default function HomeScreen({ navigation, }) {
 
     return (
         <Main >
-            <ScrollVertical>
+            <ScrollVertical style={{ zIndex: 2, }}>
                 <Column ph={26} gv={16} pv={16}>
                     <Row justify='space-between'>
                         <Pressable onPress={() => { navigation.toggleDrawer() }} style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
@@ -51,32 +53,50 @@ export default function HomeScreen({ navigation, }) {
                         <Image src={require('@/imgs/logo_red.png')} w={64} h={64} />
                     </Row>
 
-                    <Column mb={12}>
-                        <HeadTitle>{greatings()},</HeadTitle>
-                        <HeadTitle fontFamily="Font_Bold" mt={-5}>{user?.name}</HeadTitle>
-                    </Column>
-                    <Pressable style={{ marginVertical: 4, backgroundColor: '#fff', paddingVertical: 16, paddingHorizontal: 16, borderRadius: 6 }} onPress={() => navigation.navigate("StoreSelect")}>
-                        {loading ? <Label>Carregando...</Label> :
-                            <Row align="center" justify='space-between'>
-                                <Column gv={4}>
-                                    <Title size={18}>{store?.nome}</Title>
-                                    <Label size={12}>ALTERAR LOJA</Label>
-                                </Column>
-                                <ChevronRight color="#484848" size={24} />
-                            </Row>}
-                    </Pressable>
-
-                    <Row justify='space-between' gh={12}>
-                        <Pressable onPress={() => { navigation.navigate('MoveAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FFF0D7', }}>
-                            <GitCompareArrows size={32} color='#FFB238' />
-                            <Title size={16} fontFamily="Font_Medium" color='#FFB238'>Criar {'\n'}Movimentação</Title>
-                        </Pressable>
-                        <Pressable onPress={() => { navigation.navigate('AI') }} style={{ padding: 16, flexGrow: 2, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
-                            <ScanText size={32} color='#3590F3' />
-                            <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Escanear {'\n'}Documento</Title>
-                        </Pressable>
+                    <Row justify='space-between' align='center' style={{ width: SCREEN_WIDTH - 50, }}>
+                        <Column>
+                            <FadeUp>
+                                <HeadTitle size={24}>{greatings()},</HeadTitle>
+                            </FadeUp>
+                            <FadeUp delay={500}>
+                                <HeadTitle fontFamily="Font_Bold" mt={-5}>{user?.name}</HeadTitle>
+                            </FadeUp>
+                        </Column>
+                        <FadeUp delay={500}>
+                            <Pressable onPress={() => { navigation.navigate('Profile') }} style={{ backgroundColor: colors.color.primary, width: 54, height: 54, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
+                                <Title size={24} style={{ marginTop: 4, }} color='#fff'>{user?.name.slice(0, 1)}</Title>
+                            </Pressable>
+                        </FadeUp>
                     </Row>
-                    <Items store={store} />
+
+                    <FadeUp delay={700}>
+                        <Column gv={16}>
+                            <HeadTitle size={24} mt={12}>Sua loja</HeadTitle>
+                            <Pressable style={{ backgroundColor: '#fff', paddingVertical: 16, paddingHorizontal: 16, borderRadius: 6 }} onPress={() => navigation.navigate("StoreSelect")}>
+                                {loading ? <Label>Carregando...</Label> :
+                                    <Row align="center" justify='space-between'>
+                                        <Column gv={4}>
+                                            <Title size={18}>{store?.nome}</Title>
+                                            <Label size={12}>ALTERAR LOJA</Label>
+                                        </Column>
+                                        <ChevronRight color="#484848" size={24} />
+                                    </Row>}
+                            </Pressable>
+
+                            <Row justify='space-between' gh={12}>
+                                <Pressable onPress={() => { navigation.navigate('MoveAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FFF0D7', }}>
+                                    <GitCompareArrows size={32} color='#FFB238' />
+                                    <Title size={16} fontFamily="Font_Medium" color='#FFB238'>Criar {'\n'}Movimentação</Title>
+                                </Pressable>
+                                <Pressable onPress={() => { navigation.navigate('AI') }} style={{ padding: 16, flexGrow: 2, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
+                                    <ScanText size={32} color='#3590F3' />
+                                    <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Escanear {'\n'}Documento</Title>
+                                </Pressable>
+                            </Row>
+                            <Items store={store} />
+                            <StoreCards store={store} />
+                        </Column>
+                    </FadeUp>
 
                     <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
                     <Row justify='space-between' gh={12}>
@@ -89,12 +109,69 @@ export default function HomeScreen({ navigation, }) {
                             <Title size={16} fontFamily="Font_Medium" color='#9747FF'>Acessar {'\n'}Relatórios</Title>
                         </Pressable>
                     </Row>
+                    <Row justify='space-between' gh={12}>
+                        <Pressable onPress={() => { navigation.navigate('ProductAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FBD2D5', }}>
+                            <LayoutGrid size={32} color='#EA1E2C' />
+                            <Title size={16} fontFamily="Font_Medium" color='#EA1E2C'>Adicionar {'\n'}Produto</Title>
+                        </Pressable>
+                        <Pressable onPress={() => { navigation.navigate('CategoryAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
+                            <LayoutList size={32} color='#3590F3' />
+                            <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Adicionar {'\n'}Categoria</Title>
+                        </Pressable>
+                    </Row>
                 </Column>
             </ScrollVertical>
+
+            <Column style={{ position: 'absolute', bottom: 0, top: 0, zIndex: 0, opacity: .3, }} >
+                <Image src={require('@/imgs/blur.png')} w={SCREEN_WIDTH + 100} h={SCREEN_HEIGHT + 100} />
+            </Column>
         </Main>
     )
 }
+const StoreCards = ({ store }) => {
 
+    const { data, isLoading, refetch } = useQuery({
+        queryKey: ["home store report cards"],
+        queryFn: async () => {
+            const res = await showReportStore(store.id); return res;
+        },
+        enabled: false,
+    });
+
+    useEffect(() => {
+        if (store) {
+            refetch();
+        }
+    }, [store])
+
+    if (!data) return null;
+    const { funcionarios, produtos, fornecedores } = data;
+    return (
+        <Row gh={6} pv={12} ph={12} justify="space-between" style={{ backgroundColor: '#fff', borderRadius: 12, }}>
+            <Column style={{ backgroundColor: '#43AA8B20', borderRadius: 12 }} pv={12} ph={12} gv={6}>
+                <Label size={12} color='#43AA8B'>Funcionários</Label>
+                <Row justify='space-between'>
+                    <Title size={24} style={{ lineHeight: 24 }} color='#43AA8B'>{funcionarios} </Title>
+                    <Users size={24} color="#43AA8B" />
+                </Row>
+            </Column>
+            <Column style={{ backgroundColor: '#3590F320', borderRadius: 12 }} pv={12} ph={12} gv={6}>
+                <Label size={12} color='#3590F3'>Produtos</Label>
+                <Row justify='space-between'>
+                    <Title size={24} style={{ lineHeight: 24 }} color='#3590F3'>{produtos} </Title>
+                    <LayoutGrid size={24} color="#3590F3" />
+                </Row>
+            </Column>
+            <Column style={{ backgroundColor: '#9747FF20', borderRadius: 12 }} pv={12} ph={12} gv={6}>
+                <Label size={12} color='#9747FF'>Fornecedores</Label>
+                <Row justify='space-between'>
+                    <Title size={24} style={{ lineHeight: 24 }} color='#9747FF'>{fornecedores} </Title>
+                    <Truck size={24} color="#9747FF" />
+                </Row>
+            </Column>
+        </Row>
+    )
+}
 
 const Items = ({ store }) => {
 
@@ -135,7 +212,7 @@ const Items = ({ store }) => {
             { value: entradaxsaida, color: '#FFB238' },
         ];
 
-        if(isLoading) return <Loader size={32} color={colors.color.primary} />
+        if (isLoading) return <Loader size={32} color={colors.color.primary} />
         return (
             <Pressable onPress={() => { navigation.navigate('ReportSingle', { id: id }) }} style={{ backgroundColor: '#FFF', borderRadius: 8, paddingBottom: 20, paddingTop: 20, }}>
                 <Row justify="space-between" ph={20} mb={20} >
@@ -194,5 +271,13 @@ const Items = ({ store }) => {
         <Column>
             <Card item={data} />
         </Column>
+    )
+}
+
+const FadeUp = ({ children, delay = 200 }) => {
+    return (
+        <MotiView from={{ opacity: 0, translateY: 20 }} animate={{ opacity: 1, translateY: 0 }} transition={{ type: 'timing', delay: delay }}>
+            {children}
+        </MotiView>
     )
 }

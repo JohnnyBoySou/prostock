@@ -19,6 +19,8 @@ export default function UserListScreen() {
 
 const Items = () => {
     const Card = ({ item }) => {
+        
+        if(!item) return null;
         const values = [{ name: "NORMAL", id: "regular" }, { name: "ADMIN DE LOJA", id: "adminloja" }, { name: "SUPER ADMIN", id: "superadmin" },];
         const navigation = useNavigation();
         const { nome, sobrenome, status, tipo, id, uiid, cpf, email, telefone } = item;

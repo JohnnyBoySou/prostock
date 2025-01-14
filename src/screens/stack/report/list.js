@@ -30,7 +30,7 @@ const Items = ({ data }) => {
     if(!data) return null;
     const navigation = useNavigation();
     const Card = ({ item }) => {
-        
+        if(!item) return null;
         const { nome_loja, id, entrada, saida, entrada_saida_porcentagem, estoque_maximo, estoque_ocupado, estoque_porcentagem, status } = item;
         const porcentagem1 = parseFloat(entrada_saida_porcentagem.toString().replace(',', '.'));
         const porcentagem2 = parseFloat(estoque_porcentagem.toString().replace(',', '.'));

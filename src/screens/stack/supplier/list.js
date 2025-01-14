@@ -20,6 +20,7 @@ export default function SupplierListScreen() {
 
 const Items = () => {
     const Card = ({ item }) => {
+        if(!item) return null;
         const navigation = useNavigation();
         const { id, status, cep, cidade, cnpj, email, endereco, estado, telefone, cpf_responsavel, email_responsavel, id_loja, nome_fantasia, nome_responsavel, telefone_responsavel } = item;
         return (

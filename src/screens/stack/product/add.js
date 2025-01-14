@@ -62,7 +62,7 @@ export default function ProductAddScreen({ navigation }) {
             const res = await addProduct(params)
             setsuccess(res.message);
             setTimeout(() => {
-                navigation.navigate('ProductList')
+                navigation.replace('ProductList')
             }, 1000);
         } catch (error) {
             seterror(error.message);

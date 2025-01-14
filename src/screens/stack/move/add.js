@@ -50,7 +50,7 @@ export default function MoveAddScreen({ navigation }) {
             const res = await addMove(params)
             setsuccess(res.message);
             setTimeout(() => {
-                navigation.navigate('MoveList');
+                navigation.replace('MoveList');
             }, 1000);
         } catch (error) {
             seterror(error.message);

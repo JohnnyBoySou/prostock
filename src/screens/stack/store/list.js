@@ -19,6 +19,8 @@ export default function StoreListScreen() {
 
 const Items = () => {
     const Card = ({ item }) => {
+        
+        if(!item) return null;
         const navigation = useNavigation();
         const { nome, id, status, cep, cidade, cnpj, email, endereco, estado, telefone } = item;
         return (

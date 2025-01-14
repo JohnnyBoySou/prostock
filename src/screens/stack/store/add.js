@@ -40,7 +40,7 @@ export default function StoreAddScreen({ navigation }) {
             const res = await addStore(params)
             setsuccess(res.message);
             setTimeout(() => {
-                navigation.navigate('StoreList');
+                navigation.replace('StoreList');
             }, 1000);
         } catch (error) {
             seterror(error.message);

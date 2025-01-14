@@ -23,6 +23,7 @@ export default function CategoryListScreen() {
 
 const Categories = () => {
     const Card = ({ category }) => {
+        if(!category) return null;
         const navigation = useNavigation();
         const { nome, status, id, } = category;
         return (

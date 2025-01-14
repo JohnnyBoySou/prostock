@@ -98,6 +98,8 @@ export default function StoreSelectScreen({ navigation, }) {
 }
 
 const Item = ({ store }) => {
+    
+    if(!store) return null;
     const { nome, endereco, status } = store;
     return (
         <Row pv={20} justify="space-between" ph={20} mv={12} style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
