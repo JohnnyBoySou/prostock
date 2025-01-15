@@ -2,7 +2,7 @@
   "expo": {
     "name": "ProStock",
     "slug": "ProStock",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,7 +12,8 @@
       "backgroundColor": "#019866"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {
@@ -20,13 +21,18 @@
         "backgroundColor": "#019866"
       },
       "package": "com.engd.prostock",
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      ["expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ]
     ]
   }
 }
