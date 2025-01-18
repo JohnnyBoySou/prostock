@@ -54,7 +54,7 @@ const Input = forwardRef(({ focused = false, defaultValue, value, setValue, disa
           borderRadius: 8,
           borderBottomWidth: 2,
           backgroundColor: '#fff',
-          paddingHorizontal: 22,
+          paddingHorizontal: 16,
           marginTop: 8,
           borderWidth: 2,
           borderColor: disabled || lock || select ? "#D6D6D6" : focus ? "#1E1E1E" : "#FFFfff"

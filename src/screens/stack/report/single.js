@@ -1,19 +1,24 @@
-import { Main, Row, Loader, colors, Title, Column, Label, useQuery, ScrollVertical } from "@/ui";
-import { ChevronRight, LayoutGrid, Truck, Users, } from "lucide-react-native";
-import { FlatList } from 'react-native';
+import { useState } from "react";
+import { Main, Row, Loader, colors, Title, Column, Label, useQuery, ScrollVertical, Button, Input, ListSearchStore } from "@/ui";
+import { Calendar1, ChevronRight, LayoutGrid, Search, Truck, Users, } from "lucide-react-native";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { showReportStore } from '@/api/report';
-import { listProductStore } from '@/api/product';
+import { listProductStore, listProductStoreSearch } from '@/api/product';
+import { listSupplierStore, listSupplierStoreSearch } from '@/api/supplier';
 import { BarChart } from "react-native-gifted-charts";
-import { ProductEmpty } from './../../../ui/Emptys/product';
+import { ProductEmpty } from '@/ui/Emptys/product';
 
 export default function ReportSingleScreen({ route, navigation }) {
     const id = route.params.id;
-    const { data, isLoading } = useQuery({
+    const dateNow = new Date().toLocaleDateString('pt-BR');
+    const [dateC, setdateC] = useState('01/01/2025');
+    const [dateF, setdateF] = useState(dateNow);
+
+    const { data, isLoading, refetch } = useQuery({
         queryKey: ["stores report single", id],
         queryFn: async () => {
-            const res = await showReportStore(id); return res;
+            const res = await showReportStore(id, dateC, dateF); return res;
         }
     });
     const { data: products, isLoading: loadingProducts } = useQuery({
@@ -22,7 +27,8 @@ export default function ReportSingleScreen({ route, navigation }) {
             const res = await listProductStore(id); return res.data;
         }
     });
-
+   
+    
     return (
         <Main>
             {isLoading ? <Column style={{ flex: 1, }} justify="center" align='center'>
@@ -30,10 +36,30 @@ export default function ReportSingleScreen({ route, navigation }) {
             </Column>
                 :
                 <ScrollVertical>
-                    <Column style={{ flex: 1 }} mh={26} gv={20}>
+                    <Column style={{ flex: 1 }} gv={20}>
+                        
+                        
                         <Store item={data} />
+                        <Column gv={16} mv={12} mh={26}>
+                            <Title size={24}>Filtrar por data</Title>
+                            <Row gh={8}>
+                                <Column>
+                                    <Label style={{ zIndex: 2, marginBottom: -20 }}>Começo</Label>
+                                    <Input mask='DATE' value={dateC} setValue={setdateC} />
+                                </Column>
+                                <Column>
+                                    <Label style={{ zIndex: 2, marginBottom: -20 }}>Final</Label>
+                                    <Input mask='DATE' value={dateF} setValue={setdateF} />
+                                </Column>
+                                <Pressable onPress={() => { refetch(); console.log(isLoading);  console.log('reftch')}} style={{ backgroundColor: colors.color.primary, borderRadius: 8, justifyContent: 'center', alignItems: 'center', width: 62, height: 62, marginTop: 20 }}>
+                                    <Search color='#FFF' />
+                                </Pressable>
+                            </Row>
+                        </Column>
+
                         <Charts data={data} />
-                        <Items data={products} />
+                        <Products data={products} lojaid={id} />
+                        <Suppliers lojaid={id} />
                     </Column>
                 </ScrollVertical>
             }
@@ -43,7 +69,7 @@ export default function ReportSingleScreen({ route, navigation }) {
 const Store = ({ item }) => {
     const { nome, status, cidade, estado, cnpj, funcionarios, produtos, fornecedores } = item;
     return (
-        <Column gv={6} style={{ backgroundColor: '#FFF', borderRadius: 8 }} pv={16} ph={16}>
+        <Column gv={6} style={{ backgroundColor: '#FFF', borderRadius: 8 }} pv={16} ph={16} mh={26}>
             <Title size={24}>{nome}</Title>
             <Label>{cidade}, {estado} - {status}</Label>
             <Label>CNPJ: {cnpj}</Label>
@@ -95,7 +121,7 @@ const Charts = ({ data }) => {
     ];
 
     return (
-        <Column gv={20}>
+        <Column gv={20} mh={26}>
             <Column style={{ backgroundColor: '#FFF', borderRadius: 8 }} pv={20} ph={20}>
                 <Column mb={12}>
                     <Label>Relatório</Label>
@@ -163,10 +189,10 @@ const Charts = ({ data }) => {
     )
 }
 
-const Items = ({ data }) => {
+const Products = ({ data, lojaid }) => {
     const navigation = useNavigation();
     const Card = ({ item }) => {
-        const { nome, status, unidade, id, id_loja, descricao, estoque_maximo, estoque_minimo,  } = item;
+        const { nome, status, unidade, id, id_loja, descricao, estoque_maximo, estoque_minimo, } = item;
         return (
             <Pressable onPress={() => { navigation.navigate('ReportProduct', { id: id, lojaid: id_loja }) }} >
                 <Row pv={20} justify="space-between" ph={20} mv={8} style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
@@ -181,18 +207,43 @@ const Items = ({ data }) => {
     }
     return (
         <Column>
-            <FlatList
-                data={data}
-                ListHeaderComponent={<Column mb={12}>
-                    <Label>Produtos</Label>
-                </Column>}
-                style={{ paddingVertical: 26, }}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                ListFooterComponent={<Column style={{ height: 200, }}/>}
+            <ListSearchStore
+                id={lojaid}
+                name='products'
+                spacing={false}
                 renderItem={({ item }) => <Card item={item} />}
-                ListEmptyComponent={<ProductEmpty />}
-            />
+                getSearch={listProductStore}
+                getList={listProductStoreSearch} />
+        </Column>
+    )
+}
+
+const Suppliers = ({ lojaid }) => {
+    const navigation = useNavigation();
+    const Card = ({ item }) => {
+        if(!item) return null;
+        const { id, status, cidade, id_loja, nome_fantasia, } = item;
+        return (
+            <Pressable onPress={() => { navigation.navigate('ReportProduct', { id: id, lojaid: id_loja }) }} >
+                <Row pv={20} justify="space-between" ph={20} mv={8} style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
+                    <Column gv={6}>
+                        <Title size={20} fontFamily='Font_Medium'>{nome_fantasia?.length > 16 ? nome_fantasia?.slice(0, 16) + '...' : nome_fantasia}</Title>
+                        <Label>{cidade} • {status} </Label>
+                    </Column>
+                    <ChevronRight color={colors.color.primary} />
+                </Row>
+            </Pressable>
+        )
+    }
+    return (
+        <Column>
+            <ListSearchStore
+                id={lojaid}
+                spacing={false}
+                name='suppliers'
+                renderItem={({ item }) => <Card item={item} />}
+                getSearch={listSupplierStore}
+                getList={listSupplierStoreSearch} />
         </Column>
     )
 }

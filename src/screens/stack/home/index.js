@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Main, ScrollVertical, Column, Row, Title, HeadTitle, Image, Label, useQuery, colors, Loader, SCREEN_WIDTH, SCREEN_HEIGHT } from '@/ui';
 import { useUser } from '@/context/user';
 import { Pressable } from 'react-native';
-import { GitCompareArrows, Menu, PieChart as Pie, Users, ChevronRight, ScanText, LayoutGrid, Truck, LayoutList } from 'lucide-react-native';
+import { GitCompareArrows, Menu, PieChart as Pie, Users, ChevronRight, ScanText, LayoutGrid, Truck, LayoutList, Bell } from 'lucide-react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { showReportStore } from '@/api/report';
 import { PieChart } from "react-native-gifted-charts";
@@ -50,7 +50,10 @@ export default function HomeScreen({ navigation, }) {
                         <Pressable onPress={() => { navigation.toggleDrawer() }} style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
                             <Menu color='#8A8A8A' size={24} />
                         </Pressable>
-                        <Image src={require('@/imgs/logo_red.png')} w={64} h={64} />
+
+                        <Pressable onPress={() => { navigation.navigate('NotifyList') }} style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                            <Bell color={colors.color.primary} size={24} />
+                        </Pressable>
                     </Row>
 
                     <Row justify='space-between' align='center' style={{ width: SCREEN_WIDTH - 50, }}>
@@ -98,27 +101,30 @@ export default function HomeScreen({ navigation, }) {
                         </Column>
                     </FadeUp>
 
-                    <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
-                    <Row justify='space-between' gh={12}>
-                        <Pressable onPress={() => { navigation.navigate('UserAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D9EEE8', }}>
-                            <Users size={32} color='#43AA8B' />
-                            <Title size={16} fontFamily="Font_Medium" color='#43AA8B'>Adicionar {'\n'}Usuário</Title>
-                        </Pressable>
-                        <Pressable onPress={() => { navigation.navigate('ReportList') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#EADAFF', }}>
-                            <Pie size={32} color='#9747FF' />
-                            <Title size={16} fontFamily="Font_Medium" color='#9747FF'>Acessar {'\n'}Relatórios</Title>
-                        </Pressable>
-                    </Row>
-                    <Row justify='space-between' gh={12}>
-                        <Pressable onPress={() => { navigation.navigate('ProductAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FBD2D5', }}>
-                            <LayoutGrid size={32} color='#EA1E2C' />
-                            <Title size={16} fontFamily="Font_Medium" color='#EA1E2C'>Adicionar {'\n'}Produto</Title>
-                        </Pressable>
-                        <Pressable onPress={() => { navigation.navigate('CategoryAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
-                            <LayoutList size={32} color='#3590F3' />
-                            <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Adicionar {'\n'}Categoria</Title>
-                        </Pressable>
-                    </Row>
+                    <FadeUp delay={700}>
+                        <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
+                        <Row justify='space-between' gh={12}>
+                            <Pressable onPress={() => { navigation.navigate('UserAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D9EEE8', }}>
+                                <Users size={32} color='#43AA8B' />
+                                <Title size={16} fontFamily="Font_Medium" color='#43AA8B'>Adicionar {'\n'}Usuário</Title>
+                            </Pressable>
+                            <Pressable onPress={() => { navigation.navigate('ReportList') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#EADAFF', }}>
+                                <Pie size={32} color='#9747FF' />
+                                <Title size={16} fontFamily="Font_Medium" color='#9747FF'>Acessar {'\n'}Relatórios</Title>
+                            </Pressable>
+                        </Row>
+                        <Row justify='space-between' gh={12}>
+                            <Pressable onPress={() => { navigation.navigate('ProductAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FBD2D5', }}>
+                                <LayoutGrid size={32} color='#EA1E2C' />
+                                <Title size={16} fontFamily="Font_Medium" color='#EA1E2C'>Adicionar {'\n'}Produto</Title>
+                            </Pressable>
+                            <Pressable onPress={() => { navigation.navigate('CategoryAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
+                                <LayoutList size={32} color='#3590F3' />
+                                <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Adicionar {'\n'}Categoria</Title>
+                            </Pressable>
+                        </Row>
+                    </FadeUp>
+
                 </Column>
             </ScrollVertical>
 

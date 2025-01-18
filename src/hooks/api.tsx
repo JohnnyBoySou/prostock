@@ -51,16 +51,17 @@ export async function fetchWithAuth<T = unknown>(
       throw new Error("Authentication token not found.");
     }
 
+    const method = options.method?.toUpperCase() || "GET";
     const response: AxiosResponse<T> = await apiClient.request({
       url,
-      method: options.method || "GET",
+      method,
       headers: {
         ...options.headers,
         lojaid: store.id,
         Authorization: `Bearer ${token}`,
       },
-      params: options.params || undefined, // Evita passar `undefined` desnecessariamente
-      data: options.data || undefined,
+      params: method === "GET" ? { ...options.params, ...options.data } : options.params,
+      data: method !== "GET" ? options.data : undefined,
     });
 
     return response.data;

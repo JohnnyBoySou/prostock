@@ -23,10 +23,17 @@ export const listReportStore = async (page: number = 1) => {
 }
 
 
-export const showReportStore = async (id: number) => {
+export const showReportStore = async (id: number, datac: string, dataf: string) => {
+    const formatDateForLaravel = (date: string) => {
+        const [day, month, year] = date.split("/");
+        return `${year}-${month}-${day}`;
+    };
+    
+    const c = formatDateForLaravel(datac);
+    const f = formatDateForLaravel(dataf);
     try {
         const res = await fetchWithAuth("/usuarios/estatisticas/loja/" + id, {
-            method: "GET", 
+            method: "GET", data: { "datac": c, "dataf": f }
         });
         return res;
     } catch (error) {
@@ -44,10 +51,19 @@ export const listReportProduct = async (page: number = 1) => {
     }
 }
 
-export const showReportProduct = async (id: number, lojaid: number) => {
+export const showReportProduct = async (id: number, lojaid: number,  datac: string, dataf: string) => {
+    
+    const formatDateForLaravel = (date: string) => {
+        const [day, month, year] = date.split("/");
+        return `${year}-${month}-${day}`;
+    };
+    
+    const c = formatDateForLaravel(datac);
+    const f = formatDateForLaravel(dataf);
     try {
         const res = await fetchWithAuthOtherStore("/usuarios/estatisticas/produto/" + id, {
             method: "GET", 
+            data: { "datac": datac, "dataf": dataf },
             headers: { "lojaid": lojaid.toString() }
         });
         return res;

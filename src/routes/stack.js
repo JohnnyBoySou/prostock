@@ -42,12 +42,15 @@ import OCRScreen from "@/screens/stack/ai/camera";
 
 import ProfileScreen from "@/screens/stack/profile";
 
+import NotifyListScreen from '@/screens/stack/notify/list';
+import NotifyShowScreen from '@/screens/stack/notify/show'; 
+
 export function Stacks() {
 
   const { role } = useUser();
 
   return (
-    <Stack.Navigator initialRouteName="OCR" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="ReportList" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Perfil" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} /> 
 
@@ -78,6 +81,11 @@ export function Stacks() {
         <Stack.Screen name="SupplierAdd" component={SupplierAddScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Criar fornecedor" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="SupplierList" component={SupplierListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar fornecedores" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="SupplierEdit" component={SupplierEditScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Editar fornecedor" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+      </Stack.Group>
+
+      <Stack.Group>
+        <Stack.Screen name="NotifyList" component={NotifyListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar notificações" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+        <Stack.Screen name="NotifyShow" component={NotifyShowScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Notificação" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
       </Stack.Group>
 
       <Stack.Group>

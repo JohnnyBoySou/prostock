@@ -4,7 +4,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { View, Pressable } from "react-native";
 import { Column, Row, Title, Label, Image, colors } from "@/ui";
 
-import { LogOut, ChevronRight, X, CircleUserRound, Brain, ChartPie, GitCompareArrows, LayoutGrid, Truck, Users, Store, House, LayoutList } from "lucide-react-native";
+import { LogOut, ChevronRight, X, CircleUserRound, Brain, ChartPie, GitCompareArrows, LayoutGrid, Truck, Users, Store, House, LayoutList, Bell } from "lucide-react-native";
 import { useUser } from "@/context/user";
 
 import { Stacks } from "./stack";
@@ -68,6 +68,11 @@ function CustomDrawerContent({ navigation }) {
       icon: <Brain color="#484848" size={20} />,
       label: "Inteligência Artificial",
       onPress: () => navigation.navigate("Stacks", { screen: "AI" })
+    },
+    {
+      icon: <Bell color="#484848" size={20} />,
+      label: "Notificações",
+      onPress: () => navigation.navigate("Stacks", { screen: "NotifyList" })
     },
     {
       icon: <CircleUserRound color="#484848" size={20} />,
