@@ -164,9 +164,9 @@ const ScrollHorizontal = ({children, style, contentContainerStyle}) => {
     </ScrollView>
   )
 }
-const ScrollVertical = ({children, style, contentContainerStyle }) => {
+const ScrollVertical = ({children, style, contentContainerStyle, ...props }) => {
   return (
-    <ScrollView style={style} showsVerticalScrollIndicator={false} contentContainerStyle={contentContainerStyle}>
+    <ScrollView style={style} showsVerticalScrollIndicator={false} contentContainerStyle={contentContainerStyle} {...props}>
       <View style={{ height: 26, }}/>
       {children}
       <View style={{ height: 100, }} />

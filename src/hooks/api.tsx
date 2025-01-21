@@ -82,15 +82,16 @@ export async function fetchWithAuthOtherStore<T = unknown>(
       throw new Error("Authentication token not found.");
     }
 
+    const method = options.method?.toUpperCase() || "GET";
     const response: AxiosResponse<T> = await apiClient.request({
       url,
-      method: options.method || "GET",
+      method,
       headers: {
         ...options.headers, 
         Authorization: `Bearer ${token}`,
       },
-      params: options.params || undefined, 
-      data: options.data || undefined,
+      params: options.params,
+      data: options.data,
     });
 
     return response.data;

@@ -10,9 +10,10 @@ interface Report extends Record<string, unknown> {
     validade: string;
     observacoes: string;
 }
-const formatDateForLaravel = (date: string) => {
+const formatDateForLaravel = (date: string | null = null) => {
+    if(!date) return null;
     const [day, month, year] = date.split("/");
-   return `${year}-${month}-${day}`;
+    return `${year}-${month}-${day}`;
 };
 
 //LISTAGEM COM DATA
@@ -55,12 +56,12 @@ export const listReportProductSearch = async (id: number, name: string, datac: s
         throw new Error(error.message);
     }
 }
-export const listReportSupplier = async (id: number,page: number = 1,  datac: string, dataf: string) => {
+export const listReportSupplier = async (id: number, page: number = 1, datac: string, dataf: string) => {
     const c = formatDateForLaravel(datac);
     const f = formatDateForLaravel(dataf);
     try {
         const res = await fetchWithAuth("/usuarios/estatisticas/fornecedores" + "?page=" + page + `&datac=${c}&dataf=${f}`, {
-            method: "GET", 
+            method: "GET",
             headers: { "lojaid": id.toString() }
         });
         return res;
@@ -68,12 +69,12 @@ export const listReportSupplier = async (id: number,page: number = 1,  datac: st
         throw new Error(error.message);
     }
 }
-export const listReportSupplierSearch = async (id: number, name: string,  datac: string, dataf: string) => {
+export const listReportSupplierSearch = async (id: number, name: string, datac: string, dataf: string) => {
     const c = formatDateForLaravel(datac);
     const f = formatDateForLaravel(dataf);
     try {
         const res = await fetchWithAuth("/usuarios/estatisticas/fornecedores" + "?busca=" + name + `&datac=${c}&dataf=${f}`, {
-            method: "GET", 
+            method: "GET",
             headers: { "lojaid": id.toString() }
         });
         return res;
@@ -83,29 +84,54 @@ export const listReportSupplierSearch = async (id: number, name: string,  datac:
 }
 
 //SHOW SEM DATA
-export const showReportStore = async (id: number, fornecedor_id: string, produto_id: string ) => {
+export const showReportStore = async (id: number, fornecedor_id: string, produto_id: string) => {
     try {
         const res = await fetchWithAuth("/usuarios/estatisticas/loja/" + id, {
-            method: "GET", 
+            method: "GET",
             data: {
                 "fornecedor_id": fornecedor_id,
                 "produto_id": produto_id,
             },
-          //  headers: { "lojaid": id.toString() }
+            //  headers: { "lojaid": id.toString() }
         });
         return res;
     } catch (error) {
         throw new Error(error.message);
     }
 }
-export const showReportProduct = async (id: number, lojaid: number ) => {
+export const showReportProduct = async (produto_id: number, lojaid: number, ) => {
     try {
-        const res = await fetchWithAuthOtherStore("/usuarios/estatisticas/produto/" + id, {
+        const res = await fetchWithAuthOtherStore("/usuarios/estatisticas/produto/" + produto_id, {
             method: "GET",
             headers: { "lojaid": lojaid.toString() }
         });
         return res;
     } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export const showReportProductLine = async (produto_id: number, lojaid: number, fornecedor_id: number | null = null, datac: string | null = null, dataf: string | null = null, tab: string) => {
+    const c = formatDateForLaravel(datac);
+    const f = formatDateForLaravel(dataf);
+    const type = tab === 'Saída' ? 'saida' : tab == 'Entrada' ? 'entrada' : tab == 'Perdas' ? 'perda' : 'entrada'
+    try {
+        const res: any = await fetchWithAuthOtherStore("/usuarios/estatisticas/linechat", {
+            method: "GET",
+            headers: { "lojaid": lojaid.toString() },
+            params: {
+                "fornecedor_id": fornecedor_id,
+                "produto_id": produto_id,
+                "datac": c,
+                "dataf": f,
+                "tipo": type,
+            },
+        });
+        const lineData = res?.data?.map((item: any) => { return { value: parseInt(item?.value), label: item?.label } });
+        console.log(lineData)
+        return lineData;
+    } catch (error) {
+        console.log(error.request)
         throw new Error(error.message);
     }
 }
