@@ -1,16 +1,17 @@
 import { Main, Loader, colors, Title, Column, Label, useQuery, ScrollVertical } from "@/ui";
-import { showReportProduct } from '@/api/report';
 import { BarChart } from "react-native-gifted-charts";
+import { showReportSupplier } from "@/api/report";
 
-export default function ReportProductScreen({ route, navigation }) {
+export default function ReportSupplierScreen({ route, navigation }) {
     const id = route.params.id;
     const lojaid = route.params.lojaid;
     const { data, isLoading } = useQuery({
-        queryKey: ["stores product report single", id],
+        queryKey: ["stores supplier report single", id],
         queryFn: async () => {
-            const res = await showReportProduct(id, lojaid); return res;
+            const res = await showReportSupplier(id, lojaid); return res;
         }
     });
+    console.log(data)
     return (
         <Main>
             {isLoading ? <Column style={{ flex: 1, }} justify="center" align='center'>
@@ -50,9 +51,9 @@ const Charts = ({ data }) => {
         { value: meses[2].estoque_ocupado, label: meses[2].mes.slice(0, 3), frontColor: '#FF1828' }
     ];
     const entrada = [
-        { value: meses[0].entrada, label: meses[0].mes.slice(0, 3), frontColor: '#019866' },
-        { value: meses[1].entrada, label: meses[1].mes.slice(0, 3), frontColor: '#019866' },
-        { value: meses[2].entrada, label: meses[2].mes.slice(0, 3), frontColor: '#019866' }
+        { value: meses[0].entrada, label: meses[0].mes.slice(0, 3), frontColor: '#FFB238' },
+        { value: meses[1].entrada, label: meses[1].mes.slice(0, 3), frontColor: '#FFB238' },
+        { value: meses[2].entrada, label: meses[2].mes.slice(0, 3), frontColor: '#FFB238' }
     ];
 
     const saida = [
@@ -60,12 +61,6 @@ const Charts = ({ data }) => {
         { value: meses[1].saida, label: meses[1].mes.slice(0, 3), frontColor: '#3590F3' },
         { value: meses[2].saida, label: meses[2].mes.slice(0, 3), frontColor: '#3590F3' }
     ];
-    const perdas = [
-        { value: meses[0].perdas, label: meses[0].mes.slice(0, 3), frontColor: '#FFB238' },
-        { value: meses[1].perdas, label: meses[1].mes.slice(0, 3), frontColor: '#FFB238' },
-        { value: meses[2].perdas, label: meses[2].mes.slice(0, 3), frontColor: '#FFB238' }
-
-    ]
 
     return (
         <Column gv={20}>
@@ -124,27 +119,6 @@ const Charts = ({ data }) => {
                     maxValue={Math.max(saida[0].value, saida[1].value, saida[2].value)}
                     frontColor="lightgray"
                     data={saida}
-                    yAxisThickness={0}
-                    xAxisThickness={0}
-                    isAnimated
-                    width={230}
-                    xAxisLabelTextStyle={{ color: 'gray', fontSize: 12, fontFamily: 'Font_Book' }}
-                    yAxisTextStyle={{ color: 'gray', fontSize: 14, fontFamily: 'Font_Book' }}
-                />
-            </Column>
-            <Column style={{ backgroundColor: '#FFF', borderRadius: 8 }} pv={20} ph={20}>
-                <Column mb={12}>
-                    <Label>Relatório</Label>
-                    <Title size={24}>Perdas</Title>
-                </Column>
-                <BarChart
-                    barWidth={52}
-                    noOfSections={3}
-                    height={150}
-                    barBorderRadius={4}
-                    maxValue={Math.max(perdas[0].value, perdas[1].value, perdas[2].value)}
-                    frontColor="lightgray"
-                    data={perdas}
                     yAxisThickness={0}
                     xAxisThickness={0}
                     isAnimated

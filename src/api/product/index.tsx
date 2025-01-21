@@ -69,7 +69,11 @@ export const deleteProduct = async (id: number) => {
 
 export const listProductStore = async (id: number, page: number = 1,) => {
     try {
-        const res = await fetchWithAuthOtherStore("/usuarios/produto" + "?page=" + page, { method: "GET", headers: { "lojaid": id.toString() } },);
+        const res = await fetchWithAuthOtherStore("/usuarios/produto" + "?page=" + page,
+            {
+                method: "GET",
+                headers: { "lojaid": id.toString() }
+            },);
         return res;
     } catch (error) {
         throw new Error(error.message);

@@ -1,5 +1,6 @@
-import { Main, Row, Loader, colors, Title, Column, Label, useQuery, Button } from "@/ui";
-import { ChevronRight, } from "lucide-react-native";
+import React, { useState } from "react";
+import { Main, Row, Loader, colors, Title, Column, Label, useQuery, Input, } from "@/ui";
+import { ChevronRight,  Search} from "lucide-react-native";
 import { FlatList } from 'react-native';
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -7,10 +8,14 @@ import { listReportStore } from '@/api/report';
 import { PieChart } from "react-native-gifted-charts";
 
 export default function ReportListScreen() {
-    const { data, isLoading } = useQuery({
+
+    const dateNow = new Date().toLocaleDateString('pt-BR');
+    const [dateC, setdateC] = useState('01/01/2025');
+    const [dateF, setdateF] = useState(dateNow);
+    const { data, isLoading, refetch } = useQuery({
         queryKey: ["stores report"],
         queryFn: async () => {
-            const res = await listReportStore(); return res.data;
+            const res = await listReportStore(1, dateC, dateF); return res.data;
         }
     });
     return (
@@ -20,13 +25,31 @@ export default function ReportListScreen() {
             </Column>
                 :
                 <Column style={{ flex: 1 }}>
-                    <Items data={data} />
+                  
+                    <Items data={data} header={
+                          <Column gv={16} mv={12} mh={26}>
+                          <Title size={24}>Filtrar por data</Title>
+                          <Row gh={8}>
+                              <Column>
+                                  <Label style={{ zIndex: 2, marginBottom: -20 }}>Começo</Label>
+                                  <Input mask='DATE' value={dateC} setValue={setdateC} />
+                              </Column>
+                              <Column>
+                                  <Label style={{ zIndex: 2, marginBottom: -20 }}>Final</Label>
+                                  <Input mask='DATE' value={dateF} setValue={setdateF} onSubmitEditing={() => {refetch()}} />
+                              </Column>
+                              <Pressable onPress={() => { refetch();  }} style={{ backgroundColor: colors.color.primary, borderRadius: 8, justifyContent: 'center', alignItems: 'center', width: 62, height: 62, marginTop: 20 }}>
+                                  <Search color='#FFF' />
+                              </Pressable>
+                          </Row>
+                      </Column>
+                    }/>
                 </Column>
             }
         </Main>)
 }
 
-const Items = ({ data }) => {
+const Items = ({ data, header }) => {
     if(!data) return null;
     const navigation = useNavigation();
     const Card = ({ item }) => {
@@ -108,6 +131,7 @@ const Items = ({ data }) => {
                 renderItem={({ item }) => <Card item={item} />}
                 keyExtractor={item => item.id}
                 ListFooterComponent={<Column pv={40} />}
+                ListHeaderComponent={header}
             />
         </Column>
     )

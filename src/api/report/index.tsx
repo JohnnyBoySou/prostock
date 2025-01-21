@@ -10,11 +10,71 @@ interface Report extends Record<string, unknown> {
     validade: string;
     observacoes: string;
 }
+const formatDateForLaravel = (date: string) => {
+    const [day, month, year] = date.split("/");
+   return `${year}-${month}-${day}`;
+};
 
-export const listReportStore = async (page: number = 1) => {
+//LISTAGEM COM DATA
+export const listReportStore = async (page: number = 1, datac: string, dataf: string) => {
+    const c = formatDateForLaravel(datac);
+    const f = formatDateForLaravel(dataf);
     try {
         const res = await fetchWithAuth("/usuarios/estatisticas/lojas" + "?page=" + page, {
+            method: "GET",
+            data: { "datac": c, "dataf": f }
+        });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+export const listReportProduct = async (id: number, page: number = 1, datac: string, dataf: string) => {
+    const c = formatDateForLaravel(datac);
+    const f = formatDateForLaravel(dataf);
+    try {
+        const res = await fetchWithAuthOtherStore("/usuarios/estatisticas/produtos" + "?page=" + page + `&datac=${c}&dataf=${f}`, {
+            method: "GET",
+            headers: { "lojaid": id.toString() }
+        });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+export const listReportProductSearch = async (id: number, name: string, datac: string, dataf: string) => {
+    const c = formatDateForLaravel(datac);
+    const f = formatDateForLaravel(dataf);
+    try {
+        const res = await fetchWithAuthOtherStore("/usuarios/estatisticas/produtos" + "?busca=" + name + `&datac=${c}&dataf=${f}`, {
+            method: "GET",
+            headers: { "lojaid": id.toString() }
+        });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+export const listReportSupplier = async (id: number,page: number = 1,  datac: string, dataf: string) => {
+    const c = formatDateForLaravel(datac);
+    const f = formatDateForLaravel(dataf);
+    try {
+        const res = await fetchWithAuth("/usuarios/estatisticas/fornecedores" + "?page=" + page + `&datac=${c}&dataf=${f}`, {
             method: "GET", 
+            headers: { "lojaid": id.toString() }
+        });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+export const listReportSupplierSearch = async (id: number, name: string,  datac: string, dataf: string) => {
+    const c = formatDateForLaravel(datac);
+    const f = formatDateForLaravel(dataf);
+    try {
+        const res = await fetchWithAuth("/usuarios/estatisticas/fornecedores" + "?busca=" + name + `&datac=${c}&dataf=${f}`, {
+            method: "GET", 
+            headers: { "lojaid": id.toString() }
         });
         return res;
     } catch (error) {
@@ -22,48 +82,41 @@ export const listReportStore = async (page: number = 1) => {
     }
 }
 
-
-export const showReportStore = async (id: number, datac: string, dataf: string) => {
-    const formatDateForLaravel = (date: string) => {
-        const [day, month, year] = date.split("/");
-        return `${year}-${month}-${day}`;
-    };
-    
-    const c = formatDateForLaravel(datac);
-    const f = formatDateForLaravel(dataf);
+//SHOW SEM DATA
+export const showReportStore = async (id: number, fornecedor_id: string, produto_id: string ) => {
     try {
         const res = await fetchWithAuth("/usuarios/estatisticas/loja/" + id, {
-            method: "GET", data: { "datac": c, "dataf": f }
+            method: "GET", 
+            data: {
+                "fornecedor_id": fornecedor_id,
+                "produto_id": produto_id,
+            },
+          //  headers: { "lojaid": id.toString() }
         });
         return res;
     } catch (error) {
         throw new Error(error.message);
     }
 }
-export const listReportProduct = async (page: number = 1) => {
+export const showReportProduct = async (id: number, lojaid: number ) => {
     try {
-        const res = await fetchWithAuth("/usuarios/estatisticas/produtos" + "?page=" + page, {
-            method: "GET", 
-         });
+        const res = await fetchWithAuthOtherStore("/usuarios/estatisticas/produto/" + id, {
+            method: "GET",
+            headers: { "lojaid": lojaid.toString() }
+        });
         return res;
     } catch (error) {
         throw new Error(error.message);
     }
 }
 
-export const showReportProduct = async (id: number, lojaid: number,  datac: string, dataf: string) => {
-    
-    const formatDateForLaravel = (date: string) => {
-        const [day, month, year] = date.split("/");
-        return `${year}-${month}-${day}`;
-    };
-    
-    const c = formatDateForLaravel(datac);
-    const f = formatDateForLaravel(dataf);
+export const showReportSupplier = async (id: number, lojaid: number) => {
     try {
-        const res = await fetchWithAuthOtherStore("/usuarios/estatisticas/produto/" + id, {
-            method: "GET", 
-            data: { "datac": datac, "dataf": dataf },
+        const res = await fetchWithAuthOtherStore("/usuarios/estatisticas/loja/" + id, {
+            method: "GET",
+            data: {
+                "fornecedor_id": id
+            },
             headers: { "lojaid": lojaid.toString() }
         });
         return res;

@@ -36,6 +36,7 @@ import MoveEditScreen from "@/screens/stack/move/edit";
 import ReportListScreen from "@/screens/stack/report/list";
 import ReportSingleScreen from "@/screens/stack/report/single";
 import ReportProductScreen from '@/screens/stack/report/product';
+import ReportSupplierScreen from '@/screens/stack/report/supplier';
 
 import AIScreen from "@/screens/stack/ai";
 import OCRScreen from "@/screens/stack/ai/camera";
@@ -63,6 +64,7 @@ export function Stacks() {
         <Stack.Screen name="ReportList" component={ReportListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar relatórios" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="ReportSingle" component={ReportSingleScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="ReportProduct" component={ReportProductScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório de produtos" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+        <Stack.Screen name="ReportSupplier" component={ReportSupplierScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório de fornecedores" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
       </Stack.Group>
 
       <Stack.Group>

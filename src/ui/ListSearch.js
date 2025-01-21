@@ -30,10 +30,10 @@ export default function ListSearch({ renderItem, getSearch, getList, empty, spac
             {isLoading || loadingSearch ? <Column mv={50}><Loader size={32} color={colors.color.primary} /></Column> :
                 <FlatList
                     data={listData}
-                    keyExtractor={(index) => index}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
-                    refreshControl={<RefreshControl refreshing={isLoading} onRefresh={() => { refetch() }} />}
+                    refreshControl={<RefreshControl refreshing={isLoading} onRefresh={() => { handleSearch() }} />}
                     style={{  paddingHorizontal: 26, paddingVertical: top ? 26 : 0 }}
                     ListFooterComponent={<Column>
                         {listData?.length >= 20 && <Button onPress={() => { nextProduct() }} title="Carregar mais" />}

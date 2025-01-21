@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Main, Row, Loader, colors, Title, Column, Label, useQuery, ScrollVertical, Button, Input, ListSearchStore } from "@/ui";
-import { Calendar1, ChevronRight, LayoutGrid, Search, Truck, Users, } from "lucide-react-native";
+import { Calendar1, Check, ChevronRight, LayoutGrid, Search, Truck, Users, } from "lucide-react-native";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { showReportStore } from '@/api/report';
-import { listProductStore, listProductStoreSearch } from '@/api/product';
-import { listSupplierStore, listSupplierStoreSearch } from '@/api/supplier';
+import { showReportStore, listReportProduct, listReportProductSearch, listReportSupplier, listReportSupplierSearch } from '@/api/report';
 import { BarChart } from "react-native-gifted-charts";
 import { ProductEmpty } from '@/ui/Emptys/product';
+import { SupplierEmpty } from '@/ui/Emptys/supplier';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { listSupplierStore, listSupplierStoreSearch} from "@/api/supplier";
+
 
 export default function ReportSingleScreen({ route, navigation }) {
     const id = route.params.id;
@@ -15,20 +17,23 @@ export default function ReportSingleScreen({ route, navigation }) {
     const [dateC, setdateC] = useState('01/01/2025');
     const [dateF, setdateF] = useState(dateNow);
 
+    const [fornecedor, setfornecedor] = useState();
+    const [produto, setproduto] = useState();
+
     const { data, isLoading, refetch } = useQuery({
         queryKey: ["stores report single", id],
         queryFn: async () => {
-            const res = await showReportStore(id, dateC, dateF); return res;
+            const res = await showReportStore(id, fornecedor, produto); return res;
         }
     });
-    const { data: products, isLoading: loadingProducts } = useQuery({
-        queryKey: ["product list store", id],
-        queryFn: async () => {
-            const res = await listProductStore(id); return res.data;
+
+    useEffect(() => {
+        if (fornecedor || produto) {
+            refetch();
         }
-    });
-   
-    
+     }, [fornecedor, produto])
+    const bottomSheetRef = useRef(null);
+
     return (
         <Main>
             {isLoading ? <Column style={{ flex: 1, }} justify="center" align='center'>
@@ -37,36 +42,57 @@ export default function ReportSingleScreen({ route, navigation }) {
                 :
                 <ScrollVertical>
                     <Column style={{ flex: 1 }} gv={20}>
-                        
-                        
                         <Store item={data} />
-                        <Column gv={16} mv={12} mh={26}>
-                            <Title size={24}>Filtrar por data</Title>
-                            <Row gh={8}>
-                                <Column>
-                                    <Label style={{ zIndex: 2, marginBottom: -20 }}>Começo</Label>
-                                    <Input mask='DATE' value={dateC} setValue={setdateC} />
-                                </Column>
-                                <Column>
-                                    <Label style={{ zIndex: 2, marginBottom: -20 }}>Final</Label>
-                                    <Input mask='DATE' value={dateF} setValue={setdateF} />
-                                </Column>
-                                <Pressable onPress={() => { refetch(); console.log(isLoading);  console.log('reftch')}} style={{ backgroundColor: colors.color.primary, borderRadius: 8, justifyContent: 'center', alignItems: 'center', width: 62, height: 62, marginTop: 20 }}>
-                                    <Search color='#FFF' />
-                                </Pressable>
-                            </Row>
-                        </Column>
-
                         <Charts data={data} />
-                        <Products data={products} lojaid={id} />
-                        <Suppliers lojaid={id} />
+                        <Products lojaid={id} dateC={dateC} dateF={dateF} />
                     </Column>
                 </ScrollVertical>
             }
+            <Pressable
+                onPress={() => bottomSheetRef.current?.expand()}
+                style={{ paddingHorizontal: 24, columnGap: 12, alignItems: 'center', flexDirection: 'row', position: 'absolute', alignSelf: 'center', bottom: 60, height: 56, borderRadius: 8, backgroundColor: colors.color.primary, justifyContent: 'center', alignItems: 'center', }}>
+                <Label color='#fff' size={18} fontFamily='Font_Medium'>Ver filtros</Label>
+            </Pressable>
+
+
+            <BottomSheet
+                ref={bottomSheetRef}
+                snapPoints={[0.1,'100%']}
+                index={-1}
+                backgroundStyle={{ backgroundColor: '#f1f1f1' }}
+            >
+                <BottomSheetScrollView >
+                    <Column gv={16} mv={12}>
+                        <Column mh={26}>
+                            <Title size={24}>Filtrar por data</Title>
+                            <Row gh={8} justify='space-between'>
+                                <Column>
+                                    <Label style={{ zIndex: 2, marginBottom: -20 }}>Começo</Label>
+                                    <Input mask='DATE' value={dateC} setValue={setdateC} keyboard='numeric'/>
+                                </Column>
+                                <Column>
+                                    <Label style={{ zIndex: 2, marginBottom: -20 }}>Final</Label>
+                                    <Input mask='DATE' value={dateF} setValue={setdateF} keyboard='numeric'/>
+                                </Column>
+                            </Row>
+                        </Column>
+                        <Column mh={26}>
+                            <Title size={24} style={{ marginBottom: -12, marginTop: 12, }}>Filtrar por fornecedor</Title>
+                        </Column>
+                        <Suppliers setfornecedor={setfornecedor} fornecedor={fornecedor} lojaid={id} dateC={dateC} dateF={dateF} />
+                    </Column>
+                    
+                </BottomSheetScrollView>
+                <Pressable onPress={() => { bottomSheetRef?.current?.close() }} style={{ backgroundColor: colors.color.primary, borderRadius: 8, position: 'absolute', bottom: 30, justifyContent: 'center', alignItems: 'center', height: 56, left: 26, right: 26, }}>
+                            <Label color='#fff' fontFamily='Font_Medium' size={18}>Definir filtros</Label>
+                        </Pressable>
+            </BottomSheet>
+
         </Main>)
 }
 
 const Store = ({ item }) => {
+    if (!item) return null;
     const { nome, status, cidade, estado, cnpj, funcionarios, produtos, fornecedores } = item;
     return (
         <Column gv={6} style={{ backgroundColor: '#FFF', borderRadius: 8 }} pv={16} ph={16} mh={26}>
@@ -101,6 +127,7 @@ const Store = ({ item }) => {
 }
 
 const Charts = ({ data }) => {
+    if (!data) return null;
     const meses = data.meses;
 
     const ocupacao = [
@@ -109,9 +136,9 @@ const Charts = ({ data }) => {
         { value: meses[2].estoque_ocupado, label: meses[2].mes.slice(0, 3), frontColor: '#FF1828' }
     ];
     const entrada = [
-        { value: meses[0].entrada, label: meses[0].mes.slice(0, 3), frontColor: '#FFB238' },
-        { value: meses[1].entrada, label: meses[1].mes.slice(0, 3), frontColor: '#FFB238' },
-        { value: meses[2].entrada, label: meses[2].mes.slice(0, 3), frontColor: '#FFB238' }
+        { value: meses[0].entrada, label: meses[0].mes.slice(0, 3), frontColor: '#019866' },
+        { value: meses[1].entrada, label: meses[1].mes.slice(0, 3), frontColor: '#019866' },
+        { value: meses[2].entrada, label: meses[2].mes.slice(0, 3), frontColor: '#019866' }
     ];
 
     const saida = [
@@ -119,6 +146,13 @@ const Charts = ({ data }) => {
         { value: meses[1].saida, label: meses[1].mes.slice(0, 3), frontColor: '#3590F3' },
         { value: meses[2].saida, label: meses[2].mes.slice(0, 3), frontColor: '#3590F3' }
     ];
+
+    const perdas = [
+        { value: meses[0].perdas, label: meses[0].mes.slice(0, 3), frontColor: '#FFB238' },
+        { value: meses[1].perdas, label: meses[1].mes.slice(0, 3), frontColor: '#FFB238' },
+        { value: meses[2].perdas, label: meses[2].mes.slice(0, 3), frontColor: '#FFB238' }
+
+    ]
 
     return (
         <Column gv={20} mh={26}>
@@ -185,52 +219,105 @@ const Charts = ({ data }) => {
                     yAxisTextStyle={{ color: 'gray', fontSize: 14, fontFamily: 'Font_Book' }}
                 />
             </Column>
+            <Column style={{ backgroundColor: '#FFF', borderRadius: 8 }} pv={20} ph={20}>
+                <Column mb={12}>
+                    <Label>Relatório</Label>
+                    <Title size={24}>Perdas</Title>
+                </Column>
+                <BarChart
+                    barWidth={52}
+                    noOfSections={3}
+                    height={150}
+                    barBorderRadius={4}
+                    maxValue={Math.max(perdas[0].value, perdas[1].value, perdas[2].value)}
+                    frontColor="lightgray"
+                    data={perdas}
+                    yAxisThickness={0}
+                    xAxisThickness={0}
+                    isAnimated
+                    width={230}
+                    xAxisLabelTextStyle={{ color: 'gray', fontSize: 12, fontFamily: 'Font_Book' }}
+                    yAxisTextStyle={{ color: 'gray', fontSize: 14, fontFamily: 'Font_Book' }}
+                />
+            </Column>
         </Column>
     )
 }
 
-const Products = ({ data, lojaid }) => {
+const Products = ({ lojaid, dateC, dateF }) => {
+
     const navigation = useNavigation();
     const Card = ({ item }) => {
-        const { nome, status, unidade, id, id_loja, descricao, estoque_maximo, estoque_minimo, } = item;
+        const { nome, status, unidade, id,
+            estoque_ocupado, entrada, saida, perdas,
+            id_loja, descricao, estoque_maximo, estoque_minimo, } = item;
+
+        const ocupacao = [
+            { value: estoque_ocupado, label: 'Ocupação', frontColor: '#FF1828' },
+            { value: entrada, label: 'Entrada', frontColor: '#019866' },
+            { value: saida, label: 'Saida', frontColor: '#3590F3' },
+            { value: perdas, label: 'Perdas', frontColor: '#FFB238' }
+        ];
         return (
-            <Pressable onPress={() => { navigation.navigate('ReportProduct', { id: id, lojaid: id_loja }) }} >
-                <Row pv={20} justify="space-between" ph={20} mv={8} style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
+            <Pressable onPress={() => { navigation.navigate('ReportProduct', { id: id, lojaid: lojaid }) }} style={{ backgroundColor: '#FFF', borderRadius: 8, marginVertical: 12, }}>
+                <Row pv={20} justify="space-between" ph={20} >
                     <Column gv={6}>
                         <Title size={20} fontFamily='Font_Medium'>{nome} ({unidade})</Title>
                         <Label>{status} • Mín {estoque_minimo} • Máx {estoque_maximo}</Label>
                     </Column>
                     <ChevronRight color={colors.color.primary} />
                 </Row>
+
+                <Column ph={20} pv={12}>
+                    <BarChart
+                        barWidth={32}
+                        height={120}
+                        noOfSections={3}
+                        barBorderRadius={4}
+                        frontColor="lightgray"
+                        data={ocupacao}
+                        yAxisThickness={0}
+                        xAxisThickness={0}
+                        isAnimated
+                        width={230}
+                        xAxisLabelTextStyle={{ color: 'gray', fontSize: 12, fontFamily: 'Font_Book' }}
+                        yAxisTextStyle={{ color: 'gray', fontSize: 14, fontFamily: 'Font_Book' }}
+                    />
+                </Column>
             </Pressable>
         )
     }
     return (
         <Column>
+            <Column mh={26} pt={12}>
+                <Title>Produtos</Title>
+            </Column>
             <ListSearchStore
                 id={lojaid}
-                name='products'
+                name='products report'
                 spacing={false}
                 renderItem={({ item }) => <Card item={item} />}
-                getSearch={listProductStore}
-                getList={listProductStoreSearch} />
+                empty={<ProductEmpty />}
+                getSearch={listReportProductSearch}
+                dateC={dateC}
+                dateF={dateF}
+                getList={listReportProduct} />
         </Column>
     )
 }
 
-const Suppliers = ({ lojaid }) => {
-    const navigation = useNavigation();
+const Suppliers = ({ lojaid, setfornecedor, fornecedor, dateC, dateF }) => {
     const Card = ({ item }) => {
-        if(!item) return null;
+        if (!item) return null;
         const { id, status, cidade, id_loja, nome_fantasia, } = item;
         return (
-            <Pressable onPress={() => { navigation.navigate('ReportProduct', { id: id, lojaid: id_loja }) }} >
-                <Row pv={20} justify="space-between" ph={20} mv={8} style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
+            <Pressable onPress={() => { setfornecedor(fornecedor === id ? '' : id) }} >
+                <Row pv={20} justify="space-between" ph={20} mv={8} style={{ backgroundColor: '#FFF', borderRadius: 8, borderWidth: 2, borderColor: fornecedor == id ? colors.color.green : '#fff' }}>
                     <Column gv={6}>
                         <Title size={20} fontFamily='Font_Medium'>{nome_fantasia?.length > 16 ? nome_fantasia?.slice(0, 16) + '...' : nome_fantasia}</Title>
                         <Label>{cidade} • {status} </Label>
                     </Column>
-                    <ChevronRight color={colors.color.primary} />
+                    <Check color={fornecedor == id ? colors.color.primary : '#fff'} />
                 </Row>
             </Pressable>
         )
@@ -238,12 +325,33 @@ const Suppliers = ({ lojaid }) => {
     return (
         <Column>
             <ListSearchStore
-                id={lojaid}
+                id={`${lojaid}`}
                 spacing={false}
-                name='suppliers'
+                name='suppliers report'
                 renderItem={({ item }) => <Card item={item} />}
-                getSearch={listSupplierStore}
-                getList={listSupplierStoreSearch} />
+                getSearch={listSupplierStoreSearch}
+                getList={listSupplierStore}
+                empty={<SupplierEmpty />}
+                dateC={dateC}
+                dateF={dateF}
+            />
         </Column>
     )
 }
+
+/*
+ <Column gv={16} mv={12} mh={26}>
+                            <Title size={24}>Filtrar por data</Title>
+                            <Row gh={8}>
+                                <Column>
+                                    <Label style={{ zIndex: 2, marginBottom: -20 }}>Começo</Label>
+                                    <Input mask='DATE' value={dateC} setValue={setdateC} />
+                                </Column>
+                                <Column>
+                                    <Label style={{ zIndex: 2, marginBottom: -20 }}>Final</Label>
+                                    <Input mask='DATE' value={dateF} setValue={setdateF} />
+                                </Column>
+                                <Pressable onPress={() => { refetch(); console.log(isLoading); console.log('reftch') }} style={{ backgroundColor: colors.color.primary, borderRadius: 8, justifyContent: 'center', alignItems: 'center', width: 62, height: 62, marginTop: 20 }}>
+                                    <Search color='#FFF' />
+                                </Pressable>
+                            </Row> */
