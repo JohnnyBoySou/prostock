@@ -50,7 +50,7 @@ export default function ProductEditScreen({ route, navigation }) {
     }, [product]);
 
     const types = ["Sobre", "Categorias", "Estoque"];
-    const values = ['KG', 'GRAMA', 'LITRO', 'SACA', 'TONELADA']
+    const values = ['KG', 'G', 'T', 'L', 'ML', 'M³', 'M', 'CM', 'MM', 'M²', 'UN', 'DZ', 'CX', 'PCT', 'KIT', 'PAR', 'H', 'D']
     const [medida, setmedida] = useState(values[0]);
 
 

@@ -7,8 +7,6 @@ function Select({
   setValue,
   value
 }) {
-
-
   return (
     <View style={{ flexDirection: 'column', display: 'flex', flex: 1, gap: 16, }}>
       {values.map((item, index) => (
