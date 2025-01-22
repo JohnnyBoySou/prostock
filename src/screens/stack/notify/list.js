@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Main, Row, colors, Title, Column, Label, Button, useInfiniteQuery } from "@/ui";
+import { Main, Row, colors, Title, Column, Label, Button, useInfiniteQuery, Loader } from "@/ui";
 import { ChevronRight, } from "lucide-react-native";
 import { FlatList, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -36,6 +36,9 @@ export default function NotifyListScreen() {
             </Pressable>
         )
     }
+
+    if(isLoading) return <Main><Column justify="center" align='center' style={{ flex: 1, }}><Loader size={32} color={colors.color.primary} /></Column></Main>
+
     return (
         <Main>
             <FlatList

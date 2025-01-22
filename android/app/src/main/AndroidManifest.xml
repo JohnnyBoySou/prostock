@@ -27,6 +27,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.engd.prostock"/>
+        <data android:scheme="prostock"/>
       </intent-filter>
     </activity>
   </application>

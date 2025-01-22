@@ -15,13 +15,36 @@ import Minimal from "@/ui/Header/minimal";
 import ProductAddScreen from "@/screens/stack/product/add";
 import StackMenu from "@/ui/Header";
 
-const Stack = createStackNavigator();
+//import * as Linking from 'expo-linking';
+//const prefix = Linking.createURL('/');
 
+const Stack = createStackNavigator();
 export function Main() {
   const { isSignedIn, isLoading } = useUser();
+  const linking = {
+    prefixes: ['prostock://'],
+    config: {
+      screens: {
+        Drawer: {
+          screens: {
+            Stacks: {
+              screens: {
+                NotifyShow: {
+                  path: 'notify/:id',
+                  parse: {
+                    id: (id) => `${id}`,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  };
 
   return (
-    <NavigationContainer >
+    <NavigationContainer linking={linking}>
       <Stack.Navigator screenOptions={{ headerShown: false }} >
         {isSignedIn ? (
           <>

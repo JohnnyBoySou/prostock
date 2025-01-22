@@ -28,7 +28,6 @@ export default function HomeScreen({ navigation, }) {
             setloading(true)
             try {
                 const res = await getStore();
-                console.log(res)
                 setstore(res);
             } catch (error) {
                 console.log(error);
@@ -103,7 +102,8 @@ export default function HomeScreen({ navigation, }) {
 
                     <FadeUp delay={700}>
                         <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
-                        <Row justify='space-between' gh={12}>
+                        <Column style={{height: 12 }} />
+                        <Row  justify='space-between' gh={12}>
                             <Pressable onPress={() => { navigation.navigate('UserAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D9EEE8', }}>
                                 <Users size={32} color='#43AA8B' />
                                 <Title size={16} fontFamily="Font_Medium" color='#43AA8B'>Adicionar {'\n'}Usuário</Title>
@@ -113,6 +113,7 @@ export default function HomeScreen({ navigation, }) {
                                 <Title size={16} fontFamily="Font_Medium" color='#9747FF'>Acessar {'\n'}Relatórios</Title>
                             </Pressable>
                         </Row>
+                        <Column style={{height: 12 }} />
                         <Row justify='space-between' gh={12}>
                             <Pressable onPress={() => { navigation.navigate('ProductAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FBD2D5', }}>
                                 <LayoutGrid size={32} color='#EA1E2C' />

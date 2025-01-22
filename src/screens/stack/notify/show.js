@@ -4,15 +4,14 @@ import { singleNotify } from "@/api/notify";
 export default function NotifyShowScreen({ route }) {
 
     const id = route.params?.id;
-
     const { data, isLoading, refetch } = useQuery({
         queryKey: [`single notify ${id}`, ],
         queryFn: async () => {
             const res = await singleNotify(id);
             return res;
-        }
+        },
+        enable: !!id
     })
-
     return (
         <Main>
             {isLoading ? <Loader size={24} color={colors.color.primary} /> : <Card item={data} />}

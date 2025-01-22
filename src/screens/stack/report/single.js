@@ -49,7 +49,7 @@ export default function ReportSingleScreen({ route, navigation }) {
                 :
                 <Column style={{ flex: 1, }}>
                     <ScrollVertical stickyHeaderIndices={[2]}>
-                        <Store item={data} tab={tab} settab={settab} types={types} />
+                        <Store item={data}/>
                         <Tabs types={types} value={tab} setValue={settab} />
                         <SingleCharts data={data} tab={tab} line={line} loadingDay={loadingDay} />
                         <Products lojaid={id} dateC={dateC} dateF={dateF} />

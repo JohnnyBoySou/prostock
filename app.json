@@ -2,7 +2,8 @@
   "expo": {
     "name": "ProStock",
     "slug": "ProStock",
-    "version": "4.0.0",
+    "version": "5.0.0",
+    "scheme": "prostock",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -13,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": false,
-      "requireFullScreen": true
+      "requireFullScreen": true,
+      "bundleIdentifier": "com.engd.prostock"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,18 +23,28 @@
         "backgroundColor": "#019866"
       },
       "package": "com.engd.prostock",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-font",
-      ["expo-screen-orientation",
+      [
+        "expo-screen-orientation",
         {
           "initialOrientation": "DEFAULT"
         }
+      ],
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "production"
+        }
       ]
-    ]
+    ],
+    "extra": {
+      "oneSignalAppId": "a761f833-9b85-4811-ac5b-b5cd68313b34"
+    }
   }
 }

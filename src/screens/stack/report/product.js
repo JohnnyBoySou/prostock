@@ -40,8 +40,6 @@ export default function ReportProductScreen({ route, navigation }) {
         refetch();
     }, [fornecedor, tab, dateC, dateF]);
 
-
-
     return (
         <Main >
             {isLoading ? <Column style={{ flex: 1, }} justify="center" align='center'>

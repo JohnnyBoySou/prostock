@@ -128,7 +128,6 @@ export const showReportProductLine = async (produto_id: number, lojaid: number, 
             },
         });
         const lineData = res?.data?.map((item: any) => { return { value: parseInt(item?.value), label: item?.label } });
-        console.log(lineData)
         return lineData;
     } catch (error) {
         console.log(error.request)
