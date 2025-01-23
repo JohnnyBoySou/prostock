@@ -1,5 +1,4 @@
 import { createStackNavigator, TransitionPresets } from "@react-navigation/stack";
-
 import Minimal from "@/ui/Header/minimal";
 import StackMenu from "@/ui/Header";
 import { useUser } from "@/context/user";
@@ -40,7 +39,7 @@ import ReportSupplierScreen from '@/screens/stack/report/supplier';
 
 import AIScreen from "@/screens/stack/ai";
 import OCRScreen from "@/screens/stack/ai/camera";
-
+import AIResultScreen from "@/screens/stack/ai/result";
 import ProfileScreen from "@/screens/stack/profile";
 
 import NotifyListScreen from '@/screens/stack/notify/list';
@@ -51,12 +50,13 @@ export function Stacks() {
   const { role } = useUser();
 
   return (
-    <Stack.Navigator initialRouteName="ReportList" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Perfil" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} /> 
 
       <Stack.Group>
         <Stack.Screen name="AI" component={AIScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Inteligência Artificial" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+        <Stack.Screen name="AIResult" component={AIResultScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="IA Resultado" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="OCR" component={OCRScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
       </Stack.Group>
 

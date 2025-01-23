@@ -41,17 +41,18 @@ export default function OCRScreen({ navigation }) {
   const takePicture = async () => {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync({
-        quality: 0.5,  // Reduz a qualidade da imagem, se necessário
-        base64: true,  // Obtém a imagem como base64 diretamente
+        quality: 0.5, 
+        base64: true,  
       });
+
       const manipResult = await manipulateAsync(
         photo.uri,
         [{ resize: { width: 800 } }],  
         { compress: 0.5, format: SaveFormat.JPEG } 
       );
   
-      setImage(manipResult.uri);  
-      recognizeText(manipResult.base64);
+      setImage(photo.uri);  
+      recognizeText(photo.base64);
     }
   };
    
@@ -59,13 +60,13 @@ export default function OCRScreen({ navigation }) {
     setloading(true);
     try {
       const res = await sendImage(base64Image);
-      console.log(res);
       setdata(res);
+      navigation.navigate('AIResult', { data: res });
     } catch (error) {
-      console.log('Erro ao enviar a imagem');
       console.error(error);
     } finally {
       console.log('Processamento finalizado');
+      
       setloading(false);
     }
   };
@@ -81,20 +82,7 @@ export default function OCRScreen({ navigation }) {
 
   return (
     <Main>
-      {data ? <Column style={{ flex: 1 }} justify='center' align="center">
-        <Label style={{ marginBottom: 6, }}>Inteligência Artificial</Label>
-        <Title align='center' size={24}>O que você deseja fazer com esses dados?</Title>
-          <Row justify='space-between' gh={12} mv={24} mh={26}>
-            <Pressable onPress={() => { navigation.navigate('SupplierAdd',  {data: data}) }} style={{ padding: 16, borderWidth: 2, borderColor: '#FFB238', flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FFF0D7', }}>
-              <Truck size={32} color='#FFB238' />
-              <Title size={16} fontFamily="Font_Medium" color='#FFB238'>Criar {'\n'}Movimentação</Title>
-            </Pressable>
-            <Pressable onPress={() => { navigation.navigate('ProductAdd', {data: data}) }} style={{ padding: 16,  borderWidth: 2, borderColor: '#3590F3', flexGrow: 4, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
-              <LayoutGrid size={32} color='#3590F3' />
-              <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Criar {'\n'}Produto</Title>
-            </Pressable>
-          </Row>
-      </Column> :
+      
         <>
           {loading ?
             <Column style={{ flex: 1 }} justify='center' align="center">
@@ -105,7 +93,7 @@ export default function OCRScreen({ navigation }) {
                   <Title size={22} fontFamily="Font_Medium">Processando dados...</Title>
                   <Label>Aguarde enquanto buscamos as informações no documento.</Label>
                 </Column>
-                <Button onPress={() => setImage(null)} label="Tirar outra foto" />
+                <Button label="Aguarde um momento" />
               </Column>
             </Column>
             :
@@ -146,8 +134,24 @@ export default function OCRScreen({ navigation }) {
                   <Flashlight size={32} color={colors.color.green} />}
               </Pressable>
             </Row>}
-        </>}
+        </>
     </Main>
   );
 }
 
+/*
+{data ? <Column style={{ flex: 1 }} justify='center' align="center">
+        <Label style={{ marginBottom: 6, }}>Inteligência Artificial</Label>
+        <Title align='center' size={24}>O que você deseja fazer com esses dados?</Title>
+          <Row justify='space-between' gh={12} mv={24} mh={26}>
+            <Pressable onPress={() => { navigation.navigate('SupplierAdd',  {data: data}) }} style={{ padding: 16, borderWidth: 2, borderColor: '#FFB238', flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FFF0D7', }}>
+              <Truck size={32} color='#FFB238' />
+              <Title size={16} fontFamily="Font_Medium" color='#FFB238'>Criar {'\n'}Movimentação</Title>
+            </Pressable>
+            <Pressable onPress={() => { navigation.navigate('ProductAdd', {data: data}) }} style={{ padding: 16,  borderWidth: 2, borderColor: '#3590F3', flexGrow: 4, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
+              <LayoutGrid size={32} color='#3590F3' />
+              <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Criar {'\n'}Produto</Title>
+            </Pressable>
+          </Row>
+      </Column> :
+*/

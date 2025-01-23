@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Column, Button, Input, Message, validations, fields } from '@/ui';
 
-const Form = ({ fieldKeys, onSubmit = () => {}, initialValues, isLoading = false }) => {
+const Form = ({ fieldKeys, onSubmit = () => { }, initialValues, isLoading = false }) => {
+    console.log(initialValues)
     const [values, setValues] = useState(initialValues ? initialValues : {});
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");

@@ -5,18 +5,28 @@ import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Status, fie
 import { getCep } from "@/api/store";
 import { addSupplier } from "@/api/supplier";
 
-export default function SupplierAddScreen({ navigation }) {
+export default function SupplierAddScreen({ navigation, route }) {
+    const data = route?.params?.data
     const [tab, settab] = useState("Sobre");
     const types = ["Sobre","Responsável", "Endereço",];
     const [status, setstatus] = useState("ativo");
 
-    const [aboutValues, setaboutValues] = useState();
-    const [responsibleValues, setresponsibleValues] = useState();
+    const [aboutValues, setaboutValues] = useState({
+        razao_social: data?.razaosocial,
+        nome_fantasia: data?.razaosocial,
+        cnpj: data?.cnpj,
+    });
+    const [responsibleValues, setresponsibleValues] = useState({
+        nome_responsavel: data?.nome,
+        email_responsavel: data?.email,
+        cpf_responsavel: data?.cpf,
+        telefone_responsavel: data?.telefone,
+    });
     const [addressValues, setaddressValues] = useState({
-        cep: "",
-        city: "",
-        state: "",
-        street: "",
+        cep: data?.cep,
+        city: data?.municipio,
+        state: '',
+        street: data?.endereco,
     });
 
     const [isLoading, setIsLoading] = useState();
@@ -29,7 +39,6 @@ export default function SupplierAddScreen({ navigation }) {
         setIsLoading(true);
         try {
             const params = {
-
                 razao_social: aboutValues.razao_social,
                 nome_fantasia: aboutValues.nome_fantasia,
                 cnpj: aboutValues.cnpj,
@@ -57,7 +66,6 @@ export default function SupplierAddScreen({ navigation }) {
         }
     }
 
-
     return (<Main>
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
@@ -80,7 +88,7 @@ const About = React.memo(({ settab, aboutValues, setaboutValues, }) => {
         'cnpj',
     ];
     return (
-        <Form fieldKeys={fieldKeys} initialValue={aboutValues} onSubmit={(value) => {
+        <Form fieldKeys={fieldKeys} initialValues={aboutValues} onSubmit={(value) => {
             setaboutValues(value);
             settab('Responsável');
         }} />
@@ -94,13 +102,12 @@ const Responsible = React.memo(({ settab, responsibleValues, setresponsibleValue
         'telefone_responsavel',
     ];
     return (
-        <Form fieldKeys={fieldKeys} initialValue={responsibleValues} onSubmit={(value) => {
+        <Form fieldKeys={fieldKeys}  initialValues={responsibleValues} onSubmit={(value) => {
             setresponsibleValues(value);
             settab('Endereço');
         }} />
     )
 })
-
 const Address = React.memo(({ setaddressValues, addressValues, isLoading, status, setstatus, handleCreate }) => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");

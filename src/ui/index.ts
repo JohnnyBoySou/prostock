@@ -27,6 +27,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import ListSearch from "./ListSearch";
 import ListSearchStore from './ListSearchStore'
+import ListSearchIA from "./ListSearchIA";
 export {
     useQuery, useInfiniteQuery,
     Column, Row, Main, ScrollHorizontal, ScrollVertical,
@@ -38,6 +39,6 @@ export {
     Input, Message,
     Sheet, Select, Loader,
     Image, Medida, Users, Tipo,
-    Status, fields, validations, Form, TextArea, Search, ListSearch, ListSearchStore
+    Status, fields, validations, Form, TextArea, Search, ListSearch, ListSearchStore, ListSearchIA
 }
     

@@ -9,17 +9,22 @@ import { listProduct, searchProduct } from '@/api/product';
 import { ProductEmpty } from "@/ui/Emptys/product";
 import { SupplierEmpty } from '@/ui/Emptys/supplier';
 
-export default function MoveAddScreen({ navigation }) {
+export default function MoveAddScreen({ navigation, route }) {
 
+    const data = route?.params?.data
+   
     const [tab, settab] = useState("Produto");
     const types = ["Produto", "Fornecedor", "Observação",];
 
     const [tipo, settipo] = useState('Entrada');
-    const [productId, setproductId] = useState();
-    const [supplierId, setsupplierId] = useState();
+    const [productId, setproductId] = useState(data?.produto_id);
+    const [supplierId, setsupplierId] = useState(data?.fornecedor_id);
     const [observation, setobservation] = useState();
 
-    const [productValues, setProductValues] = useState();
+    const [productValues, setProductValues] = useState({
+        quantidade: data?.quantidade,
+        preco: data?.preco,
+    });
     const [supplierValues, setSupplierValues] = useState();
 
     const [isLoading, setIsLoading] = useState();
@@ -105,7 +110,7 @@ const Product = ({ productId, setproductId, settab, setvalue, value, settipo, ti
     }
     return (
         <Column>
-            <ListSearch spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
+            <ListSearch  refresh={false}  selectID={productId}  spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
             <Column mh={26} mv={16}>
                 <Tipo setvalue={settipo} value={tipo} />
             </Column>
@@ -147,7 +152,7 @@ const Supplier = React.memo(({ supplierId, setsupplierId, settab, setvalue, valu
     }
     return (
         <Column>
-            <ListSearch spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchSupplier} getList={listSupplier} empty={<SupplierEmpty />} />
+            <ListSearch  refresh={false} selectID={supplierId} spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchSupplier} getList={listSupplier} empty={<SupplierEmpty />} />
             <Column mv={8} />
             <Form fieldKeys={fieldKeys} initialValues={value} onSubmit={(value) => {
                 setvalue(value);

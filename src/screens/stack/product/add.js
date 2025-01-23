@@ -7,15 +7,18 @@ import { Check } from 'lucide-react-native';
 import { addProduct } from "@/api/product";
 import { CategoryEmpty } from '@/ui/Emptys/category';
 
-export default function ProductAddScreen({ navigation }) {
+export default function ProductAddScreen({ navigation, route }) {
+
+    const data = route?.params?.data
+
     const [tab, settab] = useState("Sobre");
     const types = ["Sobre", "Categorias", "Estoque"];
     const values = ['KG', 'G', 'T', 'L', 'ML', 'M³', 'M', 'CM', 'MM', 'M²', 'UN', 'DZ', 'CX', 'PCT', 'KIT', 'PAR', 'H', 'D']
 
-    const [medida, setmedida] = useState(values[0]);
+    const [medida, setmedida] = useState(data?.unidade ? data?.unidade : values[0]);
     const [status, setstatus] = useState("ativo");
     const [aboutValues, setaboutValues] = useState({
-        name: "",
+        name: data?.nome,
         description: "",
     });
     const [stockValues, setstockValues] = useState({
