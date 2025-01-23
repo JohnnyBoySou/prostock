@@ -4,16 +4,14 @@ import { RefreshControl, FlatList } from "react-native-gesture-handler";
 
 export default function ListSearch({ renderItem, getSearch, selectID, empty, spacing = true, top = false, id = 'id', name = '', refresh = true, }) {
     const [termo, settermo] = useState('');
-
     const { data: result, isLoading: loadingSearch, refetch: handleSearch } = useQuery({
         queryKey: [`search ${id} ${name}`],
         queryFn: async () => {
             const res = await getSearch(termo); return res.data;
         },
-        cacheTime: 0,
     });
-    
-    const listData = selectID ? result.filter(item => item[id] === selectID) : result;
+    const resultado = result?.filter(item => item[id] === selectID); 
+    const listData = selectID ? resultado?.length == 0 ? result : resultado : result
     if(!listData) return null;
     return (
         <Column >

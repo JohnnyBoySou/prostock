@@ -228,8 +228,8 @@ const Store = React.memo(({ setselectCategory, selectCategory, settab }) => {
             }}>
                 <Row justify='space-between'>
                     <Column gv={4}>
-                        <Title size={22}>{nome.length > 20 ? nome.slice(0,20) + '...' : nome}</Title>
-                        <Label>{endereco.length > 24 ? endereco.slice(0,24) + '...' : endereco} • {status}</Label>
+                        <Title size={22}>{nome?.length > 20 ? nome?.slice(0,20) + '...' : nome}</Title>
+                        <Label>{endereco?.length > 24 ? endereco?.slice(0,24) + '...' : endereco} • {status}</Label>
                     </Column>
                     <Column style={{ width: 36, height: 36, borderColor: categoryArray.includes(id) ? colors.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: categoryArray.includes(id) ? colors.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>
                         <Check color='#FFF' size={24} />

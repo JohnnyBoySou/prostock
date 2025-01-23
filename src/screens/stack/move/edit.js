@@ -44,7 +44,7 @@ export default function MoveEditScreen({ navigation, route }) {
         return `${year}-${month}-${day}`;
     };
     const formatDateToDDMMYYYY = (date) => {
-        const [year, month, day] = date.split(' ')[0].split('-');
+        const [year, month, day] = date?.split(' ')[0]?.split('-');
         return `${day}/${month}/${year}`;
     };
 
@@ -110,7 +110,6 @@ export default function MoveEditScreen({ navigation, route }) {
 }
 
 const Product = ({ productId, setproductId,settab, setvalue, value, settipo, tipo }) => {
-
     if (!value) return null;
     const fieldKeys = [
         'quantidade',
@@ -142,7 +141,7 @@ const Product = ({ productId, setproductId,settab, setvalue, value, settipo, tip
     }
     return (
         <Column>
-            <ListSearch spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
+            <ListSearch  selectID={productId} spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
             <Column mh={26} mv={16}>
                 <Tipo setvalue={settipo} value={tipo} />
             </Column>
@@ -153,7 +152,7 @@ const Product = ({ productId, setproductId,settab, setvalue, value, settipo, tip
         </Column>
     )
 }
-const Supplier = React.memo(({ supplierId, setsupplierId,  settab, setvalue, value, }) => {
+const Supplier = React.memo(({ supplierId, setsupplierId, settab, setvalue, value, }) => {
     const fieldKeys = [
         'lote',
         'validade',
@@ -183,7 +182,7 @@ const Supplier = React.memo(({ supplierId, setsupplierId,  settab, setvalue, val
     }
     return (
         <Column>
-            <ListSearch spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchSupplier} getList={listSupplier} empty={<SupplierEmpty />} />
+            <ListSearch spacing={false} selectID={supplierId} renderItem={({ item }) => <Card item={item} />} getSearch={searchSupplier} getList={listSupplier} empty={<SupplierEmpty />} />
             <Column mv={8} />
             <Form fieldKeys={fieldKeys} initialValues={value} onSubmit={(value) => {
                 setvalue(value);

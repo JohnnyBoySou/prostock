@@ -133,10 +133,10 @@ const Address = React.memo(({ setaddressValues, addressValues, isLoading, status
     }
 
     useEffect(() => {
-        if (values.cep.length === 9) {
+        if (values?.cep?.length === 9) {
             getLocal();
         }
-    }, [values.cep]);
+    }, [values?.cep]);
 
 
     const validateForm = () => {

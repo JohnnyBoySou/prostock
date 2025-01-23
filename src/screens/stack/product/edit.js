@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, useQuery, Tabs, Medida, Status, ListSearch, Title, Row, colors, Loader } from "@/ui";
 
-import { listCategory } from "@/api/category";
+import { listCategory, searchCategory } from "@/api/category";
 import { Pressable } from "react-native";
 import { Check } from 'lucide-react-native';
 import { showProduct, editProduct, deleteProduct } from "@/api/product";
-
+import { CategoryEmpty } from '@/ui/Emptys/category';
 export default function ProductEditScreen({ route, navigation }) {
     const [tab, settab] = useState("Sobre");
 
@@ -224,7 +224,7 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
         });
     };
 
-    const Item = ({ category }) => {
+    const Card = ({ category }) => {
         const { nome, status, id, } = category;
         return (
             <Pressable onPress={() => toggleCategory(id)} style={{
@@ -247,7 +247,7 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
 
     return (
         <Column gv={26}>
-        <ListSearch id="add product" spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchCategory} getList={listCategory} empty={<CategoryEmpty />} />
+        <ListSearch id="add product"  spacing={false} renderItem={({ item }) => <Card category={item} />} getSearch={searchCategory} getList={listCategory} empty={<CategoryEmpty />} />
         <Column mh={26} gv={26}>
             <Message error={error} />
             <Button
@@ -331,7 +331,7 @@ const Stock = ({ stockValues, handleExclude, isLoading, setstockValues, handleCr
                 <Input
                     key={field}
                     label={fieldProperties[field].label}
-                    value={stockValues[field]?.toString() || ""}
+                    value={stockValues[field] || ""}
                     setValue={(value) => handleChange(field, value)}
                     placeholder={fieldProperties[field].placeholder}
                     disabled={isLoading}
