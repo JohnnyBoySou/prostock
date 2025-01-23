@@ -64,6 +64,9 @@ export default function ProductAddScreen({ navigation, route }) {
             const res = await addProduct(params)
             setsuccess(res.message);
             setTimeout(() => {
+                if (data) {
+                    navigation.navigation('AIResult', { data: data })
+                }
                 navigation.replace('ProductList')
             }, 1000);
         } catch (error) {

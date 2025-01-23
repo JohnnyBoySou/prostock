@@ -9,6 +9,7 @@ import { searchProduct,} from '@/api/product';
 
 import { ProductEmptyIA } from '@/ui/Emptys/product_ia';
 import { SupplierEmptyIA } from '@/ui/Emptys/supplier_ia';
+import { useNavigation } from '@react-navigation/native';
 
 export default function AIResultScreen({ navigation, route }) {
 
@@ -75,8 +76,8 @@ export default function AIResultScreen({ navigation, route }) {
           <Label size={24} align='center'>Veja o que encontramos:</Label>
         </Column>
 
-        <SupplierList fornecedor={fornecedor} setfornecedor={setfornecedor} defaultValue={fornecedorData?.razaosocial} />
-        <ProductList produto={produto} setproduto={setproduto} defaultValue={produtoData?.nome} />
+        <SupplierList fornecedor={fornecedor} setfornecedor={setfornecedor} defaultValue={fornecedorData?.razaosocial} fornecedorData={fornecedorData} />
+        <ProductList produto={produto} setproduto={setproduto} defaultValue={produtoData?.nome} produtoData={produtoData} />
 
       </ScrollVertical>
       <Column style={{ position: 'absolute', bottom: 30, alignSelf: 'center', left: 26, right: 26, }} ph={26}>
@@ -89,7 +90,8 @@ export default function AIResultScreen({ navigation, route }) {
   );
 }
 
-const SupplierList = ({ fornecedor, setfornecedor, defaultValue }) => {
+const SupplierList = ({ fornecedor, setfornecedor, defaultValue, fornecedorData }) => {
+  const navigation = useNavigation();
   const Card = ({ item }) => {
     if (!item) return null;
     const { id, status, cep, cidade, cnpj, email, endereco, estado, telefone, cpf_responsavel, email_responsavel, id_loja, nome_fantasia, nome_responsavel, telefone_responsavel } = item;
@@ -116,11 +118,19 @@ const SupplierList = ({ fornecedor, setfornecedor, defaultValue }) => {
         refresh={false}
         renderItem={({ item }) => <Card item={item} />}
         getSearch={searchSupplier}
-        empty={<SupplierEmptyIA />} />
+        empty={<Column>
+          <Column style={{ backgroundColor: '#fff', borderRadius: 12, }} pv={20} ph={20} justify='center' gv={12}>
+            <Title align='center' color='#303030' size={18} fontFamily="Font_Book">Não encontramos nenhum fornecedor com esse nome. Deseja criar um novo utilizando os dados fornecidos?</Title>
+            <Pressable onPress={() => {navigation.navigate('SupplierAdd', { data: fornecedorData})}}  style={{ backgroundColor: colors.color.blue, padding: 20, borderRadius: 8, justifyContent: 'center', alignItems: 'center',  }}>
+              <Label color='#fff' fontSize={18} fontFamily="Font_Medium">Criar fornecedor</Label>
+            </Pressable>
+          </Column>
+        </Column>} />
     </Column>
   )
 }
-const ProductList = ({ produto, setproduto, defaultValue }) => {
+const ProductList = ({ produto, setproduto, defaultValue, produtoData }) => {
+  const navigation = useNavigation();
   const Card = ({ item }) => {
     if (!item) return null;
     const { id, status, estoque_minimo, estoque_maximo, nome, unidade, } = item;
@@ -148,7 +158,14 @@ const ProductList = ({ produto, setproduto, defaultValue }) => {
         renderItem={({ item }) => <Card item={item} />}
         getSearch={searchProduct}
         refresh={false}
-        empty={<ProductEmptyIA />} />
+        empty={<Column>
+          <Column style={{ backgroundColor: '#fff', borderRadius: 12, }} pv={20} ph={20} justify='center' gv={12}>
+            <Title align='center' color='#303030' size={18} fontFamily="Font_Book">Não encontramos nenhum produto com esse nome. Deseja criar um novo utilizando os dados fornecidos?</Title>
+            <Pressable onPress={() => {navigation.navigate('ProductAdd', { data: produtoData})}}  style={{ backgroundColor: colors.color.yellow, padding: 20, borderRadius: 8, justifyContent: 'center', alignItems: 'center',  }}>
+              <Label color='#fff' fontSize={18} fontFamily="Font_Medium">Criar produto</Label>
+            </Pressable>
+          </Column>
+        </Column>} />
     </Column>
   )
 }
