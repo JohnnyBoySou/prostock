@@ -9,7 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~4.0.0",
+    "@expo/metro-runtime": "~4.0.1",
     "@expo/vector-icons": "^14.0.4",
     "@gorhom/bottom-sheet": "^5.0.6",
     "@react-native-async-storage/async-storage": "1.23.1",
@@ -22,8 +22,8 @@
     "@types/react": "~18.3.12",
     "axios": "^1.7.9",
     "babel-plugin-module-resolver": "^5.0.2",
-    "expo": "~52.0.25",
-    "expo-camera": "^16.0.11",
+    "expo": "~52.0.26",
+    "expo-camera": "~16.0.13",
     "expo-clipboard": "^7.0.1",
     "expo-constants": "~17.0.3",
     "expo-font": "~13.0.2",
@@ -32,7 +32,7 @@
     "expo-linear-gradient": "^14.0.2",
     "expo-notifications": "^0.29.12",
     "expo-screen-orientation": "~8.0.4",
-    "expo-splash-screen": "~0.29.20",
+    "expo-splash-screen": "~0.29.21",
     "expo-status-bar": "~2.0.1",
     "lucide-react-native": "^0.469.0",
     "moti": "^0.29.0",
@@ -50,7 +50,8 @@
     "react-native-web": "~0.19.13",
     "styled-components": "*",
     "typescript": "~5.7.2",
-    "expo-linking": "~7.0.4"
+    "expo-linking": "~7.0.4",
+    "expo-image-manipulator": "~13.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0"

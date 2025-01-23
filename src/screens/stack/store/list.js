@@ -27,7 +27,7 @@ const Items = () => {
             <Pressable onPress={() => { navigation.navigate('StoreEdit', { id: id }) }} >
                 <Row pv={20} justify="space-between" ph={20} mv={8} style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
                     <Column gv={6}>
-                        <Title size={20} fontFamily='Font_Medium'>{nome}  </Title>
+                        <Title size={20} fontFamily='Font_Medium'>{nome} </Title>
                         <Label>{cidade} • {status} </Label>
                     </Column>
                     <PenLine color={colors.color.primary} />

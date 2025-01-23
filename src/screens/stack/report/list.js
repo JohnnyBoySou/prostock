@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Main, Row, Loader, colors, Title, Column, Label, useQuery, Input, } from "@/ui";
+import { Main, Row, Loader, colors, Title, Column, Label, useQuery, Input, ListSearch } from "@/ui";
 import { ChevronRight,  Search} from "lucide-react-native";
 import { FlatList } from 'react-native';
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { listReportStore } from '@/api/report';
 import { PieChart } from "react-native-gifted-charts";
+
+import { listStore, searchStore } from '@/api/store';
+import { StoreEmpty } from "@/ui/Emptys/store";
 
 export default function ReportListScreen() {
 
@@ -26,8 +29,57 @@ export default function ReportListScreen() {
                 :
                 <Column style={{ flex: 1 }}>
                   
-                    <Items data={data} header={
-                          <Column gv={16} mv={12} mh={26}>
+                    <Items data={data} />
+                </Column>
+            }
+        </Main>)
+}
+
+const Items = ({ data, header }) => {
+    if(!data) return null;
+    const navigation = useNavigation();
+    const Card = ({ item }) => {
+        if(!item) return null;
+        const { nome, id, cidade, status } = item;
+      
+        return (
+            <Pressable onPress={() => { navigation.navigate('ReportSingle', { id: id }) }} style={{ backgroundColor: '#FFF', borderRadius: 8, marginVertical: 8,  paddingTop: 20,}}>
+                <Row justify="space-between" ph={20} mb={20}>
+                    <Column gv={6}>
+                        <Title size={20} fontFamily='Font_Medium'>{nome} </Title>
+                        <Label>{cidade} • {status} </Label>
+                    </Column>
+                    <ChevronRight color={colors.color.primary} />
+                </Row>
+              
+            </Pressable>
+        )
+    }
+    return (
+        <Column>
+            <Column mh={26} style={{ marginTop: 20, marginBottom: -10, }}>
+                <Title>Selecione uma loja</Title>
+            </Column>
+            <ListSearch id="list store" top spacing={true} renderItem={({ item }) => <Card item={item} />} getSearch={searchStore} getList={listStore} empty={<StoreEmpty />} />
+        </Column>
+    )
+}
+/*
+  const porcentagem1 = parseFloat(entrada_saida_porcentagem.toString().replace(',', '.'));
+        const porcentagem2 = parseFloat(estoque_porcentagem.toString().replace(',', '.'));
+
+        const ocupacao = 100 - porcentagem2 
+        const entradaxsaida = 100 - porcentagem1
+
+        const pieData = [
+            { value: ocupacao, color: '#3590F3' },
+            { value: porcentagem2, color: '#EA1E2C' },
+        ];
+        const pieData2 = [
+            { value: porcentagem1, color: '#43AA8B' },
+            { value: entradaxsaida, color: '#FFB238' },
+        ];
+ <Column gv={16} mv={12} mh={26}>
                           <Title size={24}>Filtrar por data</Title>
                           <Row gh={8}>
                               <Column>
@@ -43,42 +95,7 @@ export default function ReportListScreen() {
                               </Pressable>
                           </Row>
                       </Column>
-                    }/>
-                </Column>
-            }
-        </Main>)
-}
-
-const Items = ({ data, header }) => {
-    if(!data) return null;
-    const navigation = useNavigation();
-    const Card = ({ item }) => {
-        if(!item) return null;
-        const { nome_loja, id, entrada, saida, entrada_saida_porcentagem, estoque_maximo, estoque_ocupado, estoque_porcentagem, status } = item;
-        const porcentagem1 = parseFloat(entrada_saida_porcentagem.toString().replace(',', '.'));
-        const porcentagem2 = parseFloat(estoque_porcentagem.toString().replace(',', '.'));
-
-        const ocupacao = 100 - porcentagem2 
-        const entradaxsaida = 100 - porcentagem1
-
-        const pieData = [
-            { value: ocupacao, color: '#3590F3' },
-            { value: porcentagem2, color: '#EA1E2C' },
-        ];
-        const pieData2 = [
-            { value: porcentagem1, color: '#43AA8B' },
-            { value: entradaxsaida, color: '#FFB238' },
-        ];
-        return (
-            <Pressable onPress={() => { navigation.navigate('ReportSingle', { id: id }) }} style={{ backgroundColor: '#FFF', borderRadius: 8, marginVertical: 12, marginHorizontal: 26,  paddingBottom: 20, paddingTop: 20,}}>
-                <Row justify="space-between" ph={20} mb={20} >
-                    <Column>
-                        <Label size={12}>Loja • {status}</Label>
-                        <Title size={16}>{nome_loja}</Title>
-                    </Column>
-                    <ChevronRight color={colors.color.primary} />
-                </Row>
-                <Row ph={20} justify='space-between'>
+  <Row ph={20} justify='space-between'>
                     <Column gv={6}>
                     <Row gh={8}>
                             <Column style={{ width: 16, height: 16, backgroundColor: '#43AA8B', }} />
@@ -120,19 +137,4 @@ const Items = ({ data, header }) => {
                         />
                     </Row>
                 </Row>
-            </Pressable>
-        )
-    }
-    return (
-        <Column >
-            <FlatList
-                style={{ paddingTop: 12, }}
-                data={data}
-                renderItem={({ item }) => <Card item={item} />}
-                keyExtractor={item => item.id}
-                ListFooterComponent={<Column pv={40} />}
-                ListHeaderComponent={header}
-            />
-        </Column>
-    )
-}
+*/

@@ -178,7 +178,6 @@ const SingleCharts = ({ data, tab, line, loadingDay }) => {
                         <Column style={{ width: '70%', backgroundColor: '#30303030', }} pv={4} justify='center' align='center'>
                             <Label size={16} color='#000'>Valor</Label>
                         </Column>
-
                     </Row>
                     {selectData.map((item, index) => {
                         return (

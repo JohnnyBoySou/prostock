@@ -51,7 +51,7 @@ export function Stacks() {
   const { role } = useUser();
 
   return (
-    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="ReportList" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Perfil" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} /> 
 

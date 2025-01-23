@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Column, Loader, Search, colors, Label, useQuery, useInfiniteQuery, Button } from "@/ui";
 import { RefreshControl, FlatList } from "react-native-gesture-handler";
 
-export default function ListSearch({ renderItem, getSearch, getList, empty, spacing = true, top = false, id = 'id' }) {
+export default function ListSearch({ renderItem, getSearch, getList, empty, spacing = true, top = false, id = 'id', name = '', refresh = true, }) {
     const [termo, settermo] = useState('');
 
     const { data: result, isLoading: loadingSearch, refetch: handleSearch } = useQuery({
-        queryKey: [`search ${id}`],
+        queryKey: [`search ${id} ${name}`],
         queryFn: async () => {
             const res = await getSearch(termo); return res.data;
         },
@@ -14,7 +14,7 @@ export default function ListSearch({ renderItem, getSearch, getList, empty, spac
         cacheTime: 0,
     });
     const { data: data, isLoading, fetchNextPage: nextProduct, refetch } = useInfiniteQuery({
-        queryKey: [`infinite ${id}`],
+        queryKey: [`infinite ${id}  ${name}`],
         queryFn: async ({ pageParam = 1 }) => {
             const res = await getList(pageParam);
             return res.data;
@@ -33,7 +33,9 @@ export default function ListSearch({ renderItem, getSearch, getList, empty, spac
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
-                    refreshControl={<RefreshControl refreshing={isLoading} onRefresh={() => { handleSearch() }} />}
+                    
+                    refreshControl={refresh ? <RefreshControl refreshing={isLoading} onRefresh={() => { handleSearch() }} /> : null}
+
                     style={{  paddingHorizontal: 26, paddingVertical: top ? 26 : 0 }}
                     ListFooterComponent={<Column>
                         {listData?.length >= 20 && <Button onPress={() => { nextProduct() }} title="Carregar mais" />}

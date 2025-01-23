@@ -16,6 +16,7 @@ type ApiResponse<T> = T | null;
 const apiClient = axios.create({
   baseURL: baseURL,
   headers: { "Content-Type": "application/json" },
+  timeout: 30000,
 });
 
 export async function fetchApi<T = unknown>(

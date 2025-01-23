@@ -18,7 +18,6 @@ export default function HomeScreen({ navigation, }) {
         if (hour < 18) return 'Boa tarde';
         return 'Boa noite';
     }
-
     const isFocused = useIsFocused();
     const [loading, setloading] = useState(true);
     const [store, setstore] = useState();
@@ -39,7 +38,6 @@ export default function HomeScreen({ navigation, }) {
             fetchStore();
         }
     }, [isFocused]);
-
 
     return (
         <Main >

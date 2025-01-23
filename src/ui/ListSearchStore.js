@@ -8,7 +8,7 @@ export default function ListSearchStore({ renderItem, getSearch, getList, empty,
     const { data: result, isLoading: loadingSearch, refetch: handleSearch } = useQuery({
         queryKey: [`search ${id} ${name}`],
         queryFn: async () => {
-            const res = await getSearch(id, termo, dateC, dateF); return res.data;
+            const res = await getSearch(id, termo); return res.data;
         },
         enabled: false,
         cacheTime: 0,
@@ -17,7 +17,7 @@ export default function ListSearchStore({ renderItem, getSearch, getList, empty,
     const { data: data, isLoading, fetchNextPage: nextProduct, refetch } = useInfiniteQuery({
         queryKey: [`list infinite ${id} ${name} ${dateC} ${dateF}`],
         queryFn: async ({ pageParam = 1 }) => {
-            const res = await getList(id, pageParam, dateC, dateF);
+            const res = await getList(id, pageParam);
             return res.data;
         },
         getNextPageParam: (lastPage) => {
