@@ -1,14 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Pressable } from 'react-native';
-import { Main, Column, Label, Title, Button, Image, SCREEN_WIDTH, SCREEN_HEIGHT, colors, Loader, Row, ListSearchIA, ScrollVertical } from '@/ui';
-import { Check, Flashlight, SwitchCamera, FlashlightOff, Truck, LayoutGrid } from 'lucide-react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Main, Column, Label, Title, Button, Image, colors, Row, ListSearchIA, ScrollVertical } from '@/ui';
+import { Check } from 'lucide-react-native';
 
 import { searchSupplier,} from '@/api/supplier';
 import { searchProduct,} from '@/api/product';
 
-import { ProductEmptyIA } from '@/ui/Emptys/product_ia';
-import { SupplierEmptyIA } from '@/ui/Emptys/supplier_ia';
 import { useNavigation } from '@react-navigation/native';
 
 export default function AIResultScreen({ navigation, route }) {
