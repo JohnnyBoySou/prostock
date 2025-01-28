@@ -10,8 +10,8 @@ import { LogLevel, OneSignal } from 'react-native-onesignal';
 
 export default function LoginScreen() {
     const { saveUser } = useUser();
-    const [password, setpassword] = useState('123456');
-    const [email, setemail] = useState('admin@admin.com');
+    const [password, setpassword] = useState('');
+    const [email, setemail] = useState('');
     const [success, setSuccess] = useState();
     const [error, setError] = useState();
     const [isLoading, setIsLoading] = useState(false);

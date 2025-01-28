@@ -13,7 +13,6 @@
       "backgroundColor": "#019866"
     },
     "ios": {
-      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": false,
       "requireFullScreen": true,
       "buildNumber": "11.0.0",
@@ -23,7 +22,6 @@
       }
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
       "package": "com.engd.prostock",
       "versionCode": 11,
       "adaptiveIcon": {
@@ -61,14 +59,7 @@
       [
         "onesignal-expo-plugin",
         {
-          "mode": "production",
-          "smallIcons": [
-            "./assets/small_icon.png"
-          ],
-          "largeIcons": [
-            "./assets/large_icon.png"
-          ],
-          "smallIconAccentColor": "#FF26BD"
+          "mode": "production"
         }
       ]
     ],

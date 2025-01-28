@@ -131,7 +131,7 @@ function CustomDrawerContent({ navigation }) {
             <ChevronRight color="#484848" size={20} />
           </Pressable>
       </Column>
-      <Label>Versão {Application.nativeApplicationVersion}</Label>
+      <Label>Versão {Application?.nativeApplicationVersion}</Label>
     </Column>
   );
 }

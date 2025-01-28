@@ -9,7 +9,7 @@ import { getStore } from "@/hooks/store";
 import { MotiView } from 'moti';
 
 export default function HomeScreen({ navigation, }) {
-    const { user } = useUser();
+    const { user, role } = useUser();
     const greatings = () => {
         const date = new Date();
         const hour = date.getHours();
@@ -74,9 +74,9 @@ export default function HomeScreen({ navigation, }) {
                                     <Row align="center" justify='space-between'>
                                         <Column gv={4}>
                                             <Title size={18}>{store?.nome}</Title>
-                                            <Label size={12}>ALTERAR LOJA</Label>
+                                            <Label size={12}>LOJA SELECIONADA</Label>
                                         </Column>
-                                        <ChevronRight color="#484848" size={24} />
+                                        {role != 'regular' && <ChevronRight color="#484848" size={24} />}
                                     </Row>}
                             </Pressable>
                             <Row justify='space-between' gh={12}>
@@ -95,14 +95,14 @@ export default function HomeScreen({ navigation, }) {
                         <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
                         <Column style={{height: 12 }} />
                         <Row  justify='space-between' gh={12}>
-                            <Pressable onPress={() => { navigation.navigate('UserAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D9EEE8', }}>
-                                <Users size={32} color='#43AA8B' />
-                                <Title size={16} fontFamily="Font_Medium" color='#43AA8B'>Adicionar {'\n'}Usuário</Title>
+                            <Pressable onPress={() => { navigation.navigate('SupplierAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D9EEE8', }}>
+                                <Truck size={32} color='#43AA8B' />
+                                <Title size={16} fontFamily="Font_Medium" color='#43AA8B'>Adicionar {'\n'}Fornecedor</Title>
                             </Pressable>
-                            <Pressable onPress={() => { navigation.navigate('ReportList') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#EADAFF', }}>
+                            {role != 'regular' && <Pressable onPress={() => { navigation.navigate('ReportList') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#EADAFF', }}>
                                 <Pie size={32} color='#9747FF' />
                                 <Title size={16} fontFamily="Font_Medium" color='#9747FF'>Acessar {'\n'}Relatórios</Title>
-                            </Pressable>
+                            </Pressable>}
                         </Row>
                         <Column style={{height: 12 }} />
                         <Row justify='space-between' gh={12}>
