@@ -52,7 +52,6 @@ export default function LoginScreen() {
             <Message success={success} error={error} />
             <Column>
                 <Button label='Entrar' onPress={handleLogin} loading={isLoading} />
-                <Button label='Esqueci minha senha' variant='link' />
             </Column>
         </Column>
     </Main>)
