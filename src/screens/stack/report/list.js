@@ -1,26 +1,18 @@
 import React, { useState } from "react";
 import { Main, Row, Loader, colors, Title, Column, Label, useQuery, Input, ListSearch } from "@/ui";
-import { ChevronRight,  Search} from "lucide-react-native";
-import { FlatList } from 'react-native';
-import { Pressable } from "react-native";
+import { ChevronRight,  } from "lucide-react-native";
+import { FlatList, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { listReportStore } from '@/api/report';
-import { PieChart } from "react-native-gifted-charts";
-
-import { listStore, searchStore } from '@/api/store';
-import { StoreEmpty } from "@/ui/Emptys/store";
+import { showLoggedUser } from "@/api/user";
 
 export default function ReportListScreen() {
-
-    const dateNow = new Date().toLocaleDateString('pt-BR');
-    const [dateC, setdateC] = useState('01/01/2025');
-    const [dateF, setdateF] = useState(dateNow);
     const { data, isLoading, refetch } = useQuery({
         queryKey: ["stores report"],
         queryFn: async () => {
-            const res = await listReportStore(1, dateC, dateF); return res.data;
+            const res = await showLoggedUser(); return res;
         }
     });
+    console.log(data)
     return (
         <Main>
             {isLoading ? <Column style={{ flex: 1, }} justify="center" align='center'>
@@ -28,8 +20,7 @@ export default function ReportListScreen() {
             </Column>
                 :
                 <Column style={{ flex: 1 }}>
-                  
-                    <Items data={data} />
+                    <Items data={data?.lojas} />
                 </Column>
             }
         </Main>)
@@ -41,7 +32,6 @@ const Items = ({ data, header }) => {
     const Card = ({ item }) => {
         if(!item) return null;
         const { nome, id, cidade, status } = item;
-      
         return (
             <Pressable onPress={() => { navigation.navigate('ReportSingle', { id: id }) }} style={{ backgroundColor: '#FFF', borderRadius: 8, marginVertical: 8,  paddingTop: 20,}}>
                 <Row justify="space-between" ph={20} mb={20}>
@@ -51,7 +41,6 @@ const Items = ({ data, header }) => {
                     </Column>
                     <ChevronRight color={colors.color.primary} />
                 </Row>
-              
             </Pressable>
         )
     }
@@ -60,7 +49,12 @@ const Items = ({ data, header }) => {
             <Column mh={26} style={{ marginTop: 20, marginBottom: -10, }}>
                 <Title>Selecione uma loja</Title>
             </Column>
-            <ListSearch id="list store" top spacing={true} renderItem={({ item }) => <Card item={item} />} getSearch={searchStore} getList={listStore} empty={<StoreEmpty />} />
+            <FlatList
+                data={data}
+                keyExtractor={(index) => index}
+                style={{ marginHorizontal: 26, paddingVertical: 12, }}
+                renderItem={({ item }) => <Card item={item} />}
+                />
         </Column>
     )
 }

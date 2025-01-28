@@ -51,6 +51,11 @@ export default function NotifyListScreen() {
                         {page * 20 === data.pages.flat().length && <Button label='Mostrar mais' onPress={nextProduct} />}
                     </Column>
                 }
+                ListEmptyComponent={
+                    <Column>
+                        <Title size={24} fontFamily='Font_Medium' align='center' mt={26}>Nenhuma notificação por enquanto.</Title>   
+                    </Column>
+                }
             />
         </Main>)
 }

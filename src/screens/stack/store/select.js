@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Main, ScrollVertical, Title, Column, Row, Label, colors, Loader, Message, } from '@/ui';
+import { Main, ScrollVertical, Title, Column, Row, Label, colors, Loader, ListSearch, Message, } from '@/ui';
 import { getStore, selectStore } from '@/hooks/store';
 import { Check, ChevronRight, Plus } from 'lucide-react-native';
 import { listUser } from '@/api/auth';
-import { Pressable } from 'react-native';
+import { FlatList, Pressable } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
+import { listStore, searchStore } from '@/api/store';
+import { StoreEmpty } from '@/ui/Emptys/store';
 
 export default function StoreSelectScreen({ navigation, }) {
     const [loading, setloading] = useState();
@@ -60,8 +62,8 @@ export default function StoreSelectScreen({ navigation, }) {
     return (
         <Main>
             <ScrollVertical>
-                <Column mh={26} gv={12}>
-                    <Column>
+                <Column  gv={12}>
+                    <Column mh={26}>
                         <Label>Selecionado</Label>
                         <Row pv={20} justify="space-between" ph={20} mv={12} style={{ backgroundColor: colors.color.primary, borderRadius: 8 }}>
                             <Column gv={8}>
@@ -71,43 +73,41 @@ export default function StoreSelectScreen({ navigation, }) {
                             <Check size={32} color='#fff' />
                         </Row>
                     </Column>
-                    <Column>
-                        <Label>Resultados</Label>
-                        {user?.lojas?.map((store, index) => (
-                            <Pressable key={index} onPress={() => handleStore(store)}>
-                                <Item store={store} />
-                            </Pressable>
-                        ))}
-                    </Column>
-                    <Pressable style={{ backgroundColor: colors.color.blue, borderRadius: 8, }} onPress={() => { navigation.navigate('Stacks', { screen: 'StoreAdd' }) }} >
-                        <Row justify="space-between" ph={20} align='center' gh={8} pv={20}>
-                            <Label size={18} color='#fff'>Adicionar nova loja</Label>
-                            <Column style={{ backgroundColor: '#fff', borderRadius: 4, }} pv={6} ph={6}>
-                                <Plus size={24} color={colors.color.blue} />
-                            </Column>
-                        </Row>
-                    </Pressable>
+
+                    {loading ? <Loader size={32} color={colors.color.primary} /> :
+                        <FlatList
+                            ListHeaderComponent={
+                                <Column>
+                                    <Label >Suas lojas</Label>
+                                </Column>
+                            }
+                            data={user?.lojas}
+                            keyExtractor={(index) => index}
+                            style={{ marginHorizontal: 26, }}
+                            renderItem={({ item }) => <Item store={item} handleStore={handleStore} />}
+                        />}
                 </Column>
 
             </ScrollVertical>
-            <Column style={{ position: 'absolute', bottom:30, alignSelf: 'center' }} >
+            <Column style={{ position: 'absolute', bottom: 30, alignSelf: 'center' }} >
                 <Message success={success} error={error} />
             </Column>
         </Main>
     )
 }
 
-const Item = ({ store }) => {
-    
-    if(!store) return null;
+const Item = ({ store, handleStore }) => {
+    if (!store) return null;
     const { nome, endereco, status } = store;
     return (
-        <Row pv={20} justify="space-between" ph={20} mv={12} style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
-            <Column gv={4}>
-                <Title size={22}>{nome}</Title>
-                <Label>{endereco} • {status}</Label>
-            </Column>
-            <ChevronRight color={colors.color.primary} />
-        </Row>
+        <Pressable onPress={() => handleStore(store)}>
+            <Row pv={20} justify="space-between" ph={20} mv={12} style={{ backgroundColor: '#FFF', borderRadius: 8 }}>
+                <Column gv={4}>
+                    <Title size={22}>{nome}</Title>
+                    <Label>{endereco} • {status}</Label>
+                </Column>
+                <ChevronRight color={colors.color.primary} />
+            </Row>
+        </Pressable>
     )
 }

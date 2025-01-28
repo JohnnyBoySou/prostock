@@ -30,6 +30,16 @@ export const listReportStore = async (page: number = 1, datac: string, dataf: st
         throw new Error(error.message);
     }
 }
+export const searchReportStore = async (name: string) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/estatisticas/lojas" + "?busca=" + name, {
+            method: "GET",
+        });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 export const listReportProduct = async (id: number, page: number = 1, datac: string, dataf: string) => {
     const c = formatDateForLaravel(datac);
     const f = formatDateForLaravel(dataf);

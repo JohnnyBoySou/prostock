@@ -1,18 +1,10 @@
-import React, { memo, useState, useRef, useEffect, useCallback } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Users, Status, Label, useQuery, Title, Row, colors, Loader } from "@/ui";
-
-import { listStore } from "@/api/store";
-import { Pressable } from "react-native";
-import { Check } from 'lucide-react-native';
-import { editUser, showUser } from "@/api/user";
-import { useUser } from './../../../context/user';
+import React, { useState, useRef, useEffect } from "react";
+import { Main, Button, Message, Column, Input, ScrollVertical, Loader, useQuery, colors } from "@/ui";
+import { editLoggedUser, showLoggedUser } from "@/api/user";
 
 export default function ProfileScreen({ navigation, route }) {
-    const { user : userID} = useUser();
-
-    const id = userID.id;
-
     const [aboutValues, setaboutValues] = useState({
+        id: "",
         name: "",
         last_name: "",
         email: "",
@@ -20,19 +12,19 @@ export default function ProfileScreen({ navigation, route }) {
         cpf: "",
         status: "",
         tipo: "",
-        lojas: [],
     });
 
     const { data: user, isLoading: loading } = useQuery({
-        queryKey: ["user edit" + id],
+        queryKey: ["user edit"],
         queryFn: async () => {
-            const res = await showUser(id); return res;
+            const res = await showLoggedUser(); return res;
         }
     });
 
     useEffect(() => {
         if (user) {
             setaboutValues({
+                id: user.id,
                 name: user.nome,
                 last_name: user.sobrenome,
                 email: user.email,
@@ -40,7 +32,6 @@ export default function ProfileScreen({ navigation, route }) {
                 cpf: user.cpf,
                 status: user.status,
                 tipo: user.tipo,
-                lojas: user.lojas,
             });
         }
     }, [user]);
@@ -60,12 +51,10 @@ export default function ProfileScreen({ navigation, route }) {
                 email: aboutValues.email,
                 cpf: aboutValues.cpf,
                 telefone: aboutValues.phone,
-                password: aboutValues.password,
                 status: aboutValues.status,
                 tipo: aboutValues.tipo,
-                lojas: aboutValues.lojas,
             }
-            const res = await editUser(id, params)
+            const res = await editLoggedUser(params)
             setsuccess(res.message);
             setTimeout(() => {
                 navigation.navigate('Home');
@@ -79,10 +68,10 @@ export default function ProfileScreen({ navigation, route }) {
 
 
     return (<Main>
-
-        <ScrollVertical>
-            <About  handleEdit={handleEdit} success={success} error={error} setSuccess={setsuccess} setError={seterror} isLoading={isLoading} aboutValues={aboutValues} setaboutValues={setaboutValues} />
-        </ScrollVertical>
+        {loading ? <Loader size={24} color={colors.color.primary} /> :
+            <ScrollVertical>
+                <About handleEdit={handleEdit} success={success} error={error} setSuccess={setsuccess} setError={seterror} isLoading={isLoading} aboutValues={aboutValues} setaboutValues={setaboutValues} />
+            </ScrollVertical>}
     </Main>)
 }
 

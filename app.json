@@ -2,7 +2,7 @@
   "expo": {
     "name": "ProStock",
     "slug": "ProStock",
-    "version": "10.0.0",
+    "version": "11.0.0",
     "scheme": "prostock",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,17 +13,28 @@
       "backgroundColor": "#019866"
     },
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": false,
       "requireFullScreen": true,
-      "bundleIdentifier": "com.engd.prostock"
+      "buildNumber": "11.0.0",
+      "bundleIdentifier": "com.engd.prostock",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Esse app usa a câmera para escanear documentos com Inteligência Artificial."
+      }
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
+      "package": "com.engd.prostock",
+      "versionCode": 11,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#019866"
       },
-      "package": "com.engd.prostock",
-      "versionCode": 10,
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.READ_MEDIA_VIDEO"
+      ],
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
@@ -50,10 +61,16 @@
       [
         "onesignal-expo-plugin",
         {
-          "mode": "production"
+          "mode": "production",
+          "smallIcons": [
+            "./assets/small_icon.png"
+          ],
+          "largeIcons": [
+            "./assets/large_icon.png"
+          ],
+          "smallIconAccentColor": "#FF26BD"
         }
       ]
-     
     ],
     "extra": {
       "oneSignalAppId": "a761f833-9b85-4811-ac5b-b5cd68313b34"

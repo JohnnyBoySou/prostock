@@ -43,16 +43,15 @@ import AIResultScreen from "@/screens/stack/ai/result";
 import ProfileScreen from "@/screens/stack/profile";
 
 import NotifyListScreen from '@/screens/stack/notify/list';
-import NotifyShowScreen from '@/screens/stack/notify/show'; 
+import NotifyShowScreen from '@/screens/stack/notify/show';
 
 export function Stacks() {
 
   const { role } = useUser();
-
   return (
     <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
-      <Stack.Screen name="Profile" component={ProfileScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Perfil" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} /> 
+      <Stack.Screen name="Profile" component={ProfileScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Perfil" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
 
       <Stack.Group>
         <Stack.Screen name="AI" component={AIScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Inteligência Artificial" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
@@ -60,12 +59,14 @@ export function Stacks() {
         <Stack.Screen name="OCR" component={OCRScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
       </Stack.Group>
 
-      <Stack.Group>
-        <Stack.Screen name="ReportList" component={ReportListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar relatórios" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
-        <Stack.Screen name="ReportSingle" component={ReportSingleScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
-        <Stack.Screen name="ReportProduct" component={ReportProductScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório de produtos" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
-        <Stack.Screen name="ReportSupplier" component={ReportSupplierScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório de fornecedores" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
-      </Stack.Group>
+      {role === 'superadmin' || role === 'adminloja' && (
+        <Stack.Group>
+          <Stack.Screen name="ReportList" component={ReportListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar relatórios" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+          <Stack.Screen name="ReportSingle" component={ReportSingleScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+          <Stack.Screen name="ReportProduct" component={ReportProductScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório de produtos" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+          <Stack.Screen name="ReportSupplier" component={ReportSupplierScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório de fornecedores" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+        </Stack.Group>
+      )}
 
       <Stack.Group>
         <Stack.Screen name="ProductAdd" component={ProductAddScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Criar produto" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
@@ -96,6 +97,11 @@ export function Stacks() {
         <Stack.Screen name="MoveEdit" component={MoveEditScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Editar movimentação" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
       </Stack.Group>
 
+      {role === 'adminloja' && (
+        <Stack.Group>
+            <Stack.Screen name="StoreSelect" component={StoreSelectScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Selecionar loja" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
+        </Stack.Group>
+      )}
       {role === 'superadmin' && (
         <Stack.Group>
           <Stack.Group>

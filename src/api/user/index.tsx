@@ -43,11 +43,11 @@ export const addUser = async (params: User) => {
     }
 };
 
-export const editUser = async (id: number, params: User) => {
+export const editUser = async (id: string, params: User) => {
     try {
-        const res = await fetchWithAuth("/usuarios/usuario/" + id, {
-            method: "PUT", data: params, 
-            
+        const res = await fetchWithAuth("/usuarios/usuario/"+id, {
+            method: "PUT",
+            data: params, 
          });
         return res;
     } catch (error) {
@@ -60,6 +60,30 @@ export const showUser = async (id: number) => {
         const res = await fetchWithAuth("/usuarios/usuario/" + id, {
             method: "GET", 
             
+         });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+export const showLoggedUser = async () => {
+    try {
+        const res = await fetchWithAuth("/usuarios/user/", {
+            method: "GET", 
+            
+        });
+        console.log(res)
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export const editLoggedUser = async ( params: User) => {
+    try {
+        const res = await fetchWithAuth("/usuarios/usuario/editar", {
+            method: "POST",
+            data: params, 
          });
         return res;
     } catch (error) {

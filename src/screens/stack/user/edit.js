@@ -37,6 +37,7 @@ export default function UserEditScreen({ navigation, route }) {
                 email: user.email,
                 phone: user.telefone,
                 cpf: user.cpf,
+                password: user.password,
             });
             setselectCategory(user.lojas);
             settipo(user.tipo)
@@ -142,15 +143,19 @@ const About = React.memo(({ settab, aboutValues, setaboutValues, }) => {
             label: "Email",
             placeholder: "Ex.: email@exemplo.com",
             keyboardType: "email-address",
-            lock: true,
         },
         cpf: {
             label: "CPF",
             placeholder: "Ex.: 000.000.000-00",
             keyboardType: "numeric",
             mask: "CPF",
-            lock: true,
         },
+        password: {
+            label: "Senha",
+            placeholder: "Ex.: ********",
+            keyboardType: "default",
+            pass: true,
+        }
     };
 
     // Validações dinâmicas

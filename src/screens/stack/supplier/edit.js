@@ -87,7 +87,6 @@ export default function SupplierEditScreen({ navigation, route }) {
             setIsLoading(false);
         }
     }
-
     return (<Main>
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
@@ -134,7 +133,6 @@ const Responsible =({ settab, responsibleValues, setresponsibleValues, }) => {
         }} />
     )
 }
-
 const Address = React.memo(({ setaddressValues, addressValues, isLoading, status, setstatus, handleCreate }) => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");

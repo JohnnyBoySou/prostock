@@ -4,8 +4,7 @@ import { useUser } from '@/context/user';
 import { Pressable } from 'react-native';
 import { GitCompareArrows, Menu, PieChart as Pie, Users, ChevronRight, ScanText, LayoutGrid, Truck, LayoutList, Bell } from 'lucide-react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { showReportStore } from '@/api/report';
-import { PieChart } from "react-native-gifted-charts";
+
 import { getStore } from "@/hooks/store";
 import { MotiView } from 'moti';
 
@@ -52,7 +51,6 @@ export default function HomeScreen({ navigation, }) {
                             <Bell color={colors.color.primary} size={24} />
                         </Pressable>
                     </Row>
-
                     <Row justify='space-between' align='center' style={{ width: SCREEN_WIDTH - 50, }}>
                         <Column>
                             <FadeUp>
@@ -68,7 +66,6 @@ export default function HomeScreen({ navigation, }) {
                             </Pressable>
                         </FadeUp>
                     </Row>
-
                     <FadeUp delay={700}>
                         <Column gv={16}>
                             <HeadTitle size={24} mt={12}>Sua loja</HeadTitle>
@@ -82,7 +79,6 @@ export default function HomeScreen({ navigation, }) {
                                         <ChevronRight color="#484848" size={24} />
                                     </Row>}
                             </Pressable>
-
                             <Row justify='space-between' gh={12}>
                                 <Pressable onPress={() => { navigation.navigate('MoveAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FFF0D7', }}>
                                     <GitCompareArrows size={32} color='#FFB238' />
@@ -93,11 +89,8 @@ export default function HomeScreen({ navigation, }) {
                                     <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Escanear {'\n'}Documento</Title>
                                 </Pressable>
                             </Row>
-                            <Items store={store} />
-                            <StoreCards store={store} />
                         </Column>
                     </FadeUp>
-
                     <FadeUp delay={700}>
                         <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
                         <Column style={{height: 12 }} />
@@ -123,16 +116,16 @@ export default function HomeScreen({ navigation, }) {
                             </Pressable>
                         </Row>
                     </FadeUp>
-
                 </Column>
             </ScrollVertical>
-
             <Column style={{ position: 'absolute', bottom: 0, top: 0, zIndex: 0, opacity: .3, }} >
                 <Image src={require('@/imgs/blur.png')} w={SCREEN_WIDTH + 100} h={SCREEN_HEIGHT + 100} />
             </Column>
         </Main>
     )
 }
+
+/*
 const StoreCards = ({ store }) => {
 
     const { data, isLoading, refetch } = useQuery({
@@ -177,7 +170,6 @@ const StoreCards = ({ store }) => {
         </Row>
     )
 }
-
 const Items = ({ store }) => {
 
     const { data, isLoading, refetch } = useQuery({
@@ -278,6 +270,9 @@ const Items = ({ store }) => {
         </Column>
     )
 }
+    import { showReportStore } from '@/api/report';
+import { PieChart } from "react-native-gifted-charts";
+*/
 
 const FadeUp = ({ children, delay = 200 }) => {
     return (

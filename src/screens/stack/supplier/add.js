@@ -57,7 +57,7 @@ export default function SupplierAddScreen({ navigation, route }) {
             const res = await addSupplier(params)
             setsuccess(res.message);
             setTimeout(() => {
-                navigation.replace('StoreList');
+                navigation.replace('SupplierList');
             }, 1000);
         } catch (error) {
             seterror(error.message);
