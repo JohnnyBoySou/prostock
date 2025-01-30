@@ -4,8 +4,7 @@ import { Main, Button, Message, Column, Input, Image } from "@/ui";
 import { loginUser } from '@/api/auth/index';
 import { useUser } from "@/context/user";
 
-import Constants from "expo-constants";
-import { LogLevel, OneSignal } from 'react-native-onesignal';
+//import { LogLevel, OneSignal } from 'react-native-onesignal';
 
 
 export default function LoginScreen() {
@@ -32,11 +31,9 @@ export default function LoginScreen() {
         setIsLoading(true);
         try {
             const res = await loginUser(email, password);
-            if (res.uiid) {
-                OneSignal.login(res.uiid)
-            }
             saveUser(res);
             setSuccess("Login realizado com sucesso!");
+            //   OneSignal.login(res.uiid)
         } catch (e) {
             setError("Erro ao realizar o login. Tente novamente.");
         } finally {

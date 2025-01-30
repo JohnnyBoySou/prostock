@@ -59,7 +59,6 @@ export const showUser = async (id: number) => {
     try {
         const res = await fetchWithAuth("/usuarios/usuario/" + id, {
             method: "GET", 
-            
          });
         return res;
     } catch (error) {
@@ -68,11 +67,9 @@ export const showUser = async (id: number) => {
 }
 export const showLoggedUser = async () => {
     try {
-        const res = await fetchWithAuth("/usuarios/user/", {
+        const res = await fetchWithAuth("/usuarios/user", {
             method: "GET", 
-            
         });
-        console.log(res)
         return res;
     } catch (error) {
         throw new Error(error.message);

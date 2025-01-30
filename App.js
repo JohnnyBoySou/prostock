@@ -11,7 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from 'expo-status-bar';
 const queryClient = new QueryClient();
 
-import { OneSignal } from 'react-native-onesignal';
+//import { OneSignal } from 'react-native-onesignal';
 import * as Notifications from 'expo-notifications';
 
 preventAutoHideAsync();
@@ -26,7 +26,7 @@ export default function App() {
       const key = process.env.EXPO_PUBLIC_KEY || Constants.expoConfig.extra.oneSignalAppId;
       // OneSignal.Debug.setLogLevel(LogLevel.Verbose);
       if (key != null) {
-        OneSignal.initialize(key);
+      //  OneSignal.initialize(key);
       }
 
       let { status } = await Notifications.getPermissionsAsync();

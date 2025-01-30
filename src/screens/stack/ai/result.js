@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Pressable } from 'react-native';
 import { Main, Column, Label, Title, Button, Image, colors, Row, ListSearchIA, ScrollVertical } from '@/ui';
-import { Check } from 'lucide-react-native';
+import { Check, Home } from 'lucide-react-native';
 
 import { searchSupplier,} from '@/api/supplier';
 import { searchProduct,} from '@/api/product';
@@ -77,12 +77,15 @@ export default function AIResultScreen({ navigation, route }) {
         <ProductList produto={produto} setproduto={setproduto} defaultValue={produtoData?.nome} produtoData={produtoData} />
 
       </ScrollVertical>
-      <Column style={{ position: 'absolute', bottom: 30, alignSelf: 'center', left: 26, right: 26, }} ph={26}>
+      <Row style={{ position: 'absolute', bottom: 30, alignSelf: 'center', }} ph={26}>
+        <Pressable style={{ width: 64, marginRight: 12, height: 64, backgroundColor: colors.color.blue, justifyContent: 'center', alignItems: 'center', borderRadius: 8 }} onPress={() => { navigation.navigate('Home') }}>
+          <Home color='#FFF' />
+        </Pressable>
         {fornecedor && produto && <Button label='Criar movimentação' onPress={() => { navigation.navigate('MoveAdd', { data: moveData }) }}/>}
         {fornecedor && !produto && <Button label='Criar produto' onPress={() => { navigation.navigate('ProductAdd', { data: produtoData }) }} />}
         {!fornecedor && produto && <Button label='Criar fornecedor' onPress={() => { navigation.navigate('SupplierAdd', { data: fornecedorData }) }} />}
         {!fornecedor  && !produto && <Button label='Tentar novamente' onPress={() => { navigation.navigate('OCR', { data: fornecedorData }) }} />}
-      </Column>
+      </Row>
     </Main>
   );
 }

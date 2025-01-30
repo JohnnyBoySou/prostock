@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React  from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { View, Pressable } from "react-native";
-import { Column, Row, Title, Label, Image, colors } from "@/ui";
+import { Column, Row, Title, Label, Image, colors, ScrollVertical } from "@/ui";
 
 import { LogOut, ChevronRight, X, CircleUserRound, Brain, ChartPie, GitCompareArrows, LayoutGrid, Truck, Users, Store, House, LayoutList, Bell } from "lucide-react-native";
 import { useUser } from "@/context/user";
 
 import { Stacks } from "./stack";
-import * as Application from 'expo-application';
-
 const Drawers = createDrawerNavigator();
 
 export function Drawer() {
   return (
-    <Drawers.Navigator initialRouteName="Stacks" screenOptions={{ headerShown: false, drawerType: "slide", swipeEdgeWidth: 100 }} drawerContent={(props ) => <CustomDrawerContent {...props} />} >
+    <Drawers.Navigator initialRouteName="Stacks" screenOptions={{ headerShown: false, drawerType: "slide", swipeEdgeWidth: 100 }} drawerContent={(props) => <CustomDrawerContent {...props} />} >
       <Drawers.Screen name="Stacks" component={Stacks} />
     </Drawers.Navigator>
   );
 }
 
 function CustomDrawerContent({ navigation }) {
-  const { user, logout, role } = useUser();
+  const { logout, role } = useUser();
   const commonItems = [
     {
       icon: <House color="#484848" size={20} />,
@@ -63,9 +61,9 @@ function CustomDrawerContent({ navigation }) {
       label: "Meu perfil",
       onPress: () => navigation.navigate("Stacks", { screen: "Profile" }),
     },
-     
+
   ];
-  
+
   const adminLojaItems = [
     {
       icon: <ChartPie color="#484848" size={20} />,
@@ -73,7 +71,7 @@ function CustomDrawerContent({ navigation }) {
       onPress: () => navigation.navigate("Stacks", { screen: "ReportList" }),
     },
   ];
-  
+
   const superAdminItems = [
     {
       icon: <Store color="#484848" size={20} />,
@@ -91,7 +89,7 @@ function CustomDrawerContent({ navigation }) {
       onPress: () => navigation.navigate("Stacks", { screen: "ReportList" }),
     },
   ];
-  
+
   const account = [
     ...commonItems,
     ...(role === "adminloja" ? adminLojaItems : []),
@@ -99,6 +97,8 @@ function CustomDrawerContent({ navigation }) {
   ];
   return (
     <Column ph={20} pv={40} style={{ flex: 1, backgroundColor: "#FFF" }}>
+        <ScrollVertical>
+
       <Row justify="space-between" align="center" >
         <Image src={require('@/imgs/logo_red.png')} w={64} h={64} />
         <Pressable onPress={() => navigation.closeDrawer()} style={{ width: 52, height: 52, borderRadius: 100, backgroundColor: "#EDF0F1", justifyContent: "center", alignItems: "center" }}>
@@ -113,25 +113,25 @@ function CustomDrawerContent({ navigation }) {
           <Pressable key={index} style={{ paddingVertical: 14, paddingHorizontal: 12, borderRadius: 6, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} onPress={item.onPress}>
             <Row align="center" >
               <View style={{ marginRight: 12 }}>
-                {item.icon}
+                {item?.icon}
               </View>
-              <Label>{item.label}</Label>
+              <Label>{item?.label}</Label>
             </Row>
             <ChevronRight color="#484848" size={20} />
           </Pressable>
         ))
-        }
-        <Pressable  style={{ paddingVertical: 14, paddingHorizontal: 12, borderRadius: 6, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} onPress={() => logout()}>
-            <Row align="center" >
-              <View style={{ marginRight: 12 }}>
-              <LogOut color="#484848" size={20} />,
-              </View>
-              <Label>Sair</Label>
-            </Row>
-            <ChevronRight color="#484848" size={20} />
-          </Pressable>
-      </Column>
-      <Label>Versão {Application?.nativeApplicationVersion}</Label>
+          }
+        <Pressable style={{ paddingVertical: 14, paddingHorizontal: 12, borderRadius: 6, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} onPress={() => logout()}>
+          <Row align="center" >
+            <View style={{ marginRight: 12 }}>
+              <LogOut color="#484848" size={20} />
+            </View>
+            <Label>Sair</Label>
+          </Row>
+          <ChevronRight color="#484848" size={20} />
+        </Pressable>
+        </Column>
+        </ScrollVertical>
     </Column>
   );
 }

@@ -44,6 +44,7 @@ import ProfileScreen from "@/screens/stack/profile";
 
 import NotifyListScreen from '@/screens/stack/notify/list';
 import NotifyShowScreen from '@/screens/stack/notify/show';
+import Camera from "../ui/Header/camera";
 
 export function Stacks() {
 
@@ -55,7 +56,7 @@ export function Stacks() {
       <Stack.Group>
         <Stack.Screen name="AI" component={AIScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Inteligência Artificial" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
         <Stack.Screen name="AIResult" component={AIResultScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="IA Resultado" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
-        <Stack.Screen name="OCR" component={OCRScreen} options={{ ...TransitionPresets.SlideFromRightIOS }} />
+        <Stack.Screen name="OCR" component={OCRScreen} options={{ header: ({ navigation, }) => (<Camera navigation={navigation} name="IA Resultado" />), headerShown: true,...TransitionPresets.SlideFromRightIOS }} />
       </Stack.Group>
       <Stack.Group>
         <Stack.Screen name="ProductAdd" component={ProductAddScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Criar produto" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />

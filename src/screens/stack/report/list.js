@@ -12,7 +12,6 @@ export default function ReportListScreen() {
             const res = await showLoggedUser(); return res;
         }
     });
-    console.log(data)
     return (
         <Main>
             {isLoading ? <Column style={{ flex: 1, }} justify="center" align='center'>

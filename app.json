@@ -2,7 +2,7 @@
   "expo": {
     "name": "ProStock",
     "slug": "ProStock",
-    "version": "11.0.0",
+    "version": "14.0.0",
     "scheme": "prostock",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": false,
       "requireFullScreen": true,
-      "buildNumber": "11.0.0",
+      "buildNumber": "14.0.0",
       "bundleIdentifier": "com.engd.prostock",
       "infoPlist": {
         "NSCameraUsageDescription": "Esse app usa a câmera para escanear documentos com Inteligência Artificial."
@@ -23,20 +23,16 @@
     },
     "android": {
       "package": "com.engd.prostock",
-      "versionCode": 11,
+      "versionCode": 14,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#019866"
       },
-      "blockedPermissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.READ_MEDIA_AUDIO",
-        "android.permission.READ_MEDIA_VIDEO"
-      ],
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE"
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -55,16 +51,30 @@
         {
           "initialOrientation": "DEFAULT"
         }
-      ],
-      [
-        "onesignal-expo-plugin",
-        {
-          "mode": "production"
-        }
       ]
     ],
     "extra": {
-      "oneSignalAppId": "a761f833-9b85-4811-ac5b-b5cd68313b34"
+      "oneSignalAppId": "a761f833-9b85-4811-ac5b-b5cd68313b34",
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "OneSignalNotificationServiceExtension",
+                  "bundleIdentifier": "com.engd.prostock.OneSignalNotificationServiceExtension",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.com.engd.prostock.onesignal"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "projectId": "f7656389-0c3d-4329-b9df-3554a81e6890"
+      }
     }
   }
 }
