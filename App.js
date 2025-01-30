@@ -24,9 +24,9 @@ export default function App() {
 
     const handleNotification = async () => {
       const key = process.env.EXPO_PUBLIC_KEY || Constants.expoConfig.extra.oneSignalAppId;
-      // OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+       OneSignal.Debug.setLogLevel(LogLevel.Verbose);
       if (key != null) {
-      //  OneSignal.initialize(key);
+        OneSignal.initialize(key);
       }
 
       let { status } = await Notifications.getPermissionsAsync();

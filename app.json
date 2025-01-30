@@ -2,7 +2,7 @@
   "expo": {
     "name": "ProStock",
     "slug": "ProStock",
-    "version": "14.0.0",
+    "version": "15.0.0",
     "scheme": "prostock",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": false,
       "requireFullScreen": true,
-      "buildNumber": "14.0.0",
+      "buildNumber": "15.0.0",
       "bundleIdentifier": "com.engd.prostock",
       "infoPlist": {
         "NSCameraUsageDescription": "Esse app usa a câmera para escanear documentos com Inteligência Artificial."
@@ -23,7 +23,7 @@
     },
     "android": {
       "package": "com.engd.prostock",
-      "versionCode": 14,
+      "versionCode": 15,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#019866"
@@ -50,6 +50,12 @@
         "expo-screen-orientation",
         {
           "initialOrientation": "DEFAULT"
+        }
+      ],
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "production"
         }
       ]
     ],
