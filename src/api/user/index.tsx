@@ -24,7 +24,6 @@ export const listUser = async (page: number = 1) => {
 export const searchUser = async (name: string) => {
     try {
         const res = await fetchWithAuth("/usuarios/usuario" + "?busca=" + name, { method: "GET" });
-        console.log(res)
         return res;
     } catch (error) {
         throw new Error(error.message);

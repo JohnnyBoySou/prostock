@@ -65,7 +65,6 @@ export const deleteProduct = async (id: number) => {
 }
 
 export const listProductStore = async (id: number, page: number = 1,) => {
-    console.log(id)
     try {
         const res = await fetchWithAuthOtherStore("/usuarios/produto" + "?page=" + page,
             {
@@ -78,10 +77,8 @@ export const listProductStore = async (id: number, page: number = 1,) => {
     }
 }
 export const listProductStoreSearch = async (id: number, name: string,) => {
-    console.log(name)
     try {
         const res = await fetchWithAuthOtherStore("/usuarios/produto" + "?busca=" + name, { method: "GET", headers: { "lojaid": id.toString() } },);
-        console.log(res)
         return res;
     } catch (error) {
         throw new Error(error.message);

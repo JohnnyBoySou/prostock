@@ -76,7 +76,6 @@ export default function OCRScreen({ navigation, route }) {
       console.error(error);
       seterror(error)
     } finally {
-      console.log('Processamento finalizado');
       setloading(false);
     }
   };
@@ -115,7 +114,6 @@ export default function OCRScreen({ navigation, route }) {
           <CameraView
             style={{ flex: 1, }}
             mode='picture'
-            onCameraReady={() => { console.log('Camera pronta') }}
             onMountError={(error) => { console.error(error) }}
             ref={cameraRef}
             facing={cameraType}
