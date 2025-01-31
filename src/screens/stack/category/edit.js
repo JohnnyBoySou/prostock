@@ -1,6 +1,7 @@
 import React, { memo, useState, useRef, useEffect, useCallback } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Medida, Status, Label, Title, Row, colors, Loader, useQuery } from "@/ui";
 import { editCategory, showCategory } from "@/api/category";
+import { KeyboardAvoidingView } from "react-native";
 
 export default function CategoryEditScreen({ navigation, route }) {
 
@@ -52,15 +53,17 @@ export default function CategoryEditScreen({ navigation, route }) {
     }, [category]);
 
     return (<Main>
-        <ScrollVertical>
-            {loadingCategory ? <Column style={{ flex: 1, }} justify="center" align='center'>
-                <Loader size={32} color={colors.color.primary} />
-            </Column> :
-                <About setstatus={setstatus} status={status} loading={isLoading} aboutValues={aboutValues} setaboutValues={setaboutValues} handleCreate={handleCreate} />}
-            <Column mh={26} mv={26}>
-                <Message error={error} success={success} />
-            </Column>
-        </ScrollVertical>
+        <KeyboardAvoidingView behavior="padding">
+            <ScrollVertical>
+                {loadingCategory ? <Column style={{ flex: 1, }} justify="center" align='center'>
+                    <Loader size={32} color={colors.color.primary} />
+                </Column> :
+                    <About setstatus={setstatus} status={status} loading={isLoading} aboutValues={aboutValues} setaboutValues={setaboutValues} handleCreate={handleCreate} />}
+                <Column mh={26} mv={26}>
+                    <Message error={error} success={success} />
+                </Column>
+            </ScrollVertical>
+        </KeyboardAvoidingView>
     </Main>)
 }
 

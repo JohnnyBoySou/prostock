@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Status, fields, validations, useQuery, Form, Loader, colors, } from "@/ui";
-
+import { KeyboardAvoidingView } from "react-native";
 import { editStore, showStore, getCep } from "@/api/store";
 
 export default function StoreEditScreen({ navigation, route }) {
@@ -8,14 +8,14 @@ export default function StoreEditScreen({ navigation, route }) {
     const [tab, settab] = useState("Sobre");
     const types = ["Sobre", "Endereço",];
 
-    const { data: store , isLoading: loadingStore } = useQuery({
+    const { data: store, isLoading: loadingStore } = useQuery({
         queryKey: ["product edit" + id],
         queryFn: async () => {
             const res = await showStore(id); return res;
         }
     });
 
-   
+
 
     const [status, setstatus] = useState("ativo");
 
@@ -83,24 +83,26 @@ export default function StoreEditScreen({ navigation, route }) {
 
 
     return (<Main>
-        <Column>
-            <Tabs types={types} value={tab} setValue={settab} />
-        </Column>
-        {loadingStore ? <Column style={{ flex: 1, }} justify="center" align='center'><Loader size={32} color={colors.color.primary} /></Column> :
-            <ScrollVertical>
-                {store && <>
-                    {tab === "Sobre" && <About settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
-                    {tab === "Endereço" && <Address isLoading={isLoading} setstatus={setstatus} status={status} addressValues={addressValues} setaddressValues={setaddressValues} handleCreate={handleCreate} />}
-                </>}
-                <Column mh={26} mv={26}>
-                    <Message error={error} success={success} />
-                </Column>
-            </ScrollVertical>
-        }
+        <KeyboardAvoidingView behavior="padding">
+            <Column>
+                <Tabs types={types} value={tab} setValue={settab} />
+            </Column>
+            {loadingStore ? <Column style={{ flex: 1, }} justify="center" align='center'><Loader size={32} color={colors.color.primary} /></Column> :
+                <ScrollVertical>
+                    {store && <>
+                        {tab === "Sobre" && <About settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
+                        {tab === "Endereço" && <Address isLoading={isLoading} setstatus={setstatus} status={status} addressValues={addressValues} setaddressValues={setaddressValues} handleCreate={handleCreate} />}
+                    </>}
+                    <Column mh={26} mv={26}>
+                        <Message error={error} success={success} />
+                    </Column>
+                </ScrollVertical>
+            }
+        </KeyboardAvoidingView>
     </Main>)
 }
 const About = React.memo(({ settab, aboutValues, setaboutValues, }) => {
-    if(!aboutValues) return null;
+    if (!aboutValues) return null;
     const fieldKeys = [
         'name',
         'cnpj',

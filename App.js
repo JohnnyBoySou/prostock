@@ -11,7 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from 'expo-status-bar';
 const queryClient = new QueryClient();
 
-//import { OneSignal } from 'react-native-onesignal';
+import { OneSignal } from 'react-native-onesignal';
 import * as Notifications from 'expo-notifications';
 
 preventAutoHideAsync();

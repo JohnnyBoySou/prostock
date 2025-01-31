@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Status, fields, validations, Form } from "@/ui";
-
+import { KeyboardAvoidingView } from "react-native";
 import { getCep } from "@/api/store";
 import { addSupplier } from "@/api/supplier";
 
@@ -67,6 +67,7 @@ export default function SupplierAddScreen({ navigation, route }) {
     }
 
     return (<Main>
+        <KeyboardAvoidingView behavior="padding">
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
         </Column>
@@ -78,6 +79,7 @@ export default function SupplierAddScreen({ navigation, route }) {
                 <Message error={error} success={success} />
             </Column>
         </ScrollVertical>
+        </KeyboardAvoidingView>
     </Main>)
 }
 

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, useQuery, Tabs, Medida, Status, ListSearch, Title, Row, colors, Loader } from "@/ui";
 
 import { listCategory, searchCategory } from "@/api/category";
-import { Pressable } from "react-native";
+import { Pressable, KeyboardAvoidingView } from "react-native";
 import { Check } from 'lucide-react-native';
 import { showProduct, editProduct, deleteProduct } from "@/api/product";
 import { CategoryEmpty } from '@/ui/Emptys/category';
@@ -83,7 +83,7 @@ export default function ProductEditScreen({ route, navigation }) {
         }
     }
 
-    const handleExclude = async() => {
+    const handleExclude = async () => {
         try {
             const res = await deleteProduct(id)
         } catch (error) {
@@ -92,21 +92,24 @@ export default function ProductEditScreen({ route, navigation }) {
     }
 
     return (<Main>
-        <Column>
-            <Tabs types={types} value={tab} setValue={settab} />
-        </Column>
-        {loadingProduct ?
-           <Column style={{ flex: 1, }} justify="center" align='center'>
-           <Loader size={32} color={colors.color.primary} />
-       </Column> :
-            <ScrollVertical>
-                {tab === "Sobre" && <About values={values} setmedida={setmedida} medida={medida} settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
-                {tab === "Categorias" && <Categories category={category} settab={settab} selectCategory={selectCategory} setselectCategory={setselectCategory} />}
-                {tab === "Estoque" && <Stock isLoading={isLoading} handleExclude={handleExclude} setstatus={setstatus} status={status} stockValues={stockValues} setstockValues={setstockValues} handleCreate={handleCreate} />}
-                <Column mh={26} mv={26}>
-                    <Message error={error} success={success} />
-                </Column>
-            </ScrollVertical>}
+        <KeyboardAvoidingView behavior="padding">
+            <Column>
+
+                <Tabs types={types} value={tab} setValue={settab} />
+            </Column>
+            {loadingProduct ?
+                <Column style={{ flex: 1, }} justify="center" align='center'>
+                    <Loader size={32} color={colors.color.primary} />
+                </Column> :
+                <ScrollVertical>
+                    {tab === "Sobre" && <About values={values} setmedida={setmedida} medida={medida} settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
+                    {tab === "Categorias" && <Categories category={category} settab={settab} selectCategory={selectCategory} setselectCategory={setselectCategory} />}
+                    {tab === "Estoque" && <Stock isLoading={isLoading} handleExclude={handleExclude} setstatus={setstatus} status={status} stockValues={stockValues} setstockValues={setstockValues} handleCreate={handleCreate} />}
+                    <Column mh={26} mv={26}>
+                        <Message error={error} success={success} />
+                    </Column>
+                </ScrollVertical>}
+        </KeyboardAvoidingView>
     </Main>)
 }
 
@@ -247,15 +250,15 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
 
     return (
         <Column gv={26}>
-        <ListSearch id="add product"  spacing={false} renderItem={({ item }) => <Card category={item} />} getSearch={searchCategory} getList={listCategory} empty={<CategoryEmpty />} />
-        <Column mh={26} gv={26}>
-            <Message error={error} />
-            <Button
-                label="Próximo"
-                onPress={handleNext}
-            />
+            <ListSearch id="add product" spacing={false} renderItem={({ item }) => <Card category={item} />} getSearch={searchCategory} getList={listCategory} empty={<CategoryEmpty />} />
+            <Column mh={26} gv={26}>
+                <Message error={error} />
+                <Button
+                    label="Próximo"
+                    onPress={handleNext}
+                />
+            </Column>
         </Column>
-    </Column>
     )
 })
 
@@ -322,7 +325,7 @@ const Stock = ({ stockValues, handleExclude, isLoading, setstockValues, handleCr
         }
     };
 
-    
+
 
 
     return (

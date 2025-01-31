@@ -1,6 +1,6 @@
-import React, { memo, useState, useRef, useEffect, useCallback } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Medida, Status, Label, Title, Row, colors, Loader } from "@/ui";
-
+import React, { useState, useRef } from "react";
+import { Main, Button, Message, Column, Input, ScrollVertical, Status } from "@/ui";
+import { KeyboardAvoidingView } from "react-native";
 import { addCategory } from "@/api/category";
 
 export default function CategoryAddScreen({ navigation }) {
@@ -36,12 +36,14 @@ export default function CategoryAddScreen({ navigation }) {
 
 
     return (<Main>
+        <KeyboardAvoidingView behavior="padding">
         <ScrollVertical>
             <About setstatus={setstatus} status={status} loading={isLoading} aboutValues={aboutValues} setaboutValues={setaboutValues} handleCreate={handleCreate} />
             <Column mh={26} mv={26}>
                 <Message error={error} success={success} />
             </Column>
         </ScrollVertical>
+        </KeyboardAvoidingView>
     </Main>)
 }
 

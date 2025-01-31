@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Main, Button, Message, Row, Search, Title, Column, colors, TextArea, Loader, Label, ListSearch, useInfiniteQuery, useQuery, Tipo, ScrollVertical, Tabs, Status, fields, validations, Form } from "@/ui";
-import { FlatList, Pressable, } from "react-native";
-import { Check, } from "lucide-react-native";
+import { FlatList, Pressable, KeyboardAvoidingView } from "react-native";
+import { Check, Key, } from "lucide-react-native";
 
 import { addMove } from "@/api/move";
 import { listSupplier, searchSupplier } from '@/api/supplier';
@@ -12,7 +12,7 @@ import { SupplierEmpty } from '@/ui/Emptys/supplier';
 export default function MoveAddScreen({ navigation, route }) {
 
     const data = route?.params?.data
-   
+
     const [tab, settab] = useState("Produto");
     const types = ["Produto", "Fornecedor", "Observação",];
 
@@ -65,17 +65,19 @@ export default function MoveAddScreen({ navigation, route }) {
     }
 
     return (<Main>
-        <Column>
-            <Tabs types={types} value={tab} setValue={settab} />
-        </Column>
-        <ScrollVertical>
-            {tab === "Produto" && <Product setproductId={setproductId} productId={productId} settipo={settipo} tipo={tipo} settab={settab} value={productValues} setvalue={setProductValues} />}
-            {tab === "Fornecedor" && <Supplier setsupplierId={setsupplierId} supplierId={supplierId} settab={settab} value={supplierValues} setvalue={setSupplierValues} />}
-            {tab === "Observação" && <Observation isLoading={isLoading} value={observation} setvalue={setobservation} handleCreate={handleCreate} />}
-            <Column mh={26} mv={26}>
-                <Message error={error} success={success} />
+        <KeyboardAvoidingView behavior="padding">
+            <Column>
+                <Tabs types={types} value={tab} setValue={settab} />
             </Column>
-        </ScrollVertical>
+            <ScrollVertical>
+                {tab === "Produto" && <Product setproductId={setproductId} productId={productId} settipo={settipo} tipo={tipo} settab={settab} value={productValues} setvalue={setProductValues} />}
+                {tab === "Fornecedor" && <Supplier setsupplierId={setsupplierId} supplierId={supplierId} settab={settab} value={supplierValues} setvalue={setSupplierValues} />}
+                {tab === "Observação" && <Observation isLoading={isLoading} value={observation} setvalue={setobservation} handleCreate={handleCreate} />}
+                <Column mh={26} mv={26}>
+                    <Message error={error} success={success} />
+                </Column>
+            </ScrollVertical>
+        </KeyboardAvoidingView>
     </Main>)
 }
 
@@ -110,7 +112,7 @@ const Product = ({ productId, setproductId, settab, setvalue, value, settipo, ti
     }
     return (
         <Column>
-            <ListSearch  refresh={false}  selectID={productId}  spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
+            <ListSearch refresh={false} selectID={productId} spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
             <Column mh={26} mv={16}>
                 <Tipo setvalue={settipo} value={tipo} />
             </Column>
@@ -152,7 +154,7 @@ const Supplier = React.memo(({ supplierId, setsupplierId, settab, setvalue, valu
     }
     return (
         <Column>
-            <ListSearch  refresh={false} selectID={supplierId} spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchSupplier} getList={listSupplier} empty={<SupplierEmpty />} />
+            <ListSearch refresh={false} selectID={supplierId} spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchSupplier} getList={listSupplier} empty={<SupplierEmpty />} />
             <Column mv={8} />
             <Form fieldKeys={fieldKeys} initialValues={value} onSubmit={(value) => {
                 setvalue(value);

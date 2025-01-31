@@ -111,7 +111,7 @@ const fields = {
     lote: {
         label: "Lote",
         placeholder: "Ex.: 123456",
-        keyboardType: "numeric",
+        keyboardType: "default",
     },
     descricao: {
         label: "Descrição",

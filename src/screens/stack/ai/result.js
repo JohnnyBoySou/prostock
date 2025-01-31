@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pressable } from 'react-native';
+import { KeyboardAvoidingView, Pressable } from 'react-native';
 import { Main, Column, Label, Title, Button, Image, colors, Row, ListSearchIA, ScrollVertical } from '@/ui';
 import { Check, Home } from 'lucide-react-native';
 
@@ -64,6 +64,7 @@ export default function AIResultScreen({ navigation, route }) {
 
   return (
     <Main >
+      <KeyboardAvoidingView behavior="padding">
       <ScrollVertical>
         <Column gv={8}>
           <Image src={require('@/imgs/ia.png')} w={100} h={100} />
@@ -86,6 +87,7 @@ export default function AIResultScreen({ navigation, route }) {
         {!fornecedor && produto && <Button label='Criar fornecedor' onPress={() => { navigation.navigate('SupplierAdd', { data: fornecedorData }) }} />}
         {!fornecedor  && !produto && <Button label='Tentar novamente' onPress={() => { navigation.navigate('OCR', { data: fornecedorData }) }} />}
       </Row>
+      </KeyboardAvoidingView>
     </Main>
   );
 }

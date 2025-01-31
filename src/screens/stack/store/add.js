@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Status, fields, validations, Form, colors, } from "@/ui";
-
+import { KeyboardAvoidingView } from "react-native";
 import { addStore, getCep } from "@/api/store";
 
 export default function StoreAddScreen({ navigation }) {
@@ -51,6 +51,7 @@ export default function StoreAddScreen({ navigation }) {
 
 
     return (<Main>
+        <KeyboardAvoidingView behavior="padding">
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
         </Column>
@@ -61,6 +62,7 @@ export default function StoreAddScreen({ navigation }) {
                 <Message error={error} success={success} />
             </Column>
         </ScrollVertical>
+        </KeyboardAvoidingView>
     </Main>)
 }
 

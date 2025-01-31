@@ -47,9 +47,14 @@ export default function HomeScreen({ navigation, }) {
                             <Menu color='#8A8A8A' size={24} />
                         </Pressable>
 
-                        <Pressable onPress={() => { navigation.navigate('NotifyList') }} style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
-                            <Bell color={colors.color.primary} size={24} />
-                        </Pressable>
+                        <Row gh={12}>
+                            <Pressable onPress={() => { navigation.navigate('NotifyList') }} style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                                <Bell color={colors.color.primary} size={24} />
+                            </Pressable>
+                            <Pressable onPress={() => { navigation.navigate('Profile') }} style={{ backgroundColor: colors.color.primary, width: 48, height: 48, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
+                                <Title size={24} style={{ marginTop: 4, }} color='#fff'>{user?.name.slice(0, 1)}</Title>
+                            </Pressable>
+                        </Row>
                     </Row>
                     <Row justify='space-between' align='center' style={{ width: SCREEN_WIDTH - 50, }}>
                         <Column>
@@ -60,11 +65,7 @@ export default function HomeScreen({ navigation, }) {
                                 <HeadTitle fontFamily="Font_Bold" mt={-5}>{user?.name}</HeadTitle>
                             </FadeUp>
                         </Column>
-                        <FadeUp delay={500}>
-                            <Pressable onPress={() => { navigation.navigate('Profile') }} style={{ backgroundColor: colors.color.primary, width: 54, height: 54, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
-                                <Title size={24} style={{ marginTop: 4, }} color='#fff'>{user?.name.slice(0, 1)}</Title>
-                            </Pressable>
-                        </FadeUp>
+
                     </Row>
                     <FadeUp delay={700}>
                         <Column gv={16}>
@@ -93,8 +94,8 @@ export default function HomeScreen({ navigation, }) {
                     </FadeUp>
                     <FadeUp delay={700}>
                         <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
-                        <Column style={{height: 12 }} />
-                        <Row  justify='space-between' gh={12}>
+                        <Column style={{ height: 12 }} />
+                        <Row justify='space-between' gh={12}>
                             <Pressable onPress={() => { navigation.navigate('SupplierAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D9EEE8', }}>
                                 <Truck size={32} color='#43AA8B' />
                                 <Title size={16} fontFamily="Font_Medium" color='#43AA8B'>Adicionar {'\n'}Fornecedor</Title>
@@ -104,7 +105,7 @@ export default function HomeScreen({ navigation, }) {
                                 <Title size={16} fontFamily="Font_Medium" color='#9747FF'>Acessar {'\n'}Relatórios</Title>
                             </Pressable>}
                         </Row>
-                        <Column style={{height: 12 }} />
+                        <Column style={{ height: 12 }} />
                         <Row justify='space-between' gh={12}>
                             <Pressable onPress={() => { navigation.navigate('ProductAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FBD2D5', }}>
                                 <LayoutGrid size={32} color='#EA1E2C' />

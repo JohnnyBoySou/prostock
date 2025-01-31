@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, useQuery, Tabs, Status, fields, validations, Form, Loader, colors } from "@/ui";
-
+import { KeyboardAvoidingView } from "react-native";
 import { getCep } from "@/api/store";
 import { editSupplier, showSupplier } from "@/api/supplier";
 
@@ -88,6 +88,7 @@ export default function SupplierEditScreen({ navigation, route }) {
         }
     }
     return (<Main>
+        <KeyboardAvoidingView behavior="padding">
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
         </Column>
@@ -101,7 +102,8 @@ export default function SupplierEditScreen({ navigation, route }) {
                 <Column mh={26} mv={26}>
                     <Message error={error} success={success} />
                 </Column>
-            </ScrollVertical>}
+                </ScrollVertical>}
+        </KeyboardAvoidingView>
     </Main>)
 }
 

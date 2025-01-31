@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Main, Button, Message, Row, Title, ListSearch, Column, colors, TextArea, Loader, Label, useQuery, Tipo, ScrollVertical, Tabs, Form } from "@/ui";
-import { Pressable, } from "react-native";
+import { Pressable, KeyboardAvoidingView } from "react-native";
 import { Check, } from "lucide-react-native";
 
 import { editMove, showMove } from "@/api/move";
@@ -91,6 +91,8 @@ export default function MoveEditScreen({ navigation, route }) {
 
 
     return (<Main>
+        <KeyboardAvoidingView behavior="padding">
+
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
         </Column>
@@ -105,7 +107,9 @@ export default function MoveEditScreen({ navigation, route }) {
                 <Column mh={26} mv={26}>
                     <Message error={error} success={success} />
                 </Column>
-            </ScrollVertical>}
+                </ScrollVertical>}
+        </KeyboardAvoidingView>
+            
     </Main>)
 }
 

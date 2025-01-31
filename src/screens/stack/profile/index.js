@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Loader, useQuery, colors } from "@/ui";
 import { editLoggedUser, showLoggedUser } from "@/api/user";
+import { KeyboardAvoidingView } from "react-native";
 
 export default function ProfileScreen({ navigation, route }) {
     const [aboutValues, setaboutValues] = useState({
@@ -68,10 +69,13 @@ export default function ProfileScreen({ navigation, route }) {
 
 
     return (<Main>
+        <KeyboardAvoidingView behavior="padding">
+
         {loading ? <Loader size={24} color={colors.color.primary} /> :
             <ScrollVertical>
                 <About handleEdit={handleEdit} success={success} error={error} setSuccess={setsuccess} setError={seterror} isLoading={isLoading} aboutValues={aboutValues} setaboutValues={setaboutValues} />
             </ScrollVertical>}
+                </KeyboardAvoidingView>
     </Main>)
 }
 

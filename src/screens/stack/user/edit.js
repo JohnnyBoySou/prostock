@@ -2,7 +2,7 @@ import React, { memo, useState, useRef, useEffect, useCallback } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Users, Status, Label, useQuery, Title, Row, colors, Loader } from "@/ui";
 
 import { listStore } from "@/api/store";
-import { Pressable } from "react-native";
+import { Pressable, KeyboardAvoidingView } from "react-native";
 import { Check } from 'lucide-react-native';
 import { editUser, showUser } from "@/api/user";
 
@@ -99,6 +99,8 @@ export default function UserEditScreen({ navigation, route }) {
 
 
     return (<Main>
+        <KeyboardAvoidingView behavior="padding">
+
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
         </Column>
@@ -110,6 +112,7 @@ export default function UserEditScreen({ navigation, route }) {
                 <Message error={error} success={success} />
             </Column>
         </ScrollVertical>
+        </KeyboardAvoidingView>
     </Main>)
 }
 

@@ -2,12 +2,10 @@ import { useState, useEffect } from 'react';
 import { Main, ScrollVertical, Title, Column, Row, Label, colors, Loader, ListSearch, Message, } from '@/ui';
 import { getStore, selectStore } from '@/hooks/store';
 import { Check, ChevronRight, Plus } from 'lucide-react-native';
-import { listUser } from '@/api/auth';
 import { FlatList, Pressable } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
-import { listStore, searchStore } from '@/api/store';
-import { StoreEmpty } from '@/ui/Emptys/store';
+import { listStore, } from '@/api/store';
 
 export default function StoreSelectScreen({ navigation, }) {
     const [loading, setloading] = useState();
@@ -18,23 +16,24 @@ export default function StoreSelectScreen({ navigation, }) {
     const [error, seterror] = useState();
 
     const fetchStore = async () => {
-        setloading(true)
         try {
             const res = await getStore();
             setstore(res);
         } catch (error) {
             console.log(error);
         } finally {
-            setloading(false);
         }
     }
 
     const fetchData = async () => {
+        setloading(true)
         try {
-            const user = await listUser()
-            setuser(user)
+            const user = await listStore()
+            setuser(user?.data)
         } catch (error) {
             console.log(error)
+        } finally {
+            setloading(false);
         }
     }
     useEffect(() => {
@@ -78,10 +77,10 @@ export default function StoreSelectScreen({ navigation, }) {
                         <FlatList
                             ListHeaderComponent={
                                 <Column>
-                                    <Label >Suas lojas</Label>
+                                    <Label>Suas lojas</Label>
                                 </Column>
                             }
-                            data={user?.lojas}
+                            data={user}
                             keyExtractor={(index) => index}
                             style={{ marginHorizontal: 26, }}
                             renderItem={({ item }) => <Item store={item} handleStore={handleStore} />}

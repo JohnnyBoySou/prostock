@@ -1,16 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Pressable } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
 import { Main, Column, Label, Title, Button, SCREEN_WIDTH, SCREEN_HEIGHT, colors, Loader, Row } from '@/ui';
 import { Check, Flashlight, SwitchCamera, FlashlightOff } from 'lucide-react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
 
 //API
 import { sendImage } from '@/api/ia';
 
-export default function OCRScreen({ navigation }) {
+export default function OCRScreen({ navigation, route }) {
+  const anexo = route?.params?.anexo;
+  useEffect(() => { 
+    if (anexo) {
+      pickImage()
+    }
+  }, []);
+
   const [error, seterror] = useState();
   const [loading, setloading] = useState(false);
   const [cameraType, setCameraType] = useState('back');
@@ -21,7 +29,19 @@ export default function OCRScreen({ navigation }) {
     setCameraType((prevType) => (prevType === 'back' ? 'front' : 'back'));
   };
 
-  
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: false,
+      base64: true,
+      quality: 0.5,
+    });
+
+    if (!result.canceled) {
+      recognizeText(result.assets[0].base64);
+    }
+  };
+
   const [landscape, setlandscape] = useState();
   const rotateScreen = async () => {
     const orientation = await ScreenOrientation.getOrientationAsync();
@@ -34,7 +54,7 @@ export default function OCRScreen({ navigation }) {
       setlandscape(false);
     }
   };
-  
+
 
   const takePicture = async () => {
     if (cameraRef.current) {
@@ -72,7 +92,7 @@ export default function OCRScreen({ navigation }) {
     );
   }
 
-  
+
   return (
     <Main style={{ backgroundColor: '#fff', }}>
       {loading ?
@@ -91,7 +111,7 @@ export default function OCRScreen({ navigation }) {
           </Column>
         </Column>
         :
-        <Column style={{ width: landscape ? SCREEN_HEIGHT : SCREEN_WIDTH, height: landscape ? SCREEN_WIDTH  : SCREEN_HEIGHT, }} >
+        <Column style={{ width: landscape ? SCREEN_HEIGHT : SCREEN_WIDTH, height: landscape ? SCREEN_WIDTH : SCREEN_HEIGHT, }} >
           <CameraView
             style={{ flex: 1, }}
             mode='picture'
@@ -111,6 +131,9 @@ export default function OCRScreen({ navigation }) {
             <Pressable onPress={rotateScreen} style={{ width: 52, height: 52, borderRadius: 4, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }}>
               <MaterialCommunityIcons name={landscape ? "phone-rotate-landscape" : "phone-rotate-portrait"} size={32} color={colors.color.green} />
             </Pressable>
+            <Pressable onPress={pickImage} style={{ width: 52, height: 52, borderRadius: 4, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }}>
+              <MaterialIcons name="upload-file" size={32} color={colors.color.green} />
+            </Pressable>
             <Pressable onPress={() => { setflash(!flash) }} style={{ width: 52, height: 52, borderRadius: 4, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }}>
               {flash ?
                 <FlashlightOff size={32} color={colors.color.green} /> :
@@ -125,6 +148,9 @@ export default function OCRScreen({ navigation }) {
               </Pressable>
               <Pressable onPress={rotateScreen} style={{ width: 52, height: 52, borderRadius: 4, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }}>
                 <MaterialCommunityIcons name={landscape ? "phone-rotate-landscape" : "phone-rotate-portrait"} size={32} color={colors.color.green} />
+              </Pressable>
+              <Pressable onPress={pickImage} style={{ width: 52, height: 52, borderRadius: 4, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }}>
+                <MaterialIcons name="upload-file" size={32} color={colors.color.green} />
               </Pressable>
               <Pressable onPress={() => { setflash(!flash) }} style={{ width: 52, height: 52, borderRadius: 4, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }}>
                 {flash ?

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, ListSearch, Tabs, Medida, Status, Label, Title, Row, colors } from "@/ui";
 
 import { listCategory, searchCategory } from "@/api/category";
-import { Pressable } from "react-native";
+import { Pressable, KeyboardAvoidingView } from "react-native";
 import { Check } from 'lucide-react-native';
 import { addProduct } from "@/api/product";
 import { CategoryEmpty } from '@/ui/Emptys/category';
@@ -75,6 +75,8 @@ export default function ProductAddScreen({ navigation, route }) {
 
 
     return (<Main>
+        <KeyboardAvoidingView behavior="padding">
+
         <Column>
             <Tabs types={types} value={tab} setValue={settab} />
         </Column>
@@ -86,6 +88,7 @@ export default function ProductAddScreen({ navigation, route }) {
                 <Message error={error} success={success} />
             </Column>
         </ScrollVertical>
+        </KeyboardAvoidingView>
     </Main>)
 }
 

@@ -26,6 +26,7 @@ export default function Screen({ navigation, }) {
                         </Row>
                     </Column>
                     <Button onPress={() => navigation.navigate('OCR')} label='Escanear agora' />
+                    <Button variant='ghost' onPress={() => navigation.navigate('OCR', { "anexo": true})} label='Anexar imagem' />
                 </Column>
             </ScrollVertical>
         </Main>
