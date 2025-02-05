@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Column, Loader, Search, colors, Label, useQuery, useInfiniteQuery, Button } from "@/ui";
 import { RefreshControl, FlatList } from "react-native-gesture-handler";
 
-export default function ListSearch({ renderItem, getSearch, selectID, empty, spacing = true, top = false, id = 'id', name = '', refresh = true, }) {
+export default function ListSearch({ renderItem, getSearch, getList, selectID, empty, spacing = true, top = false, id = 'id', name = '', refresh = true, }) {
     const [termo, settermo] = useState('');
     const { data: result, isLoading: loadingSearch, refetch: handleSearch } = useQuery({
         queryKey: [`search ${id} ${name}`],
@@ -24,10 +24,8 @@ export default function ListSearch({ renderItem, getSearch, selectID, empty, spa
                     refreshControl={refresh ? <RefreshControl refreshing={loadingSearch} onRefresh={() => { handleSearch() }} /> : null}
                     style={{  paddingHorizontal: 26, paddingVertical: top ? 26 : 0 }}
                     ListFooterComponent={<Column>
-                        {listData?.length >= 20 && <Button onPress={() => { nextProduct() }} title="Carregar mais" />}
-                        {spacing && 
-                        <Column style={{height: 200, }} />
-                        }
+                     
+                        {spacing && <Column style={{height: 200, }} /> }
                     </Column>}
                     ListHeaderComponent={<Column mb={12}>
                         <Label>Resultados</Label>
@@ -39,3 +37,22 @@ export default function ListSearch({ renderItem, getSearch, selectID, empty, spa
     )
 
 }
+
+/*
+  const {data: list, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+        queryKey: [`list ${id} ${name}`],
+        queryFn: async ({ pageParam = 1 }) => {
+            const res = await getList(pageParam); return res.data;
+        },
+        getNextPageParam: (lastPage) => lastPage?.next_page,
+    });
+    const nextProduct = () => {
+        if (isFetchingNextPage || !hasNextPage) return;
+        fetchNextPage();
+    }
+   {listData?.length >= 20 &&
+                            <Column>
+                                <Button onPress={() => { nextProduct() }} label="Carregar mais" />
+                            </Column>
+                        }
+*/

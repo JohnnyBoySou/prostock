@@ -1,20 +1,35 @@
-import { Row, Column, Label, Title, Button, colors } from '@/ui'
+import { Row, Column, Label, Title, ScrollHorizontal, colors } from '@/ui'
 import { Pressable } from 'react-native'
 
-export default function Status({ setvalue, value,  }) {
-    const values  = ['Entrada', 'Saída','Perda' ]
+export default function Status({ setvalue, value, }) {
+    const values = [
+        {
+            name: 'Entrada',
+            id: 'entrada'
+        },
+        {
+            name: 'Saida',
+            id: 'saida'
+        },
+        {
+            name: 'Perda',
+            id: 'perda'
+        },
+        {
+            name: 'Devolução',
+            id: 'devolucao'
+        }]
+
     return (
         <Column>
             <Label>Tipo</Label>
-            <Row gh={10} style={{ backgroundColor: '#FFF', borderRadius: 6,}} pv={10} ph={10} mv={12}>
+            <ScrollHorizontal  contentContainerStyle={{ gap: 12, marginVertical: 12, }}>
                 {values.map((item, index) => (
-                    <Pressable key={index} onPress={() => { setvalue(item) }}
-                        style={{ backgroundColor: value == item ? colors.color.primary : '#EDF0F1', flexGrow: 1, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 6, justifyContent: 'center', alignItems: 'center', }}
-                    >
-                        <Label size={18} fontFamily="Font_Medium" color={item ==value? '#fff': '#000' }>{item}</Label>
+                    <Pressable key={index} onPress={() => { setvalue(item.id) }} style={{ backgroundColor: value == item.id ? colors.color.primary : '#FFF', flexGrow: 1, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 6, justifyContent: 'center', alignItems: 'center', }}>
+                        <Label size={18} fontFamily="Font_Medium" color={item.id == value ? '#fff' : '#000'}>{item.name}</Label>
                     </Pressable>
                 ))}
-            </Row>
+            </ScrollHorizontal>
         </Column>
     )
 }

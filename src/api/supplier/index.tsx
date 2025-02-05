@@ -38,6 +38,20 @@ export const searchSupplier = async (name: string) => {
         throw new Error(error.message);
     }
 }
+
+export const importSupplier = async (data: any) => {
+    console.log(data.slice(0, 100));
+    try {
+        const res = await fetchWithAuth("/usuarios/upload/fornecedores", {
+            method: "POST",
+            data: {"csv": data},
+        });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 export const addSupplier = async (params: Supplier) => {
     try {
         const res = await fetchWithAuth("/usuarios/fornecedor", {

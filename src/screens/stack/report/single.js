@@ -1,8 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Main, Row, Loader, colors, Title, Column, Label, useQuery, ScrollVertical, Button, Input, ListSearchStore, ListSearch } from "@/ui";
+import { Main, Row, Loader, colors, Title, Column, Label, useQuery, ScrollVertical, Button, Input, ListSearchStore, ScrollHorizontal } from "@/ui";
 import { Calendar1, Check, ChevronRight, LayoutGrid, Search, Truck, Users, } from "lucide-react-native";
 import { Pressable } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { showReportStore, showReportProductLine, } from '@/api/report';
 import { BarChart, LineChart } from "react-native-gifted-charts";
 import { ProductEmpty } from '@/ui/Emptys/product';
@@ -19,7 +18,7 @@ export default function ReportSingleScreen({ route }) {
     const [dateF, setdateF] = useState(dateNow);
 
     const [tab, settab] = useState('Saída');
-    const types = [{ name: 'Saída', color: '#3590F3' }, { name: 'Entrada', color: '#019866' }, { name: 'Perdas', color: '#FFB238' }];
+    const types = [{ name: 'Saída', color: '#3590F3', }, { name: 'Entrada', color: '#019866', }, { name: 'Perdas', color: '#FFB238' }, { name: 'Devoluções', color: '#EA1E2C' }];
     const [fornecedor, setfornecedor] = useState(null);
     const [produto, setproduto] = useState(null);
     const { data, isLoading, } = useQuery({
@@ -58,6 +57,13 @@ export default function ReportSingleScreen({ route }) {
             return res;
         }
     });
+    const { data: devolucao, isLoading: loadingDevolucao, } = useQuery({
+        queryKey: ["stores devolucao"],
+        queryFn: async () => {
+            const res = await showReportProductLine(null, id, null, dateMonth, dateNow, 'Devoluções');
+            return res;
+        }
+    });
 
     const bottomSheetRef = useRef(null);
     return (
@@ -70,7 +76,7 @@ export default function ReportSingleScreen({ route }) {
                     <ScrollVertical >
                         <Store item={data} />
                         {line && <ResultCharts line={line} tab={tab} />}
-                        {!line && <SingleCharts data={data} tab={tab} line={line} saidas={saidas} entradas={entradas} perdas={perdas} />}
+                        {!line && <SingleCharts data={data} tab={tab} line={line} saidas={saidas} entradas={entradas} perdas={perdas} devolucao={devolucao} />}
                     </ScrollVertical>
                 </Column>
             }
@@ -84,15 +90,17 @@ export default function ReportSingleScreen({ route }) {
                 <BottomSheetScrollView >
                     <Column gv={16} mv={12}>
 
-                        <Column mh={26}>
-                            <Title size={18}>Filtrar por tipo</Title>
-                            <Row gh={12} mv={12}>
+                        <Column>
+                            <Column mh={26}>
+                                <Title size={18}>Filtrar por tipo</Title>
+                            </Column>
+                            <BottomSheetScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, marginVertical: 12,paddingHorizontal: 26, }}>
                                 {types.map((item, index) => (
-                                    <TouchableOpacity style={{ backgroundColor: tab == item.name ? item.color : item.color + 20, padding: 12, borderRadius: 6, }} onPress={() => { settab(item.name) }} >
-                                        <Label style={{ color: tab == item.name ? '#fff' : item.color, fontSize: 18, fontWeight: 500, marginTop: 4, fontFamily: 'Font_Medium' }}>{item.name}</Label>
+                                    <TouchableOpacity key={index} style={{ backgroundColor: tab == item.name ? item.color : item.color + 20, padding: 12, borderRadius: 6, }} onPress={() => { settab(item.name) }} >
+                                        <Label style={{ color: tab == item.name ? '#fff' : item.color, fontSize: 16, fontWeight: 500, marginTop: 4, fontFamily: 'Font_Medium' }}>{item.name}</Label>
                                     </TouchableOpacity>
                                 ))}
-                            </Row>
+                            </BottomSheetScrollView>
                         </Column>
 
                         <Column mh={26}>
@@ -252,39 +260,39 @@ const ResultCharts = ({ line, tab }) => {
                         yAxisTextStyle={{ color: 'gray', fontSize: 14, fontFamily: 'Font_Book' }}
                     />
                 </Column>
-               
+
                 <Column >
                     <Title size={16}>Tabela</Title>
-                <Column style={{ borderRadius: 6, overflow: 'hidden', marginTop: 12, }}>
-                    <Row>
-                        <Column style={{ width: '40%', backgroundColor: '#000', }} pv={4} justify='center' align='center'>
-                            <Label size={16} color='#F1F1F1'>Data</Label>
-                        </Column>
-                        <Column style={{ width: '60%', backgroundColor: '#30303030', }} pv={4} justify='center' align='center'>
-                            <Label size={16} color='#000'>Valor</Label>
-                        </Column>
-                    </Row>
-                    {line?.map((item, index) => {
-                        return (
-                            <Row key={index}>
-                                <Column style={{ width: '40%', backgroundColor: index % 2 ? '#f1f1f1' : '#FFF', }} pv={4} justify='center' align='center'>
-                                    <Label size={16}>{item?.label}</Label>
-                                </Column>
-                                <Column style={{ width: '60%', backgroundColor: index % 2 ? '#fff' : '#f1f1f1', }} pv={4} justify='center' align='center'>
-                                    <Label size={16}>{item?.value}</Label>
-                                </Column>
-                            </Row>
-                        )
-                    })}
-                </Column>
+                    <Column style={{ borderRadius: 6, overflow: 'hidden', marginTop: 12, }}>
+                        <Row>
+                            <Column style={{ width: '40%', backgroundColor: '#000', }} pv={4} justify='center' align='center'>
+                                <Label size={16} color='#F1F1F1'>Data</Label>
+                            </Column>
+                            <Column style={{ width: '60%', backgroundColor: '#30303030', }} pv={4} justify='center' align='center'>
+                                <Label size={16} color='#000'>Valor</Label>
+                            </Column>
+                        </Row>
+                        {line?.map((item, index) => {
+                            return (
+                                <Row key={index}>
+                                    <Column style={{ width: '40%', backgroundColor: index % 2 ? '#f1f1f1' : '#FFF', }} pv={4} justify='center' align='center'>
+                                        <Label size={16}>{item?.label}</Label>
+                                    </Column>
+                                    <Column style={{ width: '60%', backgroundColor: index % 2 ? '#fff' : '#f1f1f1', }} pv={4} justify='center' align='center'>
+                                        <Label size={16}>{item?.value}</Label>
+                                    </Column>
+                                </Row>
+                            )
+                        })}
+                    </Column>
                 </Column>
             </Column>
         </Column>
     )
 }
 
-const SingleCharts = ({ saidas, entradas, perdas }) => {
-    if (!saidas || !entradas || !perdas) return null;
+const SingleCharts = ({ saidas, entradas, perdas, devolucao }) => {
+    if (!saidas || !entradas || !perdas || !devolucao) return null;
     return (
         <Column gv={20} mh={26} mv={20}>
             <Column style={{ backgroundColor: '#FFF', borderRadius: 8 }} pv={20} ph={20} gv={32}>
@@ -337,6 +345,26 @@ const SingleCharts = ({ saidas, entradas, perdas }) => {
                     <LineChart
                         data={perdas}
                         color={'#FFB238'}
+                        spacing={30}
+                        hideDataPoints
+                        thickness={5}
+                        showVerticalLines
+                        yAxisThickness={0}
+                        xAxisThickness={0}
+                        isAnimated
+                        width={230}
+                        xAxisLabelTextStyle={{ color: 'gray', fontSize: 10, fontFamily: 'Font_Book' }}
+                        yAxisTextStyle={{ color: 'gray', fontSize: 14, fontFamily: 'Font_Book' }}
+                    />
+                </Column>
+                <Column>
+                    <Column mb={12}>
+                        <Title size={16}>Devolução de produtos</Title>
+                        <Label size={12}>Últimos 30 dias</Label>
+                    </Column>
+                    <LineChart
+                        data={devolucao}
+                        color={'#EA1E2C'}
                         spacing={30}
                         hideDataPoints
                         thickness={5}

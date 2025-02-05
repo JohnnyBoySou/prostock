@@ -24,17 +24,17 @@ export default function MoveEditScreen({ navigation, route }) {
 
     useEffect(() => {
         if (move) {
-            settipo(move.tipo);
-            setproductId(move.produto_id?.id);
-            setsupplierId(move.fornecedor_id);
-            setobservation(move.observacoes);
+            settipo(move?.tipo);
+            setproductId(move?.produto_id?.id);
+            setsupplierId(move?.fornecedor_id);
+            setobservation(move?.observacoes);
             setProductValues({
-                quantidade: String(move.quantidade),
-                preco: move.preco,
+                quantidade: String(move?.quantidade),
+                preco: move?.preco,
             });
             setSupplierValues({
-                lote: move.lote,
-                validade: formatDateToDDMMYYYY(move.validade),
+                lote: move?.lote,
+                validade: formatDateToDDMMYYYY(move?.validade),
             });
         }
     }, [move]);

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, ListSearch, Tabs, Medida, Status, Label, Title, Row, colors } from "@/ui";
+import { Main, Button, Message, Column, Input, ScrollVertical, ListSearch, Tabs, Medida, Status, Title, Row, colors } from "@/ui";
 
 import { listCategory, searchCategory } from "@/api/category";
 import { Pressable, KeyboardAvoidingView } from "react-native";
@@ -73,21 +73,19 @@ export default function ProductAddScreen({ navigation, route }) {
         }
     }
 
-
     return (<Main>
         <KeyboardAvoidingView behavior="padding">
-
-        <Column>
-            <Tabs types={types} value={tab} setValue={settab} />
-        </Column>
-        <ScrollVertical>
-            {tab === "Sobre" && <About values={values} setmedida={setmedida} medida={medida} settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
-            {tab === "Categorias" && <Categories category={category} settab={settab} selectCategory={selectCategory} setselectCategory={setselectCategory} />}
-            {tab === "Estoque" && <Stock isLoading={isLoading} setstatus={setstatus} status={status} stockValues={stockValues} setstockValues={setstockValues} handleCreate={handleCreate} />}
-            <Column mh={26} mv={26}>
-                <Message error={error} success={success} />
+            <Column>
+                <Tabs types={types} value={tab} setValue={settab} />
             </Column>
-        </ScrollVertical>
+            <ScrollVertical>
+                {tab === "Sobre" && <About values={values} setmedida={setmedida} medida={medida} settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
+                {tab === "Categorias" && <Categories category={category} settab={settab} selectCategory={selectCategory} setselectCategory={setselectCategory} />}
+                {tab === "Estoque" && <Stock isLoading={isLoading} setstatus={setstatus} status={status} stockValues={stockValues} setstockValues={setstockValues} handleCreate={handleCreate} />}
+                <Column mh={26} mv={26}>
+                    <Message error={error} success={success} />
+                </Column>
+            </ScrollVertical>
         </KeyboardAvoidingView>
     </Main>)
 }
@@ -238,7 +236,6 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
         </Column>
     )
 })
-
 
 const Stock = React.memo(({ stockValues, isLoading, setstockValues, handleCreate, status, setstatus }) => {
     const [error, setError] = useState("");

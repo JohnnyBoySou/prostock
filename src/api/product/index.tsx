@@ -26,6 +26,15 @@ export const searchProduct = async (name: string) => {
         throw new Error(error.message);
     }
 }
+export const importProduct = async (data: any) => {
+    console.log(data.slice(0, 20));
+    try {
+        const res = await fetchWithAuth("/usuarios/upload/produtos", { method: "POST", data: {"csv": data} });
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
 
 
 export const addProduct = async (params: Product) => {

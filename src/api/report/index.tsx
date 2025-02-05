@@ -124,7 +124,7 @@ export const showReportProduct = async (produto_id: number, lojaid: number, ) =>
 export const showReportProductLine = async (produto_id: number, lojaid: number, fornecedor_id: number | null = null, datac: string | null = null, dataf: string | null = null, tab: string) => {
     const c = formatDateForLaravel(datac);
     const f = formatDateForLaravel(dataf);
-    const type = tab === 'Saída' ? 'saida' : tab == 'Entrada' ? 'entrada' : tab == 'Perdas' ? 'perda' : 'entrada'
+    const type = tab === 'Saída' ? 'saida' : tab == 'Entrada' ? 'entrada' : tab == 'Perdas' ? 'perda' : tab == 'Devoluções' ? 'devolucao' : 'saida';
     try {
         const res: any = await fetchWithAuthOtherStore("/usuarios/estatisticas/linechat", {
             method: "GET",

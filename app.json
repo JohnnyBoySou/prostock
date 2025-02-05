@@ -17,6 +17,7 @@
       "requireFullScreen": true,
       "buildNumber": "16.0.0",
       "bundleIdentifier": "com.engd.prostock",
+      "usesIcloudStorage": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Esse app usa a câmera para escanear documentos com Inteligência Artificial."
       }
@@ -39,13 +40,14 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      "expo-document-picker",
+      "expo-font",
       [
         "expo-camera",
         {
           "cameraPermission": "Permita que o ProStock acesse sua câmera."
         }
       ],
-      "expo-font",
       [
         "expo-screen-orientation",
         {
