@@ -30,6 +30,7 @@ export default function ImportScreen({ navigation }) {
                 const base64 = await FileSystem.readAsStringAsync(fileUri, {
                     encoding: FileSystem.EncodingType.Base64
                 });
+                console.log(type)
                 if (type == 'PRODUTO') {
                     const res = await importProduct(base64);
                     setsuccess(res.message);
@@ -40,15 +41,15 @@ export default function ImportScreen({ navigation }) {
             }
         } catch (error) {
             console.error('Erro ao importar o arquivo:', error);
-            seterror(error.message);
+            seterror('Falha ao importar arquivo');
         } finally {
             setloading(false);
         }
     };
 
     const handleDownloadTemplate = async (type) => {
-        let url = type == 'FORNECEDOR' ? 'https://api.erp.cruzrepresentacoes.com.br/template/fornecedor.csv' : 'https://api.erp.cruzrepresentacoes.com.br/template/produto.csv';
-        await Linking.canOpenURL(url);
+        let url = type == 'FORNECEDOR' ? 'https://stock.engenhariadigital.net/subir-fornecedores.csv' : 'https://stock.engenhariadigital.net/Subir-Produtos.csv';
+        Linking.canOpenURL(url);
     };
 
 
@@ -76,7 +77,7 @@ export default function ImportScreen({ navigation }) {
                                     </Column>
                                     <Label style={{ fontFamily: 'Font_Book', textAlign: 'center' }}>Arquivos aceitos: .csv</Label>
                                 </Pressable>
-                                <Pressable onPress={handleDownloadTemplate} style={{ marginVertical: 12, }}>
+                                <Pressable onPress={handleDownloadTemplate} style={{ marginVertical: 12, paddingVertical: 12, paddingHorizontal: 20,}}>
                                     <Label style={{ textDecorationLine: 'underline', textAlign: 'center', color: colors.color.blue, }}>Baixar modelo</Label>
                                 </Pressable>
                             </>

@@ -27,9 +27,9 @@ function CustomDrawerContent({ navigation }) {
       onPress: () => navigation.navigate("Stacks", { screen: "Home" }),
     },
     {
-      icon: <Truck color="#484848" size={20} />,
-      label: "Fornecedores",
-      onPress: () => navigation.navigate("Stacks", { screen: "SupplierList" }),
+      icon: <GitCompareArrows color="#484848" size={20} />,
+      label: "Movimentações",
+      onPress: () => navigation.navigate("Stacks", { screen: "MoveList" }),
     },
     {
       icon: <LayoutGrid color="#484848" size={20} />,
@@ -42,9 +42,58 @@ function CustomDrawerContent({ navigation }) {
       onPress: () => navigation.navigate("Stacks", { screen: "CategoryList" }),
     },
     {
+      icon: <Truck color="#484848" size={20} />,
+      label: "Fornecedores",
+      onPress: () => navigation.navigate("Stacks", { screen: "SupplierList" }),
+    },
+   
+    {
+      icon: <Brain color="#484848" size={20} />,
+      label: "Inteligência Artificial",
+      onPress: () => navigation.navigate("Stacks", { screen: "AI" }),
+    },
+    {
+      icon: <Bell color="#484848" size={20} />,
+      label: "Notificações",
+      onPress: () => navigation.navigate("Stacks", { screen: "NotifyList" }),
+    },
+    {
+      icon: <CircleUserRound color="#484848" size={20} />,
+      label: "Meu perfil",
+      onPress: () => navigation.navigate("Stacks", { screen: "Profile" }),
+    },
+  ];
+
+  const adminLojaItems = [
+    {
+      icon: <House color="#484848" size={20} />,
+      label: "Início",
+      onPress: () => navigation.navigate("Stacks", { screen: "Home" }),
+    },
+    {
       icon: <GitCompareArrows color="#484848" size={20} />,
       label: "Movimentações",
       onPress: () => navigation.navigate("Stacks", { screen: "MoveList" }),
+    },
+    {
+      icon: <ChartPie color="#484848" size={20} />,
+      label: "Relatórios",
+      onPress: () => navigation.navigate("Stacks", { screen: "ReportList" }),
+    },
+    {
+      icon: <LayoutGrid color="#484848" size={20} />,
+      label: "Produtos",
+      onPress: () => navigation.navigate("Stacks", { screen: "ProductList" }),
+    },
+    {
+      icon: <LayoutList color="#484848" size={20} />,
+      label: "Categorias",
+      onPress: () => navigation.navigate("Stacks", { screen: "CategoryList" }),
+    },
+    {
+      icon: <Truck color="#484848" size={20} />,
+      label: "Fornecedores",
+      onPress: () => navigation.navigate("Stacks", { screen: "SupplierList" }),
     },
     {
       icon: <Brain color="#484848" size={20} />,
@@ -61,22 +110,28 @@ function CustomDrawerContent({ navigation }) {
       label: "Meu perfil",
       onPress: () => navigation.navigate("Stacks", { screen: "Profile" }),
     },
-
   ];
 
-  const adminLojaItems = [
+  const superAdminItems = [
+    {
+      icon: <House color="#484848" size={20} />,
+      label: "Início",
+      onPress: () => navigation.navigate("Stacks", { screen: "Home" }),
+    },
+    {
+      icon: <Store color="#484848" size={20} />,
+      label: "Lojas",
+      onPress: () => navigation.navigate("Stacks", { screen: "StoreList" }),
+    },
     {
       icon: <ChartPie color="#484848" size={20} />,
       label: "Relatórios",
       onPress: () => navigation.navigate("Stacks", { screen: "ReportList" }),
     },
-  ];
-
-  const superAdminItems = [
     {
-      icon: <Store color="#484848" size={20} />,
-      label: "Lojas",
-      onPress: () => navigation.navigate("Stacks", { screen: "StoreList" }),
+      icon: <GitCompareArrows color="#484848" size={20} />,
+      label: "Movimentações",
+      onPress: () => navigation.navigate("Stacks", { screen: "MoveList" }),
     },
     {
       icon: <Users color="#484848" size={20} />,
@@ -84,19 +139,45 @@ function CustomDrawerContent({ navigation }) {
       onPress: () => navigation.navigate("Stacks", { screen: "UserList" }),
     },
     {
-      icon: <ChartPie color="#484848" size={20} />,
-      label: "Relatórios",
-      onPress: () => navigation.navigate("Stacks", { screen: "ReportList" }),
+      icon: <LayoutGrid color="#484848" size={20} />,
+      label: "Produtos",
+      onPress: () => navigation.navigate("Stacks", { screen: "ProductList" }),
+    },
+    {
+      icon: <LayoutList color="#484848" size={20} />,
+      label: "Categorias",
+      onPress: () => navigation.navigate("Stacks", { screen: "CategoryList" }),
+    },
+    {
+      icon: <Truck color="#484848" size={20} />,
+      label: "Fornecedores",
+      onPress: () => navigation.navigate("Stacks", { screen: "SupplierList" }),
+    },
+    {
+      icon: <Brain color="#484848" size={20} />,
+      label: "Inteligência Artificial",
+      onPress: () => navigation.navigate("Stacks", { screen: "AI" }),
     },
     {
       icon: <Upload color="#484848" size={20} />,
       label: "Importar",
       onPress: () => navigation.navigate("Stacks", { screen: "Import" }),
-    }
+    },
+    {
+      icon: <Bell color="#484848" size={20} />,
+      label: "Notificações",
+      onPress: () => navigation.navigate("Stacks", { screen: "NotifyList" }),
+    },
+    {
+      icon: <CircleUserRound color="#484848" size={20} />,
+      label: "Meu perfil",
+      onPress: () => navigation.navigate("Stacks", { screen: "Profile" }),
+    },
+   
   ];
 
   const account = [
-    ...commonItems,
+    ...(role === "regular" ? commonItems : []),
     ...(role === "adminloja" ? adminLojaItems : []),
     ...(role === "superadmin" ? superAdminItems : []),
   ];

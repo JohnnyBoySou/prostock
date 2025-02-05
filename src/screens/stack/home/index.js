@@ -48,11 +48,11 @@ export default function HomeScreen({ navigation, }) {
                         </Pressable>
 
                         <Row gh={12}>
-                            <Pressable onPress={() => { navigation.navigate('NotifyList') }} style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
-                                <Bell color={colors.color.primary} size={24} />
+                            <Pressable onPress={() => { navigation.navigate('NotifyList') }} style={{ width: 48, height: 48,  justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                                <Bell color="#505050" size={24} />
                             </Pressable>
-                            <Pressable onPress={() => { navigation.navigate('Profile') }} style={{ backgroundColor: colors.color.primary, width: 48, height: 48, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
-                                <Title size={24} style={{ marginTop: 4, }} color='#fff'>{user?.name.slice(0, 1)}</Title>
+                            <Pressable onPress={() => { navigation.navigate('Profile') }} style={{ backgroundColor: colors.color.primary, width: 46, height: 46, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
+                                <Title size={20} style={{ marginTop: 4, }} color='#fff'>{user?.name.slice(0, 1)}</Title>
                             </Pressable>
                         </Row>
                     </Row>
@@ -81,13 +81,13 @@ export default function HomeScreen({ navigation, }) {
                                     </Row>}
                             </Pressable>
                             <Row justify='space-between' gh={12}>
-                                <Pressable onPress={() => { navigation.navigate('MoveAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FFF0D7', }}>
-                                    <GitCompareArrows size={32} color='#FFB238' />
-                                    <Title size={16} fontFamily="Font_Medium" color='#FFB238'>Criar {'\n'}Movimentação</Title>
+                                <Pressable onPress={() => { navigation.navigate('MoveAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FFF', }}>
+                                    <GitCompareArrows size={24} color='#FFB238' />
+                                    <Title size={16} fontFamily="Font_Book" color='#505050'>Criar {'\n'}Movimentação</Title>
                                 </Pressable>
-                                <Pressable onPress={() => { navigation.navigate('AI') }} style={{ padding: 16, flexGrow: 2, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
-                                    <ScanText size={32} color='#3590F3' />
-                                    <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Escanear {'\n'}Documento</Title>
+                                <Pressable onPress={() => { navigation.navigate('AI') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 2, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
+                                    <ScanText size={24} color='#3590F3' />
+                                    <Title size={16} fontFamily="Font_Book"color='#505050' >Inteligência {'\n'}Artificial</Title>
                                 </Pressable>
                             </Row>
                         </Column>
@@ -96,30 +96,30 @@ export default function HomeScreen({ navigation, }) {
                         <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
                         <Column style={{ height: 12 }} />
                         <Row justify='space-between' gh={12}>
-                            <Pressable onPress={() => { navigation.navigate('SupplierAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D9EEE8', }}>
-                                <Truck size={32} color='#43AA8B' />
-                                <Title size={16} fontFamily="Font_Medium" color='#43AA8B'>Adicionar {'\n'}Fornecedor</Title>
+                            <Pressable onPress={() => { navigation.navigate('SupplierAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
+                                <Truck size={24} color='#43AA8B' />
+                                <Title size={16} fontFamily="Font_Book" color='#505050'>Adicionar {'\n'}Fornecedor</Title>
                             </Pressable>
-                            {role != 'regular' && <Pressable onPress={() => { navigation.navigate('ReportList') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#EADAFF', }}>
-                                <Pie size={32} color='#9747FF' />
-                                <Title size={16} fontFamily="Font_Medium" color='#9747FF'>Acessar {'\n'}Relatórios</Title>
+                            {role != 'regular' && <Pressable onPress={() => { navigation.navigate('ReportList') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
+                                <Pie size={24} color='#9747FF' />
+                                <Title size={16} fontFamily="Font_Book" color='#505050'>Acessar {'\n'}Relatórios   </Title>
                             </Pressable>}
                         </Row>
                         <Column style={{ height: 12 }} />
                         <Row justify='space-between' gh={12}>
-                            <Pressable onPress={() => { navigation.navigate('ProductAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FBD2D5', }}>
-                                <LayoutGrid size={32} color='#EA1E2C' />
-                                <Title size={16} fontFamily="Font_Medium" color='#EA1E2C'>Adicionar {'\n'}Produto</Title>
+                            <Pressable onPress={() => { navigation.navigate('ProductAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
+                                <LayoutGrid size={24} color='#EA1E2C' />
+                                <Title size={16} fontFamily="Font_Book" color='#505050'>Adicionar {'\n'}Produto</Title>
                             </Pressable>
-                            <Pressable onPress={() => { navigation.navigate('CategoryAdd') }} style={{ padding: 16, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#D7E9FD', }}>
-                                <LayoutList size={32} color='#3590F3' />
-                                <Title size={16} fontFamily="Font_Medium" color='#3590F3'>Adicionar {'\n'}Categoria</Title>
-                            </Pressable>
+                            <Pressable onPress={() => { navigation.navigate('CategoryAdd') }} style={{paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
+                                <LayoutList size={24} color='#3590F3' />
+                                <Title size={16} fontFamily="Font_Book" color='#505050'>Adicionar {'\n'}Categoria</Title>
+                            </Pressable>Font_Book
                         </Row>
                     </FadeUp>
                 </Column>
             </ScrollVertical>
-            <Column style={{ position: 'absolute', bottom: 0, top: 0, zIndex: 0, opacity: .3, }} >
+            <Column style={{ position: 'absolute', bottom: 0, top: 0, zIndex: 0, opacity: .2, }} >
                 <Image src={require('@/imgs/blur.png')} w={SCREEN_WIDTH + 100} h={SCREEN_HEIGHT + 100} />
             </Column>
         </Main>

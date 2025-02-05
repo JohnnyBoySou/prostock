@@ -113,8 +113,8 @@ const Product = ({ productId, setproductId, settab, setvalue, value, settipo, ti
     return (
         <Column>
             <ListSearch refresh={false} selectID={productId} spacing={false} renderItem={({ item }) => <Card item={item} />} getSearch={searchProduct} getList={listProduct} empty={<ProductEmpty />} />
-            <Column mh={26} mv={16}>
-                <Tipo setvalue={settipo} value={tipo} />
+            <Column  mv={16}>
+                <Tipo setvalue={settipo} value={tipo} spacing/>
             </Column>
             <Form fieldKeys={fieldKeys} initialValues={value} onSubmit={(value) => {
                 setvalue(value);
