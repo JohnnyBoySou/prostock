@@ -4,7 +4,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { View, Pressable } from "react-native";
 import { Column, Row, Title, Label, Image, colors, ScrollVertical } from "@/ui";
 
-import { LogOut, ChevronRight, X, CircleUserRound, Brain, ChartPie, GitCompareArrows, LayoutGrid, Truck, Users, Store, House, LayoutList, Bell } from "lucide-react-native";
+import { LogOut, ChevronRight, X, CircleUserRound, Brain, ChartPie, GitCompareArrows, LayoutGrid, Truck, Users, Store, House, LayoutList, Bell, Upload } from "lucide-react-native";
 import { useUser } from "@/context/user";
 
 import { Stacks } from "./stack";
@@ -88,6 +88,11 @@ function CustomDrawerContent({ navigation }) {
       label: "Relatórios",
       onPress: () => navigation.navigate("Stacks", { screen: "ReportList" }),
     },
+    {
+      icon: <Upload color="#484848" size={20} />,
+      label: "Importar",
+      onPress: () => navigation.navigate("Stacks", { screen: "Import" }),
+    }
   ];
 
   const account = [

@@ -24,9 +24,11 @@
     "babel-plugin-module-resolver": "^5.0.2",
     "expo": "~52.0.26",
     "expo-application": "~6.0.2",
+    "expo-asset": "^11.0.3",
     "expo-camera": "~16.0.14",
     "expo-clipboard": "^7.0.1",
     "expo-constants": "~17.0.5",
+    "expo-document-picker": "~13.0.2",
     "expo-font": "~13.0.2",
     "expo-haptics": "~14.0.1",
     "expo-image": "~2.0.4",
@@ -53,8 +55,7 @@
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.13",
     "styled-components": "*",
-    "typescript": "~5.7.2",
-    "expo-document-picker": "~13.0.2"
+    "typescript": "~5.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0"

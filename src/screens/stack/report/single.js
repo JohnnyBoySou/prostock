@@ -96,7 +96,7 @@ export default function ReportSingleScreen({ route }) {
                             </Column>
                             <BottomSheetScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, marginVertical: 12,paddingHorizontal: 26, }}>
                                 {types.map((item, index) => (
-                                    <TouchableOpacity key={index} style={{ backgroundColor: tab == item.name ? item.color : item.color + 20, padding: 12, borderRadius: 6, }} onPress={() => { settab(item.name) }} >
+                                    <TouchableOpacity key={index} style={{ backgroundColor: tab == item.name ? item.color : item.color + 20, padding: 12, borderRadius: 6, }} onPress={() => { if (tab === item.name) { settab('') }else{ settab(item.name)} }} >
                                         <Label style={{ color: tab == item.name ? '#fff' : item.color, fontSize: 16, fontWeight: 500, marginTop: 4, fontFamily: 'Font_Medium' }}>{item.name}</Label>
                                     </TouchableOpacity>
                                 ))}
@@ -243,7 +243,7 @@ const ResultCharts = ({ line, tab }) => {
                 <Title size={18} align='center'>Resumo dos últimos 30 dias</Title>
                 <Column>
                     <Column mb={12}>
-                        <Title size={16}>Gráfico de {tab}</Title>
+                        <Title size={16}>Gráfico de {tab == '' ? 'Tudo' : tab}</Title>
                     </Column>
                     <LineChart
                         data={line}

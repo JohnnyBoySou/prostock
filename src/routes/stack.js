@@ -46,6 +46,8 @@ import NotifyListScreen from '@/screens/stack/notify/list';
 import NotifyShowScreen from '@/screens/stack/notify/show';
 import Camera from "../ui/Header/camera";
 
+import ImportScreen from "../screens/stack/import";
+
 export function Stacks() {
 
   const { role } = useUser();
@@ -95,6 +97,7 @@ export function Stacks() {
       {role === 'superadmin' && (
         <Stack.Group>
           <Stack.Group>
+            <Stack.Screen name="Import" component={ImportScreen} options={{ header: ({ navigation, }) => (<Minimal navigation={navigation} scene="Importar" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
             <Stack.Screen name="ReportList" component={ReportListScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Listar relatórios" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
             <Stack.Screen name="ReportSingle" component={ReportSingleScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />
             <Stack.Screen name="ReportProduct" component={ReportProductScreen} options={{ header: ({ navigation, }) => (<StackMenu navigation={navigation} name="Relatório de produtos" />), headerShown: true, ...TransitionPresets.SlideFromRightIOS }} />

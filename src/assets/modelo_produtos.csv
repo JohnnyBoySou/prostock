@@ -1,0 +1,2 @@
+nome,estoque_minimo,estoque_maximo,descricao,"unidade 'kg', 'g', 't', 'mL', 'm³', 'm', 'cm', 'mm', 'm²', 'un', 'dz', 'cx', 'pct', 'kit', 'par', 'h', 'd', 'mL', 'rolo', 'kgf'",Categorias(id)
+teste 32323,40,100,teste desc,kg,1-2

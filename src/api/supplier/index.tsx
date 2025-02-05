@@ -39,13 +39,13 @@ export const searchSupplier = async (name: string) => {
     }
 }
 
-export const importSupplier = async (data: any) => {
-    console.log(data.slice(0, 100));
+export const importSupplier = async ( data: any) => {
     try {
         const res = await fetchWithAuth("/usuarios/upload/fornecedores", {
             method: "POST",
-            data: {"csv": data},
-        });
+            data: { "csv": data },
+        }
+    );
         return res;
     } catch (error) {
         throw new Error(error.message);
