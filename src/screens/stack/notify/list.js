@@ -3,7 +3,7 @@ import { Main, Row, colors, Title, Column, Label, Button, useInfiniteQuery, Load
 import { ChevronRight, } from "lucide-react-native";
 import { FlatList, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { listNotify } from '@/api/notify/index';
+import { listNotify } from 'src/services/notify/index';
 
 export default function NotifyListScreen() {
     const [page, setpage] = useState();

@@ -2,13 +2,13 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { Main, Row, Loader, colors, Title, Column, Label, useQuery, ScrollVertical, Button, Input, ListSearchStore, ScrollHorizontal } from "@/ui";
 import { Calendar1, Check, ChevronRight, LayoutGrid, Search, Truck, Users, } from "lucide-react-native";
 import { Pressable } from "react-native";
-import { showReportStore, showReportProductLine, } from '@/api/report';
+import { showReportStore, showReportProductLine, } from 'src/services/report';
 import { BarChart, LineChart } from "react-native-gifted-charts";
 import { ProductEmpty } from '@/ui/Emptys/product';
 import BottomSheet, { BottomSheetScrollView, TouchableOpacity } from '@gorhom/bottom-sheet';
 import { SupplierEmpty } from '@/ui/Emptys/supplier';
-import { listSupplierStore, listSupplierStoreSearch } from "@/api/supplier";
-import { listProductStore, listProductStoreSearch } from "@/api/product";
+import { listSupplierStore, listSupplierStoreSearch } from "src/services/supplier";
+import { listProductStore, listProductStoreSearch } from "src/services/product";
 
 export default function ReportSingleScreen({ route }) {
     const id = route.params.id;

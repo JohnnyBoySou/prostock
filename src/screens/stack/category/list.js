@@ -2,7 +2,7 @@ import { Main, Row, colors, Title, Column, Label,  Button, ListSearch } from "@/
 import { PenLine } from "lucide-react-native";
 import { Pressable } from 'react-native';
 
-import { listCategory, searchCategory } from "@/api/category";
+import { listCategory, searchCategory } from "src/services/category";
 
 import { useNavigation } from "@react-navigation/native";
 import { CategoryEmpty } from "@/ui/Emptys/category";

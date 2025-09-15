@@ -1,7 +1,7 @@
 import { ChevronLeft, Forward } from "lucide-react-native";
 import { View, Pressable, Text } from "react-native";
 
-export default function Camera({ navigation, bg, name }) {
+export default function Camera({ navigation, }) {
   return (
     <View style={{ alignItems: "center", flexDirection: "row",  marginHorizontal: 26, paddingBottom: 0, flexGrow: 1, height: 90, position: 'absolute', top: 30 }}>
       <Pressable onPress={() => {

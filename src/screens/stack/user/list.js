@@ -2,7 +2,7 @@ import { Main, Row, colors, Title, Column, Label, ListSearch, Button } from "@/u
 import { PenLine } from "lucide-react-native";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { listUser, searchUser } from '@/api/user';
+import { listUser, searchUser } from 'src/services/user';
 import { UserEmpty } from "@/ui/Emptys/user";
 
 export default function UserListScreen() {

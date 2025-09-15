@@ -1,5 +1,5 @@
 import { Main, Row, colors, Title, Column, Label, useQuery, Loader } from "@/ui";
-import { singleNotify } from "@/api/notify";
+import { singleNotify } from "src/services/notify";
 
 export default function NotifyShowScreen({ route }) {
 

@@ -1,6 +1,6 @@
 import React, { memo, useState, useRef, useEffect, useCallback } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Medida, Status, Label, Title, Row, colors, Loader, useQuery } from "@/ui";
-import { editCategory, showCategory } from "@/api/category";
+import { editCategory, showCategory } from "src/services/category";
 import { KeyboardAvoidingView } from "react-native";
 
 export default function CategoryEditScreen({ navigation, route }) {

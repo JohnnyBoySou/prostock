@@ -3,9 +3,9 @@ import { Main, Button, Message, Row, Search, Title, Column, colors, TextArea, Lo
 import { FlatList, Pressable, KeyboardAvoidingView } from "react-native";
 import { Check, Key, } from "lucide-react-native";
 
-import { addMove } from "@/api/move";
-import { listSupplier, searchSupplier } from '@/api/supplier';
-import { listProduct, searchProduct } from '@/api/product';
+import { addMove } from "@/services/movement";
+import { listSupplier, searchSupplier } from 'src/services/supplier';
+import { listProduct, searchProduct } from 'src/services/product';
 import { ProductEmpty } from "@/ui/Emptys/product";
 import { SupplierEmpty } from '@/ui/Emptys/supplier';
 

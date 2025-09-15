@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "ProStock",
-    "slug": "ProStock",
-    "version": "16.0.0",
-    "scheme": "prostock",
+    "name": "20Stock",
+    "slug": "20Stock",
+    "version": "0.0.1",
+    "scheme": "20stock",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,16 +15,16 @@
     "ios": {
       "supportsTablet": false,
       "requireFullScreen": true,
-      "buildNumber": "16.0.0",
-      "bundleIdentifier": "com.engd.prostock",
+      "buildNumber": "0.0.1",
+      "bundleIdentifier": "com.joaosousa.20stock",
       "usesIcloudStorage": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Esse app usa a câmera para escanear documentos com Inteligência Artificial."
       }
     },
     "android": {
-      "package": "com.engd.prostock",
-      "versionCode": 16,
+      "package": "com.joaosousa.20stock",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#019866"
@@ -76,10 +76,10 @@
               "appExtensions": [
                 {
                   "targetName": "OneSignalNotificationServiceExtension",
-                  "bundleIdentifier": "com.engd.prostock.OneSignalNotificationServiceExtension",
+                  "bundleIdentifier": "com.joaosousa.20stock.OneSignalNotificationServiceExtension",
                   "entitlements": {
                     "com.apple.security.application-groups": [
-                      "group.com.engd.prostock.onesignal"
+                      "group.com.joaosousa.20stock.onesignal"
                     ]
                   }
                 }

@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { Main, Row, Loader, colors, Title, Column, Label, useQuery, Input, ListSearch } from "@/ui";
+import { Main, Row, Loader, colors, Title, Column, Label, useFetch, Input, ListSearch } from "@/ui";
 import { ChevronRight,  } from "lucide-react-native";
 import { FlatList, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { showLoggedUser } from "@/api/user";
+import { showLoggedUser } from "src/services/user";
 
 export default function ReportListScreen() {
-    const { data, isLoading, refetch } = useQuery({
-        queryKey: ["stores report"],
-        queryFn: async () => {
-            const res = await showLoggedUser(); return res;
+    const { data, isLoading, refetch } = useFetch({
+        key: ["stores report"],
+        fetcher: async () => {
+            const res = await showLoggedUser(); 
+            return res;
         }
     });
     return (

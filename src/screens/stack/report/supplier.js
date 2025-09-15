@@ -1,6 +1,6 @@
 import { Main, Loader, colors, Title, Column, Label, useQuery, ScrollVertical } from "@/ui";
 import { BarChart } from "react-native-gifted-charts";
-import { showReportSupplier } from "@/api/report";
+import { showReportSupplier } from "src/services/report";
 
 export default function ReportSupplierScreen({ route, navigation }) {
     const id = route.params.id;

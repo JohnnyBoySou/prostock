@@ -1,9 +1,0 @@
- [
-        "onesignal-expo-plugin",
-        {
-          "mode": "production"
-        }
-      ]
-
-    npm i react-native-onesignal
-    npm i onesignal-expo-plugin

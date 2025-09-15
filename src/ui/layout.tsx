@@ -3,8 +3,9 @@ import { View, ViewStyle, StyleSheet, ScrollView } from 'react-native';
 import colors from './colors';
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   style?: ViewStyle;
+  contentContainerStyle?: any;
   justify?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
   align?: 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline';
   mh?: number;
@@ -21,6 +22,13 @@ interface LayoutProps {
   pv?: number;
   gv?: number; // Gap vertical
   gh?: number; // Gap horizontal
+}
+
+interface ScrollProps {
+  children: React.ReactNode;
+  style?: ViewStyle;
+  contentContainerStyle?: any;
+  [key: string]: any;
 }
 
 const Column: React.FC<LayoutProps> = ({
@@ -149,7 +157,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Main = ({children, style,}) => {
+const Main = ({children, style,}: LayoutProps) => {
   return (
     <View style={[{ flex: 1, backgroundColor: colors.color.background, }, style]}>
       {children}
@@ -157,16 +165,27 @@ const Main = ({children, style,}) => {
   )
 }
 
-const ScrollHorizontal = ({children, style, contentContainerStyle}) => {
+const ScrollHorizontal = ({children, style, contentContainerStyle, ...props}: ScrollProps) => {
   return (
-    <ScrollView style={style} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={contentContainerStyle}>
+    <ScrollView 
+      style={style} 
+      horizontal 
+      showsHorizontalScrollIndicator={false} 
+      contentContainerStyle={contentContainerStyle}
+      {...props}
+    >
       {children}
     </ScrollView>
   )
 }
-const ScrollVertical = ({children, style, contentContainerStyle, ...props }) => {
+const ScrollVertical = ({children, style, contentContainerStyle, ...props }: ScrollProps) => {
   return (
-    <ScrollView style={style} showsVerticalScrollIndicator={false} contentContainerStyle={contentContainerStyle} {...props}>
+    <ScrollView 
+      style={style} 
+      showsVerticalScrollIndicator={false} 
+      contentContainerStyle={contentContainerStyle} 
+      {...props}
+    >
       <View style={{ height: 26, }}/>
       {children}
       <View style={{ height: 100, }} />

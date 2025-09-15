@@ -2,9 +2,10 @@
   "compilerOptions": {
       "baseUrl": "./",
       "paths": {
+        "@/*": ["src/*"],
         "@/assets/*": ["src/assets/*"],
         "@/screens/*": ["src/screens/*"],
-        "@/api/*": ["src/api/*"],
+        "@/services/*": ["src/services/*"],
         "@/hooks/*": ["src/hooks/*"],
         "@/imgs/*": ["src/assets/imgs/*"],
         "@/ui/*": ["src/ui/*"], 

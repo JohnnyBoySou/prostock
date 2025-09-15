@@ -1,10 +1,10 @@
 import React, { memo, useState, useRef, useEffect, useCallback } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Users, Status, Label, Title, Row, colors, ListSearch } from "@/ui";
 
-import { listStore, searchStore } from "@/api/store";
+import { listStore, searchStore } from "src/services/store";
 import { Pressable, KeyboardAvoidingView } from "react-native";
 import { Check } from 'lucide-react-native';
-import { addUser } from "@/api/user";
+import { addUser } from "src/services/user";
 import { UserEmpty } from '@/ui/Emptys/user';
 
 export default function UserAddScreen({ navigation }) {

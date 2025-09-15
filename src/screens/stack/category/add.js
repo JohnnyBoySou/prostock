@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Status } from "@/ui";
 import { KeyboardAvoidingView } from "react-native";
-import { addCategory } from "@/api/category";
+import { addCategory } from "src/services/category";
 
 export default function CategoryAddScreen({ navigation }) {
 

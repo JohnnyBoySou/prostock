@@ -1,12 +1,12 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Main, Loader, colors, Title, Column, Label, useQuery, ScrollVertical, Row, Input, ListSearchStore, Tabs } from "@/ui";
-import { showReportProduct, showReportProductLine } from '@/api/report';
+import { showReportProduct, showReportProductLine } from 'src/services/report';
 import { BarChart, LineChart } from "react-native-gifted-charts";
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Pressable } from "react-native";
 
 import { SupplierEmpty } from '@/ui/Emptys/supplier';
-import { listSupplierStore, listSupplierStoreSearch } from "@/api/supplier";
+import { listSupplierStore, listSupplierStoreSearch } from "src/services/supplier";
 import { Calendar1, Check, ChevronRight, LayoutGrid, Search, Truck, Users, } from "lucide-react-native";
 
 export default function ReportProductScreen({ route, navigation }) {

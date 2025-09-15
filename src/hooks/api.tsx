@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-import { getToken } from "./token";
+import { TokenService } from "./token";
 import { getStore } from "./store";
 
-const baseURL = "https://stock.engenhariadigital.net/api";
+const baseURL = "http://localhost:3000/api";
 
 interface FetchApiOptions extends AxiosRequestConfig {
   headers?: Record<string, string>;
@@ -19,7 +19,7 @@ const apiClient = axios.create({
   timeout: 30000,
 });
 
-export async function fetchApi<T = unknown>(
+export async function fetch<T = unknown>(
   url: string,
   options: FetchApiOptions = {}
 ): Promise<ApiResponse<T>> {
@@ -41,12 +41,13 @@ export async function fetchApi<T = unknown>(
     return null;
   }
 }
-export async function fetchWithAuth<T = unknown>(
+
+export async function fetchAuth<T = unknown>(
   url: string,
   options: FetchApiOptions = {}
 ): Promise<ApiResponse<T>> {
   try {
-    const token = await getToken();
+    const token = await TokenService.get();
     const store = await getStore();
     if (!token) {
       throw new Error("Authentication token not found.");
@@ -72,13 +73,12 @@ export async function fetchWithAuth<T = unknown>(
   }
 }
 
-
-export async function fetchWithAuthOtherStore<T = unknown>(
+export async function fetchAuthOtherStore<T = unknown>(
   url: string,
   options: FetchApiOptions = {}
 ): Promise<ApiResponse<T>> {
   try {
-    const token = await getToken(); 
+    const token = await TokenService.get(); 
     if (!token) {
       throw new Error("Authentication token not found.");
     }
@@ -102,7 +102,7 @@ export async function fetchWithAuthOtherStore<T = unknown>(
   }
 }
 
-export async function fetchWithNoAuth<T = unknown>(
+export async function fetchNoAuth<T = unknown>(
   url: string,
   options: FetchApiOptions = {}
 ): Promise<ApiResponse<T>> {

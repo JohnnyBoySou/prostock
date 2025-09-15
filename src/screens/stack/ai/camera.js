@@ -9,7 +9,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 
 //API
-import { sendImage } from '@/api/ia';
+import { sendImage } from 'src/services/ia';
 
 export default function OCRScreen({ navigation, route }) {
   const anexo = route?.params?.anexo;

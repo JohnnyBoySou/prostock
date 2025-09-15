@@ -3,8 +3,8 @@ import { KeyboardAvoidingView, Pressable } from 'react-native';
 import { Main, Column, Label, Title, Button, Image, colors, Row, ListSearchIA, ScrollVertical } from '@/ui';
 import { Check, Home } from 'lucide-react-native';
 
-import { searchSupplier,} from '@/api/supplier';
-import { searchProduct,} from '@/api/product';
+import { searchSupplier,} from 'src/services/supplier';
+import { searchProduct,} from 'src/services/product';
 
 import { useNavigation } from '@react-navigation/native';
 

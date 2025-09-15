@@ -2,8 +2,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Status, fields, validations, Form } from "@/ui";
 import { KeyboardAvoidingView } from "react-native";
-import { getCep } from "@/api/store";
-import { addSupplier } from "@/api/supplier";
+import { getCep } from "src/services/store";
+import { addSupplier } from "src/services/supplier";
 
 export default function SupplierAddScreen({ navigation, route }) {
     const data = route?.params?.data

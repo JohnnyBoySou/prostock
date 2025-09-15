@@ -1,7 +1,7 @@
 import { ChevronLeft, Forward } from "lucide-react-native";
 import { View, Pressable, Text } from "react-native";
 
-export default function StackMenu({ navigation, bg, name }) {
+export default function StackMenu({ navigation, name }) {
   return (
     <View style={{ alignItems: "center",  flexDirection: "row", paddingTop: 50, paddingHorizontal: 26, paddingBottom: 16, flexGrow: 1, backgroundColor: '#FFF', }}>
       <Pressable onPress={() => {

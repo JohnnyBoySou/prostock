@@ -1,10 +1,10 @@
 import React, { memo, useState, useRef, useEffect, useCallback } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Users, Status, Label, useQuery, Title, Row, colors, Loader } from "@/ui";
 
-import { listStore } from "@/api/store";
+import { listStore } from "src/services/store";
 import { Pressable, KeyboardAvoidingView } from "react-native";
 import { Check } from 'lucide-react-native';
-import { editUser, showUser } from "@/api/user";
+import { editUser, showUser } from "src/services/user";
 
 export default function UserEditScreen({ navigation, route }) {
     const [tab, settab] = useState("Sobre");

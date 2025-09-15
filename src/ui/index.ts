@@ -1,4 +1,4 @@
-import { Dimensions } from "react-native";
+import { Dimensions, Pressable   } from "react-native";
 import { Column, Row, Main,  ScrollHorizontal, ScrollVertical,  } from "./layout";
 import Button from "./button";
 import Avatar from "./avatar";
@@ -20,25 +20,28 @@ import Users from "./users";
 import Form from './form';
 import Tipo from './tipo';
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useFetch } from "../hooks/useFetch";
 import fields from './fields';
 import validations from "./validation";
 import TextArea from "./textarea";
+import Icon from "./icon";
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import ListSearch from "./ListSearch";
 import ListSearchStore from './ListSearchStore'
 import ListSearchIA from "./ListSearchIA";
+import { MultiStep } from "./multistep";
 export {
-    useQuery, useInfiniteQuery,
+    useQuery, useInfiniteQuery, useFetch,
     Column, Row, Main, ScrollHorizontal, ScrollVertical,
     Title, HeadTitle, Label, SubLabel, U, Description,
     Button, Avatar, Switch, colors,
     Skeleton,
     Tabs,
     SCREEN_WIDTH, SCREEN_HEIGHT,
-    Input, Message,
+    Input, Message, Pressable,
     Sheet, Select, Loader,
     Image, Medida, Users, Tipo,
-    Status, fields, validations, Form, TextArea, Search, ListSearch, ListSearchStore, ListSearchIA
+    Status, fields, validations, Form, TextArea, Search, ListSearch, ListSearchStore, ListSearchIA, Icon, MultiStep
 }
     

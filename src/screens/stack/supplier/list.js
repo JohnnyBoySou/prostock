@@ -2,7 +2,7 @@ import { Main, Row, colors, Title, Column, Label, Button, ListSearch, } from "@/
 import { PenLine } from "lucide-react-native";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { listSupplier, searchSupplier } from '@/api/supplier';
+import { listSupplier, searchSupplier } from 'src/services/supplier';
 import { SupplierEmpty } from "@/ui/Emptys/supplier";
 
 export default function SupplierListScreen() {

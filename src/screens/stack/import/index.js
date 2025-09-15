@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Main, Row, colors, Title, Column, Label, Button, Loader, Message } from "@/ui";
 import { Pressable, Linking } from 'react-native';
 
-import { importProduct } from '@/api/product';
-import { importSupplier } from '@/api/supplier';
+import { importProduct } from 'src/services/product';
+import { importSupplier } from 'src/services/supplier';
 
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';

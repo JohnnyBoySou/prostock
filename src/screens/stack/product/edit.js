@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, useQuery, Tabs, Medida, Status, ListSearch, Title, Row, colors, Loader } from "@/ui";
 
-import { listCategory, searchCategory } from "@/api/category";
+import { listCategory, searchCategory } from "src/services/category";
 import { Pressable, KeyboardAvoidingView } from "react-native";
 import { Check } from 'lucide-react-native';
-import { showProduct, editProduct, deleteProduct } from "@/api/product";
+import { showProduct, editProduct, deleteProduct } from "src/services/product";
 import { CategoryEmpty } from '@/ui/Emptys/category';
 export default function ProductEditScreen({ route, navigation }) {
     const [tab, settab] = useState("Sobre");

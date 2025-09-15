@@ -3,8 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Main, Button, Message, Column, Input, ScrollVertical, useQuery, Tabs, Status, fields, validations, Form, Loader, colors } from "@/ui";
 import { KeyboardAvoidingView } from "react-native";
-import { getCep } from "@/api/store";
-import { editSupplier, showSupplier } from "@/api/supplier";
+import { getCep } from "src/services/store";
+import { editSupplier, showSupplier } from "src/services/supplier";
 
 export default function SupplierEditScreen({ navigation, route }) {
     const id = route?.params?.id ? route.params.id : 1;

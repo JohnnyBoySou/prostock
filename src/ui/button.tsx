@@ -49,7 +49,7 @@ const Button: React.FC<ButtonProps> = ({
     ...(variant === 'destructive' && { backgroundColor: '#ff4d4d' }),
     ...(variant === 'ghost' && { backgroundColor: '#01986630' }),
     ...(variant === 'link' && { backgroundColor: 'transparent' }),
-    ...(variant === 'outline' && { backgroundColor: 'transparent',  }),
+    ...(variant === 'outline' && { backgroundColor: 'transparent', borderWidth: 2, borderColor: '#019866' }),
     ...(variant === 'primary' && { backgroundColor: '#787878' }),
     ...(variant === 'blur' && {}),
     ...(style || {}),
@@ -65,7 +65,7 @@ const Button: React.FC<ButtonProps> = ({
            variant === 'destructive' ? '#ffffff' :
            variant === 'ghost' ? '#019866' :
            variant === 'link' ? '#787878' :
-           variant === 'outline' ? '#FFF' :
+           variant === 'outline' ? '#019866' :
            variant === 'primary' ? '#ffffff' : '#000000', // Cor do texto para cada variante
     fontSize: variant === 'link' ? 18 : 22,
     textDecorationLine: variant === 'link' ? 'underline' : 'none',
