@@ -8,6 +8,7 @@ export interface User {
     email: string;
     emailVerified: boolean;
     createdAt: string;
+    phone: string;
     lastLoginAt?: string;
     status?: boolean;
 }
@@ -21,6 +22,7 @@ export interface LoginResponse {
 export interface RegisterRequest {
     name: string;
     email: string;
+    phone: string;
     password: string;
 }
 
@@ -62,6 +64,25 @@ export interface ResendVerificationResponse {
     message: string;
 }
 
+export interface VerifyResetCodeRequest {
+    email: string;
+    code: string;
+}
+
+export interface VerifyResetCodeResponse {
+    message: string;
+    token?: string;
+}
+
+export interface VerifyEmailCodeRequest {
+    email: string;
+    code: string;
+}
+
+export interface VerifyEmailCodeResponse {
+    message: string;
+}
+
 export interface RefreshTokenResponse {
     token: string;
     message: string;
@@ -73,6 +94,16 @@ export interface LogoutResponse {
 
 export interface ProfileResponse {
     user: User;
+}
+
+export interface UpdateProfileRequest {
+    name?: string;
+    email?: string;
+}
+
+export interface UpdateProfileResponse {
+    user: User;
+    message: string;
 }
 
 export interface UserStats {
@@ -147,24 +178,30 @@ export interface SearchUsersResponse {
 export const AuthService = {
     // === AUTH ENDPOINTS ===
     register: (data: RegisterRequest): Promise<RegisterResponse> =>
-        fetch(`${URI}/register`, { method: "POST", data: data as unknown as Record<string, unknown> }),
+        fetch(`${URI}/signup`, { method: "POST", data: data as unknown as Record<string, unknown> }),
 
     login: (email: string, password: string): Promise<LoginResponse> =>
-        fetch(`${URI}/login`, { method: "POST", data: { email, password } }),
+        fetch(`${URI}/signin`, { method: "POST", data: { email, password } }),
 
     forgotPassword: (email: string): Promise<ForgotPasswordResponse> =>
         fetch(`${URI}/forgot-password`, { method: "POST", data: { email } }),
-
-    resetPassword: (token: string, password: string): Promise<ResetPasswordResponse> =>
+    
+    verifyResetCode: (email: string, code: string): Promise<VerifyResetCodeResponse> => 
+        fetch(`${URI}/verify-reset-code`, { method: "POST", data: { email, code } }),
+    
+    resetPassword: (token: string, password: string): Promise<ResetPasswordResponse> => 
         fetch(`${URI}/reset-password`, { method: "POST", data: { token, password } }),
 
-    verifyEmail: (token: string): Promise<VerifyEmailResponse> =>
+    verifyEmail: (token: string): Promise<VerifyEmailResponse> => 
         fetch(`${URI}/verify-email`, { method: "POST", data: { token } }),
+    
+    verifyEmailCode: (email: string, code: string): Promise<VerifyEmailCodeResponse> => 
+        fetch(`${URI}/verify-email-code`, { method: "POST", data: { email, code } }),
 
     resendVerification: (email: string): Promise<ResendVerificationResponse> =>
         fetch(`${URI}/resend-verification`, { method: "POST", data: { email } }),
-
-    refreshToken: (): Promise<RefreshTokenResponse> =>
+    
+    refreshToken: (): Promise<RefreshTokenResponse> => 
         fetch(`${URI}/refresh-token`, { method: "POST" }),
 
     logout: (): Promise<LogoutResponse> =>
@@ -202,8 +239,8 @@ export const AuthService = {
 
     getPendingVerification: (): Promise<UsersResponse> =>
         fetch(`${URI}/users/pending-verification`, { method: "GET" }),
-
-    getPendingReset: (): Promise<UsersResponse> =>
+    
+    getPendingReset: (): Promise<UsersResponse> => 
         fetch(`${URI}/users/pending-reset`, { method: "GET" }),
 
     // === LEGACY METHODS (mantidos para compatibilidade) ===

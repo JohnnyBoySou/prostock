@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch as NativeSwitch,  } from 'react-native';
-import colors from './colors';
+import colors from './colors_2';
 
 function Switch({
   ...props

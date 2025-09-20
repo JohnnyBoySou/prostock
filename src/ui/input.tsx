@@ -1,8 +1,8 @@
 import { useRef, useState, useContext, useEffect, forwardRef } from "react";
 import { useAnimationState, MotiText } from "moti";
 import { colors, Column, Label, Row } from "@/ui";
-import { Pressable, TextInput, TextInputProps, KeyboardTypeOptions } from "react-native";
-import { ChevronDown, Eye, EyeOff, Lock } from "lucide-react-native";
+import { Pressable, TextInput, TextInputProps, KeyboardTypeOptions, ActivityIndicator } from "react-native";
+import { ChevronDown, Eye, EyeOff, Lock, Search } from "lucide-react-native";
 
 // Tipos para as máscaras disponíveis
 type MaskType = "CPF" | "PHONE" | "CEP" | "NASCIMENTO" | "CNPJ" | "DATE" | "PRICE";
@@ -24,6 +24,9 @@ interface InputProps extends Omit<TextInputProps, 'onChangeText' | 'value' | 'de
   lock?: boolean;
   placeholder?: string;
   errorMessage?: string;
+  search?: boolean;
+  onSearch?: () => void;
+  loading?: boolean;
 }
 
 // Interface para o retorno das funções de máscara
@@ -48,8 +51,12 @@ const Input = forwardRef<TextInput, InputProps>(({
   lock = false,
   placeholder,
   errorMessage,
+  search = false,
+  loading = false,
+  onSearch = () => { },
   ...props
 }, ref) => {
+  const theme = colors();
   const [focus, setFocus] = useState(false);
   const [secure, setsecure] = useState(pass);
   const inputAnimation = useAnimationState({
@@ -92,7 +99,7 @@ const Input = forwardRef<TextInput, InputProps>(({
   const getBorderColor = () => {
     if (errorMessage) return "#FF4444"; // Vermelho para erro
     if (disabled || lock || select) return "#D6D6D6"; // Cinza para desabilitado
-    if (focus) return colors.color.primary; // Preto para focado
+    if (focus) return theme.color.primary; // Preto para focado
     return "#FFFfff"; // Branco para normal
   };
 
@@ -105,7 +112,7 @@ const Input = forwardRef<TextInput, InputProps>(({
           borderColor: getBorderColor(),
           borderRadius: 8,
           borderBottomWidth: 2,
-          backgroundColor: '#fff',
+          backgroundColor: theme.color.header,
           marginTop: 8,
           alignItems: 'center',
         }}>
@@ -114,7 +121,7 @@ const Input = forwardRef<TextInput, InputProps>(({
           style={{
             fontSize: 18,
             fontFamily: 'Font_Book',
-            color: disabled ? "#00000090" : "#000", height: 64,
+            color: disabled ? "#00000090" : theme.color.text, height: 64,
             paddingHorizontal: 16,
             borderRadius: 12,
             flexGrow: 1,
@@ -131,7 +138,7 @@ const Input = forwardRef<TextInput, InputProps>(({
           secureTextEntry={secure}
           keyboardType={keyboard}
           placeholder={placeholder}
-          placeholderTextColor='#808080'
+          placeholderTextColor={theme.color.text}
 
         />
         {select &&
@@ -160,9 +167,24 @@ const Input = forwardRef<TextInput, InputProps>(({
           </Column>
         )}
 
+        {search && (
+          <Column style={{ width: 64, height: 64, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
+            <Pressable onPress={() => onSearch()} style={{ backgroundColor: focus ? theme.color.primary : '#f1f1f1', borderRadius: 8, width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
+              <Search size={24} color={focus ? '#fff' : '#7B7B7B'} />
+            </Pressable>
+          </Column>
+        )}
+        {loading && (
+          <Column style={{ width: 64, height: 64, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
+            <Pressable style={{ backgroundColor: focus ? theme.color.primary : '#f1f1f1', borderRadius: 8, width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
+              <ActivityIndicator size={24} color={focus ? '#fff' : '#7B7B7B'} />
+            </Pressable>
+          </Column>
+        )}
+
       </Row>
       {errorMessage && (
-        <Label color={colors.color.red} style={{ marginTop: 4, fontSize: 14 }}>
+        <Label color={theme.color.red} style={{ marginTop: 4, fontSize: 14 }}>
           {errorMessage}
         </Label>
       )}

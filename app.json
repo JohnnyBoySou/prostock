@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "20Stock",
-    "slug": "20Stock",
-    "version": "0.0.1",
-    "scheme": "20stock",
+    "name": "25Stock",
+    "slug": "25Stock",
+    "version": "0.0.2",
+    "scheme": "25stock",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -16,14 +16,14 @@
       "supportsTablet": false,
       "requireFullScreen": true,
       "buildNumber": "0.0.1",
-      "bundleIdentifier": "com.joaosousa.20stock",
+      "bundleIdentifier": "com.joaosousa.25stock",
       "usesIcloudStorage": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Esse app usa a câmera para escanear documentos com Inteligência Artificial."
       }
     },
     "android": {
-      "package": "com.joaosousa.20stock",
+      "package": "com.joaosousa.25stock",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -59,36 +59,7 @@
         {
           "photosPermission": "Esse app precisa de permissão para acessar suas fotos para poder enviar para IA de leitura de documentos."
         }
-      ],
-      [
-        "onesignal-expo-plugin",
-        {
-          "mode": "production"
-        }
       ]
-    ],
-    "extra": {
-      "oneSignalAppId": "a761f833-9b85-4811-ac5b-b5cd68313b34",
-      "eas": {
-        "build": {
-          "experimental": {
-            "ios": {
-              "appExtensions": [
-                {
-                  "targetName": "OneSignalNotificationServiceExtension",
-                  "bundleIdentifier": "com.joaosousa.20stock.OneSignalNotificationServiceExtension",
-                  "entitlements": {
-                    "com.apple.security.application-groups": [
-                      "group.com.joaosousa.20stock.onesignal"
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        },
-        "projectId": "f7656389-0c3d-4329-b9df-3554a81e6890"
-      }
-    }
+    ]
   }
 }

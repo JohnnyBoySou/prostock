@@ -24,7 +24,7 @@ const steps = [
     },
 ]
 
-export default function OnboardingScreen({ navigation}) {
+export default function OnboardingScreen({ navigation }) {
 
     const [currentStep, setCurrentStep] = useState(0);
 
@@ -42,7 +42,14 @@ export default function OnboardingScreen({ navigation}) {
                 <MultiStep steps={steps.length} currentStep={currentStep} />
                 <StepComponent step={currentStep} />
                 <Column gv={12} style={{ position: "absolute", bottom: 30, left: 26, right: 26, }}>
-                    <Button label='Continuar' onPress={nextStep} />
+                    {currentStep < steps.length - 1 && (
+                        <Button label='Continuar' onPress={nextStep} />
+                    )}
+                    {currentStep === steps.length - 1 && (<Column gv={12}>
+                        <Button label='Criar conta' route='Register' variant='default' />
+                        <Button label='Entrar' route='Login' variant='ghost' />
+                    </Column>
+                    )}
                 </Column>
             </Column>
         </Main>
@@ -51,9 +58,10 @@ export default function OnboardingScreen({ navigation}) {
 
 
 const StepComponent = ({ step }: { step: number }) => {
+    const theme = colors();
     return (
         <Column gv={12} mv={24}>
-            <Column style={{ backgroundColor: colors.color.primary, flexGrow: 1, height: 400, borderRadius: 12, }} justify='center' align='center'>
+            <Column style={{ backgroundColor: theme.color.primary, flexGrow: 1, height: 400, borderRadius: 12, }} justify='center' align='center'>
                 <Image src={steps[step].image} w={100} h={100} r={12} />
             </Column>
             <Title>{steps[step].title}</Title>

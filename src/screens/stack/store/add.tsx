@@ -7,7 +7,7 @@ export default function StoreAddScreen({ navigation }) {
     const [tab, settab] = useState("Sobre");
     const types = ["Sobre", "Endereço",];
 
-    const [status, setstatus] = useState("ativo");
+    const [status, setstatus] = useState(true);
 
     const [aboutValues, setaboutValues] = useState();
     const [addressValues, setaddressValues] = useState({

@@ -1,35 +1,39 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Loader, colors, useFetch } from "@/ui";
+import { Main, Button, Message, useToast, Column, Input, ScrollVertical, Loader, colors, useFetch, Image } from "@/ui";
 import { KeyboardAvoidingView } from "react-native";
-import { AuthService, type ProfileResponse } from '@/services/auth/index';
+import { AuthService, type ProfileResponse, type User } from '@/services/auth/index';
+import { useUser } from "@/context/user";
 
 export default function ProfileScreen({ navigation }) {
+    const toast = useToast();
+    const theme = colors();
+    const { saveUser} = useUser();
     const [aboutValues, setaboutValues] = useState({
         id: "",
         name: "",
+        phone: "",
         email: "",
     });
 
     const { data: user, isLoading: loading } = useFetch({
         key: ["user edit"],
         fetcher: async () => {
-          const res = await AuthService.getProfile() as ProfileResponse;
-          return res.user;
+            const res = await AuthService.getProfile() as ProfileResponse;
+            return res.user;
         }
     });
 
-    // Popula os campos quando os dados do usuário são carregados
     useEffect(() => {
         if (user) {
             setaboutValues({
                 id: user.id || "",
                 name: user.name || "",
+                phone: user.phone || "",
                 email: user.email || "",
             });
         }
     }, [user]);
 
-    console.log(user);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [success, setsuccess] = useState<string>("");
@@ -42,13 +46,15 @@ export default function ProfileScreen({ navigation }) {
             const params = {
                 name: aboutValues.name,
             }
-            const res = await AuthService.updateProfile(params);
-            console.log(res);
-           // setsuccess(res.message);
+            const res = await AuthService.updateProfile(params) as ProfileResponse;
+            saveUser(res?.user as any);
+            toast.showSuccess("Perfil atualizado com sucesso!");
+            // setsuccess(res.message);
             setTimeout(() => {
                 navigation.navigate('Home');
             }, 1000);
         } catch (error) {
+            toast.showError(error.message);
             seterror(error.message);
         } finally {
             setIsLoading(false);
@@ -58,8 +64,7 @@ export default function ProfileScreen({ navigation }) {
 
     return (<Main>
         <KeyboardAvoidingView behavior="padding">
-
-            {loading ? <Loader size={24} color={colors.color.primary} /> :
+            {loading ? <Loader size={24} color={theme.color.primary} /> :
                 <ScrollVertical>
                     <About handleEdit={handleEdit} success={success} error={error} setSuccess={setsuccess} setError={seterror} isLoading={isLoading} aboutValues={aboutValues} setaboutValues={setaboutValues} />
                 </ScrollVertical>}
@@ -72,11 +77,13 @@ interface AboutProps {
         id: string;
         name: string;
         email: string;
+        phone: string;
     };
     setaboutValues: React.Dispatch<React.SetStateAction<{
         id: string;
         name: string;
         email: string;
+        phone: string;
     }>>;
     handleEdit: () => Promise<void>;
     success: string;
@@ -99,6 +106,12 @@ const About = React.memo(({ aboutValues, setaboutValues, handleEdit, success, er
             placeholder: "Ex.: João",
             keyboardType: "default",
         },
+        phone: {
+            label: "Telefone",
+            placeholder: "Ex.: (49) 99193-5657",
+            keyboardType: "number-pad",
+            mask: "PHONE",
+        },
         email: {
             label: "Email",
             placeholder: "Ex.: email@exemplo.com",
@@ -111,6 +124,7 @@ const About = React.memo(({ aboutValues, setaboutValues, handleEdit, success, er
     // Validações dinâmicas
     const validations = {
         name: (value) => !!value || "Por favor, insira o nome do usuário.",
+        phone: (value) => !!value || "Por favor, insira o telefone do usuário.",
     };
 
     // Função para validar todos os campos
@@ -143,6 +157,8 @@ const About = React.memo(({ aboutValues, setaboutValues, handleEdit, success, er
 
     return (
         <Column mh={26} gv={26}>
+            <Image src={require('@/imgs/profile_img.png')} w={100} h={100} r={100}/>
+
             {Object.keys(fieldProperties).map((field, index, fields) => (
                 <Input
                     key={field}

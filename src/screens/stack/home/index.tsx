@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import { Main, ScrollVertical, Column, Row, Title, HeadTitle, Label, colors, SCREEN_WIDTH, useFetch } from '@/ui';
+import React from 'react';
+import { Main, ScrollVertical, Column, Row, Title, HeadTitle, Label, colors, SCREEN_WIDTH, Icon, Pressable, ScrollHorizontal, Image } from '@/ui';
 import { useUser } from '@/context/user';
-import { Pressable } from 'react-native';
-import { GitCompareArrows, Menu, PieChart as Pie, Users, ChevronRight, ScanText, LayoutGrid, Truck, LayoutList, Bell } from 'lucide-react-native';
-
 import { MotiView } from 'moti';
-import { StoreService } from '../../../services/store';
+import { useTheme } from '@/hooks/useTheme';
+import { useToast } from '@/hooks/useToast';
 
 const FadeUp = ({ children, delay = 200 }) => {
     return (
@@ -17,6 +15,7 @@ const FadeUp = ({ children, delay = 200 }) => {
 
 export default function HomeScreen({ navigation, }) {
     const { user, role } = useUser();
+    const theme = colors();
     const greatings = () => {
         const date = new Date();
         const hour = date.getHours();
@@ -25,33 +24,42 @@ export default function HomeScreen({ navigation, }) {
         return 'Boa noite';
     }
 
-    const { data: store, isLoading, refetch } = useFetch({
-        key: 'store',
-        fetcher: async () => {
-            const res = await StoreService.list();
-            return res.stores[0];
-        },
-    }) 
+
+    const { mode, toggleTheme } = useTheme();
+    const toast = useToast();
+
+    const handleToggleTheme = () => {
+        toggleTheme();
+        toast.showSuccess('Tema alterado com sucesso! Reinicie a aplicação para ver as alterações.')
+    }
+
 
     return (
         <Main>
             <ScrollVertical style={{ zIndex: 2, }}>
-                <Column ph={26} gv={16} pv={16}>
-                    <Row justify='space-between'>
+                <Column gv={16} pv={16}>
+                    <Row ph={26} justify='space-between'>
                         <Pressable onPress={() => { navigation.toggleDrawer() }} style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
-                            <Menu color='#8A8A8A' size={24} />
+                            <Icon name="Menu" color='#8A8A8A' size={24} />
                         </Pressable>
 
                         <Row gh={12}>
-                            <Pressable onPress={() => { navigation.navigate('NotifyList') }} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
-                                <Bell color="#505050" size={24} />
+                            <Pressable onPress={() => { navigation.navigate('StoreSelect') }} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                                <Icon name="Store" color="#505050" size={24} />
                             </Pressable>
-                            <Pressable onPress={() => { navigation.navigate('Profile') }} style={{ backgroundColor: colors.color.primary, width: 46, height: 46, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
-                                <Title size={20} style={{ marginTop: 4, }} color='#fff'>{user?.name?.slice(0, 1)}</Title>
+                            <Pressable onPress={handleToggleTheme} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                                <Icon name={mode == 'dark' ? 'Sun' : 'Moon'} color={mode == 'dark' ? '#fff' : '#505050'} size={24} />
+                            </Pressable>
+                            <Pressable onPress={() => { navigation.navigate('NotifyList') }} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                                <Icon name="Bell" color="#505050" size={24} />
+                            </Pressable>
+                            <Pressable onPress={() => { navigation.navigate('Profile') }} style={{ width: 46, height: 46, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
+                                <Icon name="User" color='#505050' size={24} />
                             </Pressable>
                         </Row>
                     </Row>
-                    <Row justify='space-between' align='center' style={{ width: SCREEN_WIDTH - 50, }}>
+
+                    <Row ph={26} justify='space-between' align='center' style={{ width: SCREEN_WIDTH - 50, }}>
                         <Column>
                             <FadeUp>
                                 <HeadTitle size={24}>{greatings()},</HeadTitle>
@@ -63,55 +71,58 @@ export default function HomeScreen({ navigation, }) {
 
                     </Row>
                     <FadeUp delay={700}>
-                        <Column gv={16}>
-                            <HeadTitle size={24} mt={12}>Sua loja</HeadTitle>
-                            <Pressable style={{ backgroundColor: '#fff', paddingVertical: 16, paddingHorizontal: 16, borderRadius: 6 }} onPress={() => navigation.navigate("StoreSelect")}>
-                                {isLoading ? <Label>Carregando...</Label> :
-                                    <Row align="center" justify='space-between'>
-                                        <Column gv={4}>
-                                            <Title size={18}>{store?.name}</Title>
-                                            <Label size={12}>LOJA SELECIONADA</Label>
-                                        </Column>
-                                        {role != 'regular' && <ChevronRight color="#484848" size={24} />}
-                                    </Row>}
+                        <Column ph={26}>
+                            <Label size={18} mt={12}>Acesso rápido</Label>
+                        </Column>
+                        <ScrollHorizontal contentContainerStyle={{ gap: 12, marginTop: 16, paddingHorizontal: 26 }}>
+                            <Pressable style={{ backgroundColor: '#fff', padding: 24, borderRadius: 24, height: 220, width: 180, }} onPress={() => navigation.navigate('ReportList')}>
+                                <Title spacing={-1}>Relatórios</Title>
+                                <Image src={require('@/imgs/report_img.png')} w={132} h={132} style={{ marginTop: 40, marginLeft: 24, marginRight: -24, }} />
                             </Pressable>
+                            <Pressable style={{ backgroundColor: '#fff', padding: 24, borderRadius: 24, height: 220, width: 180, }} onPress={() => navigation.navigate('ProductList')}>
+                                <Title spacing={-1}>Produtos</Title>
+                                <Image src={require('@/imgs/product_img.png')} w={132} h={132} style={{ marginTop: 40, marginLeft: 24, marginRight: -24, }} />
+                            </Pressable>
+                            <Pressable style={{ backgroundColor: '#fff', padding: 24, borderRadius: 24, height: 220 }} onPress={() => navigation.navigate('CategoryList')}>
+                                <Title spacing={-1}>Categorias</Title>
+                                <Image src={require('@/imgs/category_img.png')} w={132} h={132} style={{ marginTop: 40, marginLeft: 24, marginRight: -24, }} />
+                            </Pressable>
+                            <Pressable style={{ backgroundColor: '#fff', padding: 24, borderRadius: 24, height: 220, }} onPress={() => navigation.navigate('SupplierList')}>
+                                <Title spacing={-1} >Fornecedores</Title>
+                                <Image src={require('@/imgs/supplier_img.png')} w={132} h={132} style={{ marginTop: 40, marginLeft: 24, marginRight: -24, }} />
+                            </Pressable>
+                        </ScrollHorizontal>
+                    </FadeUp>
+                    <Column ph={26}>
+
+
+                        <FadeUp delay={1000}>
+                            <Label size={18} mt={12}>Crie agora</Label>
+                            <Column style={{ height: 12 }} />
                             <Row justify='space-between' gh={12}>
-                                <Pressable onPress={() => { navigation.navigate('MoveAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#FFF', }}>
-                                    <GitCompareArrows size={24} color='#FFB238' />
-                                    <Title size={16} fontFamily="Font_Book" color='#505050'>Criar {'\n'}Movimentação</Title>
+                                <Pressable onPress={() => { navigation.navigate('SupplierAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#053721', }}>
+                                    <Title size={20} fontFamily="Font_Bold" color='#fff' mb={16}>Fornecedores</Title>
+                                    <Label color='#fffFFF99'  >12 de 20 cadastrados</Label>
                                 </Pressable>
-                                <Pressable onPress={() => { navigation.navigate('AI') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 2, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
-                                    <ScanText size={24} color='#3590F3' />
-                                    <Title size={16} fontFamily="Font_Book" color='#505050' >Inteligência {'\n'}Artificial</Title>
+                                <Pressable onPress={() => { navigation.navigate('ProductAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#019866', }}>
+                                    <Title size={20} fontFamily="Font_Bold" color='#fff' mb={16}>Produtos</Title>
+                                    <Label color='#fffFFF99'  >16 de 20 cadastrados</Label>
                                 </Pressable>
                             </Row>
-                        </Column>
-                    </FadeUp>
-                    <FadeUp delay={700}>
-                        <HeadTitle size={24} mt={12}>Confira também</HeadTitle>
-                        <Column style={{ height: 12 }} />
-                        <Row justify='space-between' gh={12}>
-                            <Pressable onPress={() => { navigation.navigate('SupplierAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
-                                <Truck size={24} color='#43AA8B' />
-                                <Title size={16} fontFamily="Font_Book" color='#505050'>Adicionar {'\n'}Fornecedor</Title>
-                            </Pressable>
-                            {role != 'regular' && <Pressable onPress={() => { navigation.navigate('ReportList') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
-                                <Pie size={24} color='#9747FF' />
-                                <Title size={16} fontFamily="Font_Book" color='#505050'>Acessar {'\n'}Relatórios   </Title>
-                            </Pressable>}
-                        </Row>
-                        <Column style={{ height: 12 }} />
-                        <Row justify='space-between' gh={12}>
-                            <Pressable onPress={() => { navigation.navigate('ProductAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
-                                <LayoutGrid size={24} color='#EA1E2C' />
-                                <Title size={16} fontFamily="Font_Book" color='#505050'>Adicionar {'\n'}Produto</Title>
-                            </Pressable>
-                            <Pressable onPress={() => { navigation.navigate('CategoryAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#fff', }}>
-                                <LayoutList size={24} color='#3590F3' />
-                                <Title size={16} fontFamily="Font_Book" color='#505050'>Adicionar {'\n'}Categoria</Title>
-                            </Pressable>
-                        </Row>
-                    </FadeUp>
+                            <Column style={{ height: 12 }} />
+                            <Row justify='space-between' gh={12}>
+                                <Pressable onPress={() => { navigation.navigate('CategoryAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#3C91E6', }}>
+                                    <Title size={20} fontFamily="Font_Bold" color='#fff' mb={16}>Categorias</Title>
+                                    <Label color='#fffFFF99' >22 de 40 cadastrados</Label>
+                                </Pressable>
+                                <Pressable onPress={() => { navigation.navigate('UserAdd') }} style={{ paddingHorizontal: 16, paddingVertical: 24, flexGrow: 1, borderRadius: 12, rowGap: 12, backgroundColor: '#F6EFA6', }}>
+                                    <Title size={20} fontFamily="Font_Bold" color='#000' mb={16}>Usuários</Title>
+                                    <Label color='#00000099' >1 de 1 cadastrados</Label>
+                                </Pressable>
+                            </Row>
+                        </FadeUp>
+                    </Column>
+
                 </Column>
             </ScrollVertical>
         </Main>

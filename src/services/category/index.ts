@@ -1,6 +1,6 @@
 import { fetchAuth } from '@/services/http/fetch';
 
-const URI = '/category';
+const URI = '/categories';
 
 // === INTERFACES ===
 export interface Category {
@@ -174,5 +174,21 @@ export const CategoryService = {
                 
                 return path;
             });
+    },
+    keys: {
+        list: ["categories"],
+        single: ["category"],
+        search: ["categories", "search"],
+        stats: ["categories", "stats"],
+        hierarchy: ["categories", "hierarchy"],
+        path: ["categories", "path"],
+        bulkUpdateStatus: ["categories", "bulkUpdateStatus"],
+        getCategoryTree: ["categories", "getCategoryTree"],
+        getCategoriesWithProducts: ["categories", "getCategoriesWithProducts"],
+        getLeafCategories: ["categories", "getLeafCategories"],
+        getCategoryPath: ["categories", "getCategoryPath"],
+        toggleStatus: ["categories", "toggleStatus"],
+        moveToParent: ["categories", "moveToParent"],
+        updateStatus: ["categories", "updateStatus"],
     }
 };

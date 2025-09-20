@@ -9,10 +9,29 @@ import { UserProvider } from '@/context/user';
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from 'expo-status-bar';
+import ToastManager from 'toastify-react-native';
 const queryClient = new QueryClient();
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { OneSignal } from 'react-native-onesignal';
 import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+
+import {
+  CustomToast,
+  ErrorToast,
+  WarningToast,
+  SuccessToast,
+  InfoToast,
+} from "@/hooks/useToast";
+
+const toastConfig = {
+  custom: (props) => <CustomToast {...props} />,
+  success: (props) => <SuccessToast {...props} />,
+  error: (props) => <ErrorToast {...props} />,
+  warning: (props) => <WarningToast {...props} />,
+  info: (props) => <InfoToast {...props} />,
+};
+
 
 preventAutoHideAsync();
 
@@ -24,7 +43,6 @@ export default function App() {
 
     const handleNotification = async () => {
       const key = process.env.EXPO_PUBLIC_KEY || Constants.expoConfig.extra.oneSignalAppId;
-       OneSignal.Debug.setLogLevel(LogLevel.Verbose);
       if (key != null) {
         OneSignal.initialize(key);
       }
@@ -40,7 +58,7 @@ export default function App() {
       }
     }
     handleNotification();
-    
+
     async function loadResourcesAndDataAsync() {
       try {
         await Font.loadAsync({
@@ -71,9 +89,21 @@ export default function App() {
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <QueryClientProvider client={queryClient}>
         <StatusBar style="auto" />
+        <GestureHandlerRootView style={{ flex: 1 }}>
         <UserProvider>
           <Main />
+          <ToastManager
+            position="bottom"
+            duration={2000}
+            showCloseIcon={false}
+            autoHide={true}
+            showProgressBar={false}
+            animationStyle="fade"
+            bottomOffset={50}
+            config={toastConfig}
+          />
         </UserProvider>
+        </GestureHandlerRootView>
       </QueryClientProvider>
     </View>
   );

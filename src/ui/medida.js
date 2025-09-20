@@ -1,4 +1,4 @@
-import colors  from './colors'
+import colors  from './colors_2'
 import { Pressable } from 'react-native'
 import { Column, ScrollHorizontal, } from './layout'
 import { Label, Title } from './text'

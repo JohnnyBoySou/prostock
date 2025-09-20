@@ -4,7 +4,21 @@ import { TokenService } from "./token";
 import { StoreService } from "./store";
 
 const TIMEOUT = 5000;
-const BASE_URL = "http://localhost:3000";
+
+const getBaseURL = () => {
+  if (__DEV__) {
+    const possibleURLs = [
+      "http://192.168.3.56:3000", 
+      "http://localhost:3000", 
+    ];
+    
+    return possibleURLs[0]; 
+  }
+  
+  return "https://your-tunnel-url.ngrok.io"; // Substitua pela sua URL do tunnel
+};
+
+const BASE_URL = getBaseURL();
 
 interface FetchApiOptions extends AxiosRequestConfig {
   headers?: Record<string, string>;
@@ -18,7 +32,27 @@ const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: TIMEOUT,
+  // Configurações para evitar problemas de tunnel
+  maxRedirects: 5,
+  validateStatus: (status) => status < 500,
 });
+
+// Interceptor para tratamento de erros de tunnel
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.code === 'ECONNABORTED' || error.message.includes('Body is unusable')) {
+      console.warn('Tunnel error detected, retrying...');
+      // Retry automático para erros de tunnel
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          apiClient.request(error.config).then(resolve).catch(reject);
+        }, 2000);
+      });
+    }
+    return Promise.reject(error);
+  }
+);
 
 
 export async function fetch<T = unknown>(
@@ -38,9 +72,9 @@ export async function fetch<T = unknown>(
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching ${url}:`, error);
-    return null;
+    throw error.response?.data || error;
   }
 }
 

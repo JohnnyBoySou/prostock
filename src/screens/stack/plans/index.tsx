@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Main, Column, Row, ScrollVertical, Title, HeadTitle, Label, SubLabel, Button, colors } from "@/ui/index";
+import { Main, Column, Row, ScrollVertical, Title, Label, Button, colors, Icon, Tabs, Pressable, ScrollHorizontal } from "@/ui/index";
+import { ImageBackground } from 'expo-image';
 
 interface Plan {
   id: string;
@@ -10,64 +10,61 @@ interface Plan {
   description: string;
   features: string[];
   popular?: boolean;
-  color: string;
 }
 
 const plans: Plan[] = [
-    {
-      id: 'free',
-      name: 'Free',
-      price: 'R$ 0',
-      period: '/mês',
-      description: 'Ideal para testar a plataforma e pequenos empreendedores',
-      features: [
-        'Até 50 produtos',
-        '1 usuário',
-        'Relatórios básicos',
-        'Backup diário'
-      ],
-      color: colors.color.green
-    },
-    {
-      id: 'starter',
-      name: 'Starter',
-      price: 'R$ 9,99',
-      period: '/mês',
-      description: 'Perfeito para pequenos negócios que estão crescendo',
-      features: [
-        'Até 200 produtos',
-        'Até 3 usuários',
-        'Relatórios avançados',
-        'Suporte por email',
-        'Exportação CSV',
-        'Notificações de estoque'
-      ],
-      popular: true,
-      color: colors.color.blue
-    },
-    {
-      id: 'pro',
-      name: 'Pro',
-      price: 'R$ 29,99',
-      period: '/mês',
-      description: 'Solução completa para empresas em crescimento',
-      features: [
-        'Produtos ilimitados',
-        'Até 10 usuários',
-        'Relatórios completos e dashboards',
-        'Suporte prioritário',
-        'Backup em nuvem',
-        'Integrações futuras (ERP / e-commerce)',
-        'Análise de vendas avançada',
-        'Notificações push'
-      ],
-      color: colors.color.primary
-    }
-  ];
-  
-export default function PlansScreen() {
-  const [selectedPlan, setSelectedPlan] = useState<string>('free');
+  {
+    id: 'free',
+    name: 'Gratuito',
+    price: 'R$ 0,00',
+    period: '/mês',
+    description: 'Ideal para testar a plataforma e pequenos empreendedores',
+    features: [
+      'Até 25 produtos',
+      'Até 25 fornecedores',
+      'Até 30 categorias',
+      'Relatórios básicos',
+    ],
+  },
+  {
+    id: 'starter',
+    name: 'Premium',
+    price: 'R$ 9,99',
+    period: '/mês',
+    description: 'Perfeito para pequenos negócios que estão crescendo',
+    features: [
+      'Até 200 produtos',
+      'Até 3 usuários',
+      'Relatórios avançados',
+      'Suporte por email',
+      'Exportação CSV',
+      'Notificações de estoque'
+    ],
+    popular: true,
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    price: 'R$ 29,99',
+    period: '/mês',
+    description: 'Solução completa para empresas em crescimento',
+    features: [
+      'Produtos ilimitados',
+      'Até 10 usuários',
+      'Relatórios completos e dashboards',
+      'Suporte prioritário',
+      'Backup em nuvem',
+      'Integrações futuras (ERP / e-commerce)',
+      'Análise de vendas avançada',
+      'Notificações push'
+    ],
+  }
+];
 
+export default function PlansScreen() {
+  const theme = colors();
+  const [selectedPlan, setSelectedPlan] = useState<string>('free');
+  const [tab, setTab] = useState<string>('Mensal');
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
   };
@@ -76,149 +73,83 @@ export default function PlansScreen() {
     console.log('Plano selecionado:', selectedPlan);
   };
 
-  const PlanCard = ({ plan }: { plan: Plan }) => (
-    <TouchableOpacity
-      style={[
-        styles.planCard,
-        selectedPlan === plan.id && styles.selectedCard,
-        plan.popular && styles.popularCard
-      ]}
-      onPress={() => handleSelectPlan(plan.id)}
-      activeOpacity={0.8}
-    >
-      {plan.popular && (
-        <View style={styles.popularBadge}>
-          <Label color={colors.color.textGhost} size={12} fontFamily="Font_Bold">
-            MAIS POPULAR
-          </Label>
-        </View>
-      )}
-      
-      <Column align="center" gv={16}>
-        <Title size={24} color={plan.color} fontFamily="Font_Bold">
-          {plan.name}
-        </Title>
-        
-        <Column align="center">
-          <Row align="center" justify="center">
-            <HeadTitle size={36} color={plan.color} fontFamily="Font_Bold">
-              {plan.price}
-            </HeadTitle>
-            <SubLabel color={colors.color.textPrimary} size={16} ml={4}>
-              {plan.period}
-            </SubLabel>
+  const PlanCard = ({ plan }: { plan: Plan }) => {
+    const theme = colors();
+    return (
+      <Column
+        pv={16}
+        ph={20}
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: 12,
+          borderWidth: 2,
+          borderColor: selectedPlan === plan.id ? theme.color.primary : theme.color.ghost,
+        }}
+      >
+        {plan.popular && (
+          <Row pv={4} ph={8} style={{ position: "absolute", top: 0, right: 0, backgroundColor: theme.color.primary, borderBottomLeftRadius: 6 }}>
+            <Label size={12} color='#fff'>
+              MAIS POPULAR
+            </Label>
           </Row>
-        </Column>
+        )}
 
-        <SubLabel align="center" color={colors.color.textPrimary} size={14}>
-          {plan.description}
-        </SubLabel>
+        <Column gv={16}>
+          <Title size={24} >
+            {plan.name}
+          </Title>
 
-        <Column gv={12} style={styles.featuresContainer}>
-          {plan.features.map((feature, index) => (
-            <Row key={index} align="center" gv={8}>
-              <View style={[styles.checkIcon, { backgroundColor: plan.color }]} />
-              <Label color={colors.color.textPrimary} size={14} style={{ flex: 1 }}>
-                {feature}
+
+          <ImageBackground source={require('@/imgs/plan_bg_img.png')} imageStyle={{ borderRadius: 12 }} style={{ flexGrow: 1, }}>
+            <Row justify='space-between' pv={12} gh={12} ph={16} align='center'>
+              <Title size={32} color='#fff' fontFamily='Font_Medium'>
+                {plan.price}
+              </Title>
+              <Label size={14} style={{ width: 160, }} color='#fff'>
+                {plan.description}
               </Label>
             </Row>
-          ))}
+          </ImageBackground>
+
+
+          <Column gv={12}>
+            {plan.features.map((feature, index) => (
+              <Row key={index} align="center" gh={8}>
+                <Row justify='center' align='center' style={{ backgroundColor: theme.color.primary, borderRadius: 100, width: 24, height: 24, }}>
+                  <Icon name="Check" color="#fff" size={16} />
+                </Row>
+                <Label size={14} style={{ flex: 1 }}>
+                  {feature}
+                </Label>
+              </Row>
+            ))}
+          </Column>
+          <Button label={plan.id === selectedPlan ? "Plano selecionado" : "Assinar"} onPress={() => handleSelectPlan(plan.id)} style={{ width: "100%" }} variant={plan.id === selectedPlan ? "primary" : "outline"} />
         </Column>
       </Column>
-    </TouchableOpacity>
-  );
+    )
+  }
 
   return (
     <Main>
-      <ScrollVertical>
-        <Column mh={20} gv={24}>
-          <Column align="center" gv={12}>
-            <HeadTitle align="center" color={colors.color.textPrimary} size={32}>
-              Escolha seu Plano
-            </HeadTitle>
-            <SubLabel align="center" color={colors.color.textPrimary} size={16}>
-              Selecione o plano ideal para o seu negócio
-            </SubLabel>
-          </Column>
+      <Tabs types={["Mensal", "Anual"]} value={tab} setValue={setTab} />
+      <Column gv={6} mh={26} mv={24}>
+        <Title >
+          Escolha seu Plano
+        </Title>
+        <Label >
+          Selecione o plano ideal para o seu negócio
+        </Label>
+      </Column>
+      <ScrollHorizontal horizontal={true} pagingEnabled={true}>
+        <Row align='flex-start' gh={16} ph={26} mb={50}>
 
-          <Column gv={20}>
-            {plans.map((plan) => (
-              <PlanCard key={plan.id} plan={plan} />
-            ))}
-          </Column>
+          {plans.map((plan) => (
+            <PlanCard key={plan.id} plan={plan} />
+          ))}
+        </Row>
+      </ScrollHorizontal>
 
-          <Column gv={16} mt={20}>
-            <Button
-              label={`Assinar ${plans.find(p => p.id === selectedPlan)?.name}`}
-              onPress={handleSubscribe}
-              style={styles.subscribeButton}
-            />
-            <Button
-              label="Voltar"
-              variant="outline"
-              onPress={() => {/* Implementar navegação de volta */}}
-            />
-          </Column>
-        </Column>
-      </ScrollVertical>
     </Main>
   );
 }
-
-const styles = StyleSheet.create({
-  planCard: {
-    backgroundColor: colors.color.secundary,
-    borderRadius: 16,
-    padding: 24,
-    borderWidth: 2,
-    borderColor: colors.color.muted,
-    position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  selectedCard: {
-    borderColor: colors.color.primary,
-    shadowOpacity: 0.2,
-    elevation: 6,
-  },
-  popularCard: {
-    borderColor: colors.color.primary,
-    shadowOpacity: 0.25,
-    elevation: 8,
-  },
-  popularBadge: {
-    position: 'absolute',
-    top: -12,
-    left: 20,
-    right: 20,
-    backgroundColor: colors.color.primary,
-    borderRadius: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  featuresContainer: {
-    width: '100%',
-    marginTop: 8,
-  },
-  checkIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    marginRight: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  subscribeButton: {
-    backgroundColor: colors.color.primary,
-    borderRadius: 12,
-    height: 56,
-  },
-});

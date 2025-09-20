@@ -581,3 +581,11 @@ export const MovementService = {
   }>> => 
     fetchAuth(`${URI}/types`, { method: "GET" }),
 };
+
+// === FUNÇÕES ESPECÍFICAS USADAS PELOS COMPONENTES ===
+
+export const listMove = (filters?: any) => MovementService.list(filters);
+export const searchMove = (q: string, limit?: number) => MovementService.search(q, limit);
+export const showMove = (id: string) => MovementService.get(id);
+export const addMove = (params: CreateMovementRequest) => MovementService.create(params);
+export const editMove = (id: string, params: UpdateMovementRequest) => MovementService.update(id, params);

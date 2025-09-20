@@ -28,6 +28,7 @@ interface ScrollProps {
   children: React.ReactNode;
   style?: ViewStyle;
   contentContainerStyle?: any;
+  pagingEnabled?: boolean;
   [key: string]: any;
 }
 
@@ -158,18 +159,21 @@ const styles = StyleSheet.create({
 });
 
 const Main = ({children, style,}: LayoutProps) => {
+  const theme = colors();
+  
   return (
-    <View style={[{ flex: 1, backgroundColor: colors.color.background, }, style]}>
+    <View style={[{ flex: 1, backgroundColor: theme.color.background, }, style]}>
       {children}
     </View>
   )
 }
 
-const ScrollHorizontal = ({children, style, contentContainerStyle, ...props}: ScrollProps) => {
+const ScrollHorizontal = ({children, style, contentContainerStyle, pagingEnabled = false, ...props}: ScrollProps) => {
   return (
     <ScrollView 
       style={style} 
       horizontal 
+      pagingEnabled={pagingEnabled}
       showsHorizontalScrollIndicator={false} 
       contentContainerStyle={contentContainerStyle}
       {...props}

@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Text, TextStyle } from 'react-native';
+import { colors } from '.';
 
 // Definição de tipo para as propriedades de estilo
 interface StyleProps {
@@ -74,7 +75,7 @@ export const HeadTitle = ({
 export const Title = ({
   size = 28,
   align,
-  color = "#202020",
+  color,
   mh,
   mv,
   mb,
@@ -86,7 +87,9 @@ export const Title = ({
   spacing,
   style,
 }: TextComponentProps) => {
-  const styleProps = { size, align, color, mh, mv, mb, mt, mr, ml, fontFamily, spacing,style };
+  const theme = colors();
+  const finalColor = color || theme.color.title;
+  const styleProps = { size, align, color: finalColor, mh, mv, mb, mt, mr, ml, fontFamily, spacing, style, letterSpacing: -2, };
   return (
     <Text
       style={getStyle(styleProps)}
@@ -103,7 +106,7 @@ export const Title = ({
 export const Label = ({
   size = 16,
   align,
-  color = "#484848",
+  color,
   mh,
   mv,
   mb,
@@ -115,7 +118,9 @@ export const Label = ({
   spacing,
   style,
 }: TextComponentProps) => {
-  const styleProps = { size, align, color, mh, mv, mb, mt, mr, ml, fontFamily, spacing, 
+  const theme = colors();
+  const finalColor = color || theme.color.label;
+  const styleProps = { size, align, color: finalColor, mh, mv, mb, mt, mr, ml, fontFamily, spacing, 
     style, };
   return (
     <Text

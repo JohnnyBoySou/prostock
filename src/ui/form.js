@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Column, Button, Input, Message, validations, fields } from '@/ui';
 
 const Form = ({ fieldKeys, onSubmit = () => { }, initialValues, isLoading = false }) => {
@@ -12,6 +12,13 @@ const Form = ({ fieldKeys, onSubmit = () => { }, initialValues, isLoading = fals
             return acc;
         }, {})
     );
+
+    // Sincroniza o estado interno com initialValues quando eles mudam
+    useEffect(() => {
+        if (initialValues) {
+            setValues(initialValues);
+        }
+    }, [initialValues]);
 
     const handleChange = (field, value) => {
         setValues((prev) => ({ ...prev, [field]: value }));

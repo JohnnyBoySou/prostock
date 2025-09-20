@@ -7,9 +7,10 @@ import { useUser } from "@/context/user";
 import { TokenService } from "@/hooks/token";
 
 export default function LoginScreen({ navigation }) {
+    const theme = colors();
     const { saveUser } = useUser();
     const [password, setPassword] = useState('123456');
-    const [email, setEmail] = useState('teste@teste.com');
+    const [email, setEmail] = useState('dev.joaosousa@gmail.com');
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -78,7 +79,7 @@ export default function LoginScreen({ navigation }) {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
-                    <Column style={{ flex: 1, minHeight: '100%', backgroundColor: colors.color.primary }}>
+                    <Column style={{ flex: 1, minHeight: '100%', backgroundColor: theme.color.primary }}>
                         <Column style={{ height: 250 }} ph={26} pv={24} justify="space-between">
                             <Row mt={24} align="center">
                                 <Image src={require('@/imgs/logo.png')} w={56} h={56} />
@@ -89,7 +90,7 @@ export default function LoginScreen({ navigation }) {
                                 <Label color='#f1f1f1'>Faça login para continuar</Label>
                             </Column>
                         </Column>
-                        <Column ph={26} pv={24} gv={12} style={{ backgroundColor: colors.color.background, borderRadius: 12, flex: 1 }}>
+                        <Column ph={26} pv={24} gv={12} style={{ backgroundColor: theme.color.background, borderTopLeftRadius: 12, borderTopRightRadius: 12, flex: 1 }}>
                             <Input
                                 label='Email'
                                 value={email}

@@ -15,6 +15,7 @@ import Minimal from "@/ui/Header/minimal";
 
 import ProductAddScreen from "@/screens/stack/product/add";
 import StackMenu from "@/ui/Header";
+import AsyncStaticScreen from "@/screens/stack/auth/async";
 
 //import * as Linking from 'expo-linking';
 //const prefix = Linking.createURL('/');
@@ -28,7 +29,8 @@ export function Main() {
 
   return (
     <NavigationContainer linking={linking}>
-      <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }} >
+      <Stack.Navigator id={undefined} initialRouteName="Async" screenOptions={{ headerShown: false }} >
+        <Stack.Screen name="Async" component={AsyncStaticScreen} options={{ headerShown: false, ...TransitionPresets.SlideFromRightIOS }} />
         {isSignedIn ? (
           <>
             <Stack.Screen name="Drawer" component={Drawer} options={{ ...TransitionPresets.SlideFromRightIOS }} />

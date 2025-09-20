@@ -17,7 +17,7 @@ export default function StoreEditScreen({ navigation, route }) {
 
 
 
-    const [status, setstatus] = useState("ativo");
+    const [status, setstatus] = useState(true);
 
     const [aboutValues, setaboutValues] = useState();
     const [addressValues, setaddressValues] = useState({
@@ -42,7 +42,7 @@ export default function StoreEditScreen({ navigation, route }) {
                 state: store.estado,
                 street: store.endereco,
             });
-            setstatus(store.status);
+            setstatus(typeof store.status === 'string' ? store.status === 'ativo' : store.status);
         }
     }, [store]);
 

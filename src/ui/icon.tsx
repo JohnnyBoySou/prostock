@@ -13,7 +13,7 @@ const Icon: React.FC<IconProps> = ({
   name, 
   size = 24, 
   color = '#000', 
-  strokeWidth = 1.5,
+  strokeWidth = 2,
   style,
   ...props 
 }) => {

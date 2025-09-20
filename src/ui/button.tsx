@@ -10,7 +10,7 @@ interface RootStackParamList {
 interface ButtonProps {
   label: string;
   onPress?: () => void;
-  variant?: 'default' | 'secondary' | 'destructive' | 'ghost' | 'link' | 'outline' | 'primary' | 'blur';
+  variant?: 'default' | 'secondary' | 'destructive' | 'ghost' | 'link' | 'outline' | 'primary' | 'blur' | 'light';
   style?: ViewStyle;
   textStyle?: TextStyle;
   route?: string;
@@ -42,7 +42,7 @@ const Button: React.FC<ButtonProps> = ({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,
-    height: 64,
+    height: 54,
     paddingHorizontal: 16,
     ...(variant === 'default' && { backgroundColor: '#019866' }),
     ...(variant === 'secondary' && { backgroundColor: '#000' }),
@@ -51,6 +51,7 @@ const Button: React.FC<ButtonProps> = ({
     ...(variant === 'link' && { backgroundColor: 'transparent' }),
     ...(variant === 'outline' && { backgroundColor: 'transparent', borderWidth: 2, borderColor: '#019866' }),
     ...(variant === 'primary' && { backgroundColor: '#787878' }),
+    ...(variant === 'light' && { backgroundColor: '#fff' }),
     ...(variant === 'blur' && {}),
     ...(style || {}),
   };
@@ -66,8 +67,9 @@ const Button: React.FC<ButtonProps> = ({
            variant === 'ghost' ? '#019866' :
            variant === 'link' ? '#787878' :
            variant === 'outline' ? '#019866' :
-           variant === 'primary' ? '#ffffff' : '#000000', // Cor do texto para cada variante
-    fontSize: variant === 'link' ? 18 : 22,
+           variant === 'primary' ? '#ffffff' :
+           variant === 'light' ? '#000000' : '#000000', // Cor do texto para cada variante
+    fontSize: variant === 'link' ? 18 : 20,
     textDecorationLine: variant === 'link' ? 'underline' : 'none',
     textDecorationStyle: variant === 'link' ? 'solid' : 'solid',
     marginTop: -4,

@@ -11,7 +11,8 @@ export default function UserEditScreen({ navigation, route }) {
     const types = ["Sobre", "Loja", "Tipo", ];
     const values = [ { name: "NORMAL", id: "regular" }, { name: "ADMIN DE LOJA", id: "adminloja" }, { name: "SUPER ADMIN", id: "superadmin" }, ];
     const [tipo, settipo] = useState(values[0].id);
-    const [status, setstatus] = useState("ativo");
+    const [status, setstatus] = useState(true);
+    const theme = colors();
     const [aboutValues, setaboutValues] = useState({
         name: "",
         last_name: "",
@@ -41,7 +42,7 @@ export default function UserEditScreen({ navigation, route }) {
             });
             setselectCategory(user.lojas);
             settipo(user.tipo)
-            setstatus(user.status);
+            setstatus(typeof user.status === 'string' ? user.status === 'ativo' : user.status);
         }
     }, [user]);
 
@@ -232,7 +233,7 @@ const About = React.memo(({ settab, aboutValues, setaboutValues, }) => {
 })
 
 const Store = React.memo(({setselectCategory, selectCategory, category, settab }) => {
-
+    const theme = colors();
     const [error, setError] = useState("");
 
     const handleNext = async () => {
@@ -259,17 +260,18 @@ const Store = React.memo(({setselectCategory, selectCategory, category, settab }
 
     const Item = ({ category }) => {
         const { nome, status, id, } = category;
+        const theme = colors();
         return (
             <Pressable onPress={() => toggleCategory(id)} style={{
                 backgroundColor: "#fff",
-                borderColor: categoryArray.includes(id) ? colors.color.green : "#fff",
+                borderColor: categoryArray.includes(id) ? theme.color.green : "#fff",
                 borderWidth: 2,
                 paddingVertical: 12, paddingHorizontal: 12,
                 borderRadius: 6,
             }}>
                 <Row justify='space-between'>
                     <Title size={18} fontFamily='Font_Book'>{nome}</Title>
-                    <Column style={{ width: 36, height: 36, borderColor: categoryArray.includes(id) ? colors.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: categoryArray.includes(id) ? colors.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>
+                    <Column style={{ width: 36, height: 36, borderColor: categoryArray.includes(id) ? theme.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: categoryArray.includes(id) ? theme.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>
                         <Check color='#FFF' size={24} />
                     </Column>
                 </Row>

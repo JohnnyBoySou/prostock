@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, Dimensions } from 'react-native';
-import colors from './colors';
+import colors from './colors_2';
 
 interface MultistepProps {
     steps: number;
