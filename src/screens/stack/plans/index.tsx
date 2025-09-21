@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Main, Column, Row, ScrollVertical, Title, Label, Button, colors, Icon, Tabs, Pressable, ScrollHorizontal } from "@/ui/index";
+import React, { useEffect, useState } from 'react';
+import { Main, Column, Row, Title, Label, Button, colors, Icon, Tabs, Pressable, ScrollHorizontal } from "@/ui/index";
 import { ImageBackground } from 'expo-image';
+import { usePostHog } from 'posthog-react-native';
 
 interface Plan {
   id: string;
@@ -67,11 +68,14 @@ export default function PlansScreen() {
   const [tab, setTab] = useState<string>('Mensal');
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
+    posthog.capture("Plano selecionado", { plan: planId })
   };
 
-  const handleSubscribe = () => {
-    console.log('Plano selecionado:', selectedPlan);
-  };
+  const posthog = usePostHog()
+  useEffect(() => {
+    posthog.capture("Plano selecionado", { plan: selectedPlan })
+  }, [selectedPlan])
+
 
   const PlanCard = ({ plan }: { plan: Plan }) => {
     const theme = colors();
@@ -132,7 +136,9 @@ export default function PlansScreen() {
 
   return (
     <Main>
-      <Tabs types={["Mensal", "Anual"]} value={tab} setValue={setTab} />
+      <Column>
+        <Tabs types={["Mensal", "Anual"]} value={tab} setValue={setTab} />
+      </Column>
       <Column gv={6} mh={26} mv={24}>
         <Title >
           Escolha seu Plano

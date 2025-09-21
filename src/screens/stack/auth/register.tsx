@@ -1,9 +1,12 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Main, Button, Column, Input, ScrollVertical, Pressable, Label, U } from "@/ui/index";
 import { AuthService } from "@/services/auth";
 import { toast } from "@/hooks/useToast";
+import { usePostHog } from "posthog-react-native";
 
 export default function RegisterScreen({ navigation }) {
+
+    const posthog = usePostHog() 
 
     const [name, setName] = useState('teste');
     const [email, setEmail] = useState('dev.joaosousa@gmail.com');
@@ -97,6 +100,7 @@ export default function RegisterScreen({ navigation }) {
             const res = await AuthService.register({ name, email, phone, password });
             console.log(res)
             toast.showSuccess("Cadastro realizado! Verifique seu email para confirmar a conta.");
+            posthog.capture("Cadastro realizado", { email: email })
             setUserEmail(email);
             setIsVerificationStep(true);
         } catch (e: any) {

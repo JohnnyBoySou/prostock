@@ -1,14 +1,13 @@
 import React from 'react';
 import { Image as ExpoImage, ImageSource } from 'expo-image';
-import { ImageStyle } from 'react-native';
 
 interface ImageProps {
     src?: string | ImageSource;
-    w?: number;
-    h?: number;
-    r?: number;
+    w?: number | string;
+    h?: number | string;
+    r?: number | string;
     align?: 'center' | 'flex-start' | 'flex-end' | 'stretch' | 'baseline';
-    style?: ImageStyle;
+    style?: any;
 }
 
 export default function Image({ 

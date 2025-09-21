@@ -189,8 +189,8 @@ export const AuthService = {
     verifyResetCode: (email: string, code: string): Promise<VerifyResetCodeResponse> => 
         fetch(`${URI}/verify-reset-code`, { method: "POST", data: { email, code } }),
     
-    resetPassword: (token: string, password: string): Promise<ResetPasswordResponse> => 
-        fetch(`${URI}/reset-password`, { method: "POST", data: { token, password } }),
+    resetPassword: (email: string, code: string, password: string): Promise<ResetPasswordResponse> => 
+        fetch(`${URI}/reset-password`, { method: "POST", data: { email, code, password } }),
 
     verifyEmail: (token: string): Promise<VerifyEmailResponse> => 
         fetch(`${URI}/verify-email`, { method: "POST", data: { token } }),

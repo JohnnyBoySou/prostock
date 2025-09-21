@@ -4,6 +4,7 @@ export default {
 
     primary: "#019866",
     secundary: "#fff",
+    tertiary: "#043721",
     destructive: "#e74c3c", // Vermelho destrutivo
     ghost: "#D1D1D1", // Azul-escuro ghost
     link: "#EA1E2C", // Cor do link

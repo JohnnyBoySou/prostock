@@ -1,18 +1,18 @@
 import { useState, useRef } from "react";
 import { KeyboardAvoidingView, ScrollView, Platform } from "react-native";
-import { Main, Button, Message, Column, Input, Image, Title, Label, colors, Row } from "@/ui";
+import { Main, Button, Column, Input, Image, Title, Label, colors, Row } from "@/ui";
 
 import { AuthService, type LoginResponse } from '@/services/auth/index';
 import { useUser } from "@/context/user";
+import { useToast } from "@/hooks/useToast";
 import { TokenService } from "@/hooks/token";
 
 export default function LoginScreen({ navigation }) {
     const theme = colors();
+    const toast = useToast();
     const { saveUser } = useUser();
     const [password, setPassword] = useState('123456');
     const [email, setEmail] = useState('dev.joaosousa@gmail.com');
-    const [success, setSuccess] = useState('');
-    const [error, setError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -20,8 +20,6 @@ export default function LoginScreen({ navigation }) {
     const refPassword = useRef<any>(null);
 
     const handleLogin = async () => {
-        setError('');
-        setSuccess('');
         setEmailError('');
         setPasswordError('');
 
@@ -42,12 +40,11 @@ export default function LoginScreen({ navigation }) {
         setIsLoading(true);
         try {
             const res = await AuthService.login(email, password) as LoginResponse;
-            setSuccess('Login realizado com sucesso!');
-            saveUser(res.user);
+            toast.showSuccess('Login realizado com sucesso!');
+            await saveUser(res.user);
             await TokenService.save(res.token);
-            navigation.navigate('Home');
         } catch (e) {
-            setError('Erro ao realizar o login. Tente novamente.');
+            toast.showError('Erro ao realizar o login. Tente novamente.');
         } finally {
             setIsLoading(false);
         }
@@ -111,7 +108,6 @@ export default function LoginScreen({ navigation }) {
                                 errorMessage={passwordError}
                             />
                             <Column mt={12} gv={12}>
-                                <Message success={success} error={error} />
                                 <Button label='Entrar' onPress={handleLogin} loading={isLoading} />
                                 <Button label='Esqueci minha senha' variant='link' onPress={() => navigation.navigate('ForgotPassword')} />
                             </Column>

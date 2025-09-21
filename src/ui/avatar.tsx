@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, Text, View, StyleSheet, ViewStyle, ImageStyle, TextStyle } from 'react-native';
+import { Image, Text, View, ViewStyle, ImageStyle, TextStyle } from 'react-native';
 
 interface AvatarProps {
   width?: number;

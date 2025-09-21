@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import { Main, Title, Column, Input, Button, Label } from '@/ui';
 import { AuthService } from '@/services/auth';
 import { useToast } from '@/hooks/useToast';
@@ -49,18 +49,38 @@ export default function ForgotPasswordScreen({ navigation }) {
             return;
         }
 
-        if (code.length < 6) {
-            showError('O código deve ter pelo menos 6 dígitos');
+        if (code.length !== 6) {
+            showError('O código deve ter exatamente 6 dígitos');
+            return;
+        }
+
+        if (!/^\d{6}$/.test(code)) {
+            showError('O código deve conter apenas números');
             return;
         }
 
         setLoading(true);
         try {
             const response = await AuthService.verifyResetCode(email, code);
+            console.log(response)
             showSuccess(response.message || 'Código verificado com sucesso');
             setStep('password');
         } catch (error: any) {
-            showError(error.message || 'Código inválido');
+            console.error('Erro ao verificar código:', error);
+            console.log('Tipo do erro:', typeof error);
+            console.log('Status do erro:', error.status, error.statusCode);
+            console.log('Mensagem do erro:', error.message);
+
+            // Tratar diferentes tipos de erro
+            if (error.status === 401 || error.statusCode === 401) {
+                showError('Código inválido ou expirado. Verifique o código e tente novamente.');
+            } else if (error.message) {
+                showError(error.message);
+            } else if (typeof error === 'string') {
+                showError(error);
+            } else {
+                showError('Erro ao verificar código. Tente novamente.');
+            }
         } finally {
             setLoading(false);
         }
@@ -84,28 +104,25 @@ export default function ForgotPasswordScreen({ navigation }) {
 
         setLoading(true);
         try {
-            // Primeiro verificamos o código novamente para obter o token
-            const verifyResponse = await AuthService.verifyResetCode(email, code);
-            if (!verifyResponse.token) {
-                throw new Error('Token não encontrado');
-            }
-
-            // Agora resetamos a senha com o token
-            const response = await AuthService.resetPassword(verifyResponse.token, password);
+            const response = await AuthService.resetPassword(email, code, password);
             showSuccess(response.message || 'Senha redefinida com sucesso');
-            
-            Alert.alert(
-                'Sucesso',
-                'Sua senha foi redefinida com sucesso. Você pode fazer login agora.',
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => navigation.navigate('Login')
-                    }
-                ]
-            );
+
+            setTimeout(() => {
+                navigation.navigate('Login')
+            }, 2000);
         } catch (error: any) {
-            showError(error.message || 'Erro ao redefinir senha');
+            console.error('Erro ao redefinir senha:', error);
+
+            if (error.status === 401 || error.statusCode === 401) {
+                showError('Código expirado. Solicite um novo código de verificação.');
+                setStep('email');
+            } else if (error.message) {
+                showError(error.message);
+            } else if (typeof error === 'string') {
+                showError(error);
+            } else {
+                showError('Erro ao redefinir senha. Tente novamente.');
+            }
         } finally {
             setLoading(false);
         }
@@ -125,7 +142,7 @@ export default function ForgotPasswordScreen({ navigation }) {
             <Label size={16} color="#666" style={{ marginBottom: 20 }}>
                 Digite seu email para receber um código de verificação
             </Label>
-            
+
             <Input
                 placeholder="Email"
                 value={email}
@@ -149,29 +166,36 @@ export default function ForgotPasswordScreen({ navigation }) {
             <Label size={16} color="#666" style={{ marginBottom: 20 }}>
                 Digite o código de 6 dígitos enviado para {email}
             </Label>
-            
+
             <Input
                 placeholder="Código de verificação"
                 value={code}
-                setValue={setCode}
+                setValue={(value) => {
+                    const numericValue = value.replace(/[^0-9]/g, '');
+                    if (numericValue.length <= 6) {
+                        setCode(numericValue);
+                    }
+                }}
                 keyboard="numeric"
+                maxLength={6}
                 style={{ marginBottom: 20 }}
             />
 
-            <Button
-                label="Verificar Código"
-                onPress={handleVerifyCode}
-                loading={loading}
-                disabled={loading}
-                style={{ marginBottom: 10 }}
-            />
-            
-            <Button
-                label="Voltar"
-                onPress={handleBack}
-                variant="outline"
-                disabled={loading}
-            />
+            <Column gv={12}>
+                <Button
+                    label="Verificar Código"
+                    onPress={handleVerifyCode}
+                    loading={loading}
+                    disabled={loading}
+                />
+
+                <Button
+                    label="Voltar"
+                    onPress={handleBack}
+                    variant="outline"
+                    disabled={loading}
+                />
+            </Column>
         </Column>
     );
 
@@ -181,7 +205,7 @@ export default function ForgotPasswordScreen({ navigation }) {
             <Label size={16} color="#666" style={{ marginBottom: 20 }}>
                 Digite sua nova senha
             </Label>
-            
+
             <Input
                 placeholder="Nova senha"
                 value={password}
@@ -198,32 +222,35 @@ export default function ForgotPasswordScreen({ navigation }) {
                 style={{ marginBottom: 20 }}
             />
 
-            <Button
-                label="Redefinir Senha"
-                onPress={handleResetPassword}
-                loading={loading}
-                disabled={loading}
-                style={{ marginBottom: 10 }}
-            />
-            
-            <Button
-                label="Voltar"
-                onPress={handleBack}
-                variant="outline"
-                disabled={loading}
-            />
+            <Column gv={12}>
+                <Button
+                    label="Redefinir Senha"
+                    onPress={handleResetPassword}
+                    loading={loading}
+                    disabled={loading}
+                />
+
+                <Button
+                    label="Voltar"
+                    onPress={handleBack}
+                    variant="outline"
+                    disabled={loading}
+                />
+            </Column>
         </Column>
     );
 
     return (
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1 }}
         >
             <Main>
-                {step === 'email' && renderEmailStep()}
-                {step === 'code' && renderCodeStep()}
-                {step === 'password' && renderPasswordStep()}
+                <Column mh={26} mv={26}>
+                    {step === 'email' && renderEmailStep()}
+                    {step === 'code' && renderCodeStep()}
+                    {step === 'password' && renderPasswordStep()}
+                </Column>
             </Main>
         </KeyboardAvoidingView>
     );

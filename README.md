@@ -1,8 +1,8 @@
-# 📦 ProStock
+# 📦 25Stock
 
 ## Sistema de Gestão de Estoque Inteligente
 
-ProStock é um sistema completo de gestão de estoque desenvolvido com React Native e Expo, que combina tecnologias modernas com inteligência artificial para oferecer uma experiência completa de gerenciamento de inventário.
+25Stock é um sistema completo de gestão de estoque desenvolvido com React Native e Expo, que combina tecnologias modernas com inteligência artificial para oferecer uma experiência completa de gerenciamento de inventário.
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -99,8 +99,8 @@ Antes de começar, certifique-se de ter instalado:
 
 1. **Clone o repositório:**
 ```bash
-git clone https://github.com/JohnnyBoySou/prostock.git
-cd prostock
+git clone https://github.com/JohnnyBoySou/25stock.git
+cd 25stock
 ```
 
 2. **Instale as dependências:**
@@ -155,10 +155,10 @@ src/
 
 ### 🧭 Sistema de Navegação
 
-O ProStock utiliza **React Navigation v7** com:
+O 25Stock utiliza **React Navigation v7** com:
 - **Stack Navigation**: Para fluxos lineares
 - **Drawer Navigation**: Para menu lateral
-- **Deep Linking**: Suporte a links profundos (`prostock://`)
+- **Deep Linking**: Suporte a links profundos (`25stock://`)
 
 ### 🎨 Componentes UI
 
@@ -220,7 +220,7 @@ O sistema se comunica com uma API REST que oferece os seguintes recursos:
 ## 📱 Instalação no Dispositivo
 
 ### Android
-1. Baixe o APK mais recente das [Releases](https://github.com/JohnnyBoySou/prostock/releases)
+1. Baixe o APK mais recente das [Releases](https://github.com/JohnnyBoySou/25stock/releases)
 2. Habilite "Fontes desconhecidas" no Android
 3. Instale o APK
 
@@ -300,6 +300,6 @@ Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICEN
 
 **Feito com ❤️ e tecnologias modernas**
 
-[⬆ Voltar ao topo](#-prostock)
+[⬆ Voltar ao topo](#-25stock)
 
 </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, TouchableOpacity, ViewStyle, TextStyle, ActivityIndicator, View } from 'react-native';
 import { useNavigation, NavigationProp, StackActions } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
+import colors from './colors';
 
 interface RootStackParamList {
   [key: string]: object | undefined;
@@ -10,7 +11,7 @@ interface RootStackParamList {
 interface ButtonProps {
   label: string;
   onPress?: () => void;
-  variant?: 'default' | 'secondary' | 'destructive' | 'ghost' | 'link' | 'outline' | 'primary' | 'blur' | 'light';
+  variant?: 'default' | 'secondary' | 'destructive' | 'ghost' | 'link' | 'outline' | 'primary' | 'blur' | 'light' | 'tertiary';
   style?: ViewStyle;
   textStyle?: TextStyle;
   route?: string;
@@ -35,7 +36,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
 }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
+  const theme = colors();
   // Estilos do contêiner
   const containerStyles: ViewStyle = {
     flexDirection: 'row',
@@ -52,6 +53,7 @@ const Button: React.FC<ButtonProps> = ({
     ...(variant === 'outline' && { backgroundColor: 'transparent', borderWidth: 2, borderColor: '#019866' }),
     ...(variant === 'primary' && { backgroundColor: '#787878' }),
     ...(variant === 'light' && { backgroundColor: '#fff' }),
+    ...(variant === 'tertiary' && { backgroundColor: theme.color.tertiary }),
     ...(variant === 'blur' && {}),
     ...(style || {}),
   };
@@ -68,8 +70,9 @@ const Button: React.FC<ButtonProps> = ({
            variant === 'link' ? '#787878' :
            variant === 'outline' ? '#019866' :
            variant === 'primary' ? '#ffffff' :
+           variant === 'tertiary' ? '#ffffff' :
            variant === 'light' ? '#000000' : '#000000', // Cor do texto para cada variante
-    fontSize: variant === 'link' ? 18 : 20,
+    fontSize: variant === 'link' ? 16 : 18,
     textDecorationLine: variant === 'link' ? 'underline' : 'none',
     textDecorationStyle: variant === 'link' ? 'solid' : 'solid',
     marginTop: -4,

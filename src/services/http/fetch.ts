@@ -8,8 +8,8 @@ const TIMEOUT = 5000;
 const getBaseURL = () => {
   if (__DEV__) {
     const possibleURLs = [
-      "http://192.168.3.56:3000", 
       "http://localhost:3000", 
+      "http://192.168.3.56:3000", 
     ];
     
     return possibleURLs[0]; 
@@ -34,7 +34,7 @@ const apiClient = axios.create({
   timeout: TIMEOUT,
   // Configurações para evitar problemas de tunnel
   maxRedirects: 5,
-  validateStatus: (status) => status < 500,
+  validateStatus: (status) => status >= 200 && status < 300,
 });
 
 // Interceptor para tratamento de erros de tunnel
@@ -74,7 +74,20 @@ export async function fetch<T = unknown>(
     return response.data;
   } catch (error: any) {
     console.error(`Error fetching ${url}:`, error);
-    throw error.response?.data || error;
+    
+    // Preservar informações do erro HTTP
+    if (error.response) {
+      const errorData = error.response.data || {};
+      const httpError = {
+        ...errorData,
+        status: error.response.status,
+        statusCode: error.response.status,
+        message: errorData.message || error.message || 'Erro na requisição'
+      };
+      throw httpError;
+    }
+    
+    throw error;
   }
 }
 
@@ -105,7 +118,19 @@ export async function fetchAuth<T = unknown>(
     return response.data;
   } catch (error: any) {
     console.error(`Error fetching with auth at ${url}:`, error.response?.data || error.message);
-    throw error.response?.data || error;
+    // Preservar informações do erro HTTP
+    if (error.response) {
+      const errorData = error.response.data || {};
+      const httpError = {
+        ...errorData,
+        status: error.response.status,
+        statusCode: error.response.status,
+        message: errorData.message || error.message || 'Erro na requisição'
+      };
+      throw httpError;
+    }
+    
+    throw error;
   }
 }
 
@@ -134,7 +159,19 @@ export async function fetchAuthOtherStore<T = unknown>(
     return response.data;
   } catch (error: any) {
     console.error(`Error fetching with auth at ${url}:`, error.response?.data || error.message);
-    throw error.response?.data || error;
+    // Preservar informações do erro HTTP
+    if (error.response) {
+      const errorData = error.response.data || {};
+      const httpError = {
+        ...errorData,
+        status: error.response.status,
+        statusCode: error.response.status,
+        message: errorData.message || error.message || 'Erro na requisição'
+      };
+      throw httpError;
+    }
+    
+    throw error;
   }
 }
 

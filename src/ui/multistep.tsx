@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, Dimensions } from 'react-native';
-import colors from './colors_2';
+import colors from './colors';
+
 
 interface MultistepProps {
     steps: number;
@@ -11,12 +12,12 @@ interface MultistepProps {
     animationDuration?: number;
 }
 
-const HEIGHT = 12;
+const HEIGHT = 8;
 
 export const MultiStep: React.FC<MultistepProps> = ({
     steps,
     currentStep,
-    color = colors.color.primary,
+    color = colors().color.tertiary,
     backgroundColor = '#E0E0E0',
     height = HEIGHT,
     animationDuration = 300,

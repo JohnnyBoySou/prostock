@@ -1,5 +1,5 @@
 import { ActivityIndicator } from "react-native";
-const Loader = ({ size = 24, color = "#fff" }) => {
+const Loader = ({ size = 24, color = "#fff" }: { size: number, color: string }) => {
   return (
     <ActivityIndicator size={size} color={color} />
   );

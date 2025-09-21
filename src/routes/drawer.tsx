@@ -73,8 +73,8 @@ function CustomDrawerContent({ navigation }) {
             <Icon name="X" color={theme.color.title} size={24} />
           </Pressable>
         </Row>
-        <Column mh={10} gv={4}>
-          <Title>ProStock</Title>
+        <Column mh={10} gv={4} align="flex-start">
+          <Image src={require('@/imgs/logo_text_img.png')} w={100} h={24} />
           <Label size={14}>Controle seu estoque na palma da sua mão</Label>
         </Column>
         <Column style={{ paddingVertical: 16 }} mb={50} mt={10}>

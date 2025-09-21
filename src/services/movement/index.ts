@@ -329,16 +329,16 @@ const URI = "/movements";
 export const MovementService = {
   // === CRUD BÁSICO ===
   create: (params: CreateMovementRequest): Promise<Movement> => 
-    fetchAuth(URI, { method: "POST", data: params }),
+    fetchAuth(URI, { method: "POST", data: params as unknown as Record<string, unknown> }),
   
   list: (filters?: MovementFilters): Promise<MovementListResponse> => 
-    fetchAuth(URI, { method: "GET", params: filters }),
+    fetchAuth(URI, { method: "GET", params: filters as unknown as Record<string, unknown> }),
   
   get: (id: string): Promise<Movement> => 
     fetchAuth(`${URI}/${id}`, { method: "GET" }),
   
   update: (id: string, params: UpdateMovementRequest): Promise<Movement> => 
-    fetchAuth(`${URI}/${id}`, { method: "PUT", data: params }),
+    fetchAuth(`${URI}/${id}`, { method: "PUT", data: params as unknown as Record<string, unknown> }),
   
   delete: (id: string): Promise<void> => 
     fetchAuth(`${URI}/${id}`, { method: "DELETE" }),
@@ -419,7 +419,7 @@ export const MovementService = {
 
   // === OPERAÇÕES EM LOTE ===
   createBulk: (params: BulkMovementRequest): Promise<BulkMovementResponse> => 
-    fetchAuth(`${URI}/bulk`, { method: "POST", data: params }),
+    fetchAuth(`${URI}/bulk`, { method: "POST", data: params as unknown as Record<string, unknown> }),
   
   updateBulk: (updates: Array<{ id: string; data: UpdateMovementRequest }>): Promise<{ 
     updated: number; 
@@ -435,10 +435,10 @@ export const MovementService = {
 
   // === VERIFICAÇÃO E CANCELAMENTO ===
   verify: (id: string, params: MovementVerificationRequest): Promise<MovementVerificationResponse> => 
-    fetchAuth(`${URI}/${id}/verify`, { method: "PATCH", data: params }),
+    fetchAuth(`${URI}/${id}/verify`, { method: "PATCH", data: params as unknown as Record<string, unknown> }),
   
   cancel: (id: string, params: MovementCancellationRequest): Promise<MovementCancellationResponse> => 
-    fetchAuth(`${URI}/${id}/cancel`, { method: "PATCH", data: params }),
+    fetchAuth(`${URI}/${id}/cancel`, { method: "PATCH", data: params as unknown as Record<string, unknown> }),
   
   getVerifiedMovements: (filters?: {
     page?: number;
@@ -555,7 +555,7 @@ export const MovementService = {
 
   // === UTILITÁRIOS ===
   export: (filters?: MovementFilters): Promise<{ downloadUrl: string }> => 
-    fetchAuth(`${URI}/export`, { method: "POST", data: filters }),
+    fetchAuth(`${URI}/export`, { method: "POST", data: filters as Record<string, unknown> }),
   
   import: (file: File, options?: {
     updateExisting?: boolean;
@@ -565,14 +565,14 @@ export const MovementService = {
     errors: string[];
     warnings: string[];
   }> => 
-    fetchAuth(`${URI}/import`, { method: "POST", data: { file, ...options } }),
+    fetchAuth(`${URI}/import`, { method: "POST", data: { file, ...options } as Record<string, unknown> }),
   
   validate: (movement: CreateMovementRequest): Promise<{
     valid: boolean;
     errors: string[];
     warnings: string[];
   }> => 
-    fetchAuth(`${URI}/validate`, { method: "POST", data: movement }),
+    fetchAuth(`${URI}/validate`, { method: "POST", data: movement as unknown as Record<string, unknown>}),
   
   getMovementTypes: (): Promise<Array<{
     type: 'ENTRADA' | 'SAIDA' | 'PERDA';

@@ -8,6 +8,7 @@ const whiteTheme = {
 
     primary: "#019866",
     secundary: "#fff",
+    tertiary: "#043721",
     destructive: "#e74c3c", // Vermelho destrutivo
     ghost: "#D1D1D1", // Azul-escuro ghost
     link: "#EA1E2C", // Cor do link
@@ -33,6 +34,8 @@ const whiteTheme = {
     textSecondary: "#FF620A", // Cor do texto para fundo escuro
     textGhost: "#ffffff", // Cor do texto para fundo ghost
     textLink: "#303030", // Cor do texto para link
+
+    border: "#D1D1D1",
 
     borderPrimary: "#ED274A", // Cor da borda para a variante outline
     borderSecondary: "#FF620A", // Cor da borda para a variante outline
@@ -68,6 +71,7 @@ const darkTheme = {
 
     primary: "#019866",
     secundary: "#2A2A2A",
+    tertiary: "#043721",
     destructive: "#e74c3c", // Vermelho destrutivo
     ghost: "#404040", // Azul-escuro ghost
     link: "#EA1E2C", // Cor do link
@@ -94,6 +98,7 @@ const darkTheme = {
     textGhost: "#ffffff", // Cor do texto para fundo ghost
     textLink: "#f1f1f1", // Cor do texto para link
 
+    border: "#404040",
     borderPrimary: "#ED274A", // Cor da borda para a variante outline
     borderSecondary: "#FF620A", // Cor da borda para a variante outline
     borderDestructive: "#e74c3c", // Cor da borda para a variante outline

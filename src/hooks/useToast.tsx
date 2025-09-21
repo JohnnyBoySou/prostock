@@ -111,26 +111,26 @@ export const ErrorToast = ({ text1 }: { text1: string }) => {
         pv={8}
         ph={8}
         style={{
-          backgroundColor: "#fff",
-          borderRadius: 24,
-          width: SCREEN_WIDTH - 32,
+          backgroundColor: theme.color.red,
+          borderRadius: 8,
+          width: SCREEN_WIDTH - 52,
         }}
       >
         <Column
           style={{
             width: 42,
             height: 42,
-            backgroundColor: theme.color.red + 30,
-            borderRadius: 18,
+            backgroundColor: "#ffffff30",
+            borderRadius: 4,
           }}
           justify="center"
           align="center"
         >
-          <Icon name="X" color={theme.color.red} />
+          <Icon name="X" color="#fff" />
         </Column>
         <Label
-          style={{ width: SCREEN_WIDTH - 100, letterSpacing: -0.5 }}
-          color={theme.color.red}
+          style={{ width: SCREEN_WIDTH - 130, letterSpacing: -0.5 }}
+          color="#fff"
         >
           {text1}
         </Label>
@@ -170,7 +170,7 @@ export const WarningToast = ({ text1 }: { text1: string }) => {
         </Column>
         <Label
           style={{ width: SCREEN_WIDTH - 100, letterSpacing: -0.5 }}
-            color={theme.color.yellow}
+          color={theme.color.yellow}
         >
           {text1}
         </Label>
@@ -258,4 +258,12 @@ export const toast = {
   showWarning,
   showInfo,
   showCustom,
+};
+
+export const toastConfig = {
+  custom: (props) => <CustomToast {...props} />,
+  success: (props) => <SuccessToast {...props} />,
+  error: (props) => <ErrorToast {...props} />,
+  warning: (props) => <WarningToast {...props} />,
+  info: (props) => <InfoToast {...props} />,
 };
