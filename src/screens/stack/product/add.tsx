@@ -1,68 +1,113 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Medida, Status, Title, Row, colors, useMutation, useToast, useFetch, Search, Loader } from "@/ui";
+import React, { useState, useEffect, useRef } from "react";
+import { Main, Button, Column, Input, ScrollVertical, Tabs, Medida, Status, Title, Row, colors, useMutation, useToast, useFetch, Loader, Icon, Label, MultiStep } from "@/ui";
 
 import { CategoryService } from "src/services/category";
-import { Pressable, KeyboardAvoidingView } from "react-native";
+import { Pressable, KeyboardAvoidingView, FlatList, Text } from "react-native";
 import { Check } from 'lucide-react-native';
 import { ProductService, ProductCreateRequest } from "src/services/product";
-import { CategoryEmpty } from '@/ui/Emptys/category';
 import { useQueryClient } from "@tanstack/react-query";
-import { FlatList } from "react-native-gesture-handler";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import CategoryEmpty from "../category/_empty";
+
+const productSchema = z.object({
+    name: z
+        .string()
+        .min(1, "O nome do produto é obrigatório")
+        .min(2, "O nome deve ter pelo menos 2 caracteres")
+        .max(100, "O nome deve ter no máximo 100 caracteres"),
+
+    description: z
+        .string()
+        .min(1, "A descrição é obrigatória")
+        .min(5, "A descrição deve ter pelo menos 5 caracteres")
+        .max(500, "A descrição deve ter no máximo 500 caracteres"),
+
+    referencePrice: z
+        .string()
+        .min(1, "O preço de referência é obrigatório")
+        .refine((val) => !isNaN(parseFloat(val)), "Por favor, insira um preço válido")
+        .refine((val) => parseFloat(val) >= 0, "O preço não pode ser negativo"),
+
+    unitOfMeasure: z.enum(['UNIDADE', 'KG', 'L', 'ML', 'M', 'CM', 'MM', 'UN', 'DZ', 'CX', 'PCT', 'KIT', 'PAR', 'H', 'D']),
+
+    categoryIds: z.array(z.string()).min(1, "Selecione pelo menos uma categoria"),
+
+    stockMin: z
+        .string()
+        .min(1, "O estoque mínimo é obrigatório")
+        .refine((val) => !isNaN(parseInt(val)), "Por favor, insira um valor válido")
+        .refine((val) => parseInt(val) >= 0, "O estoque mínimo não pode ser negativo"),
+
+    stockMax: z
+        .string()
+        .min(1, "O estoque máximo é obrigatório")
+        .refine((val) => !isNaN(parseInt(val)), "Por favor, insira um valor válido")
+        .refine((val) => parseInt(val) >= 0, "O estoque máximo não pode ser negativo"),
+
+    alertPercentage: z
+        .string()
+        .min(1, "O percentual de alerta é obrigatório")
+        .refine((val) => !isNaN(parseInt(val)), "Por favor, insira um valor válido")
+        .refine((val) => parseInt(val) >= 0 && parseInt(val) <= 100, "O percentual deve estar entre 0 e 100"),
+
+    status: z.boolean()
+});
+
+type ProductFormData = z.infer<typeof productSchema>;
 
 export default function ProductAddScreen({ navigation, route }) {
     const toast = useToast();
     const queryClient = useQueryClient();
     const data = route?.params?.data
+    const theme = colors();
 
     const [tab, settab] = useState("Sobre");
     const types = ["Sobre", "Categorias", "Estoque"];
     const values: ProductCreateRequest['unitOfMeasure'][] = ['UNIDADE', 'KG', 'L', 'ML', 'M', 'CM', 'MM', 'UN', 'DZ', 'CX', 'PCT', 'KIT', 'PAR', 'H', 'D']
 
-    const [medida, setmedida] = useState<ProductCreateRequest['unitOfMeasure']>(data?.unitOfMeasure || 'UNIDADE');
-    const [status, setstatus] = useState<boolean>(true);
-    const [aboutValues, setaboutValues] = useState<{
-        name: string;
-        description: string;
-        referencePrice: string;
-    }>({
-        name: data?.name || "",
-        description: data?.description || "",
-        referencePrice: data?.referencePrice?.toString() || "",
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+        watch,
+        setValue,
+        trigger
+    } = useForm<ProductFormData>({
+        resolver: zodResolver(productSchema),
+        defaultValues: {
+            name: data?.name || "",
+            description: data?.description || "",
+            referencePrice: data?.referencePrice?.toString() || "",
+            unitOfMeasure: data?.unitOfMeasure || 'UNIDADE',
+            categoryIds: [],
+            stockMin: data?.stockMin?.toString() || "",
+            stockMax: data?.stockMax?.toString() || "",
+            alertPercentage: data?.alertPercentage?.toString() || "10",
+            status: true,
+        },
+        mode: "onChange"
     });
-    const [stockValues, setstockValues] = useState<{
-        stockMin: string;
-        stockMax: string;
-        alertPercentage: string;
-    }>({
-        stockMin: data?.stockMin?.toString() || "",
-        stockMax: data?.stockMax?.toString() || "",
-        alertPercentage: data?.alertPercentage?.toString() || "10",
-    });
-    const [selectCategory, setselectCategory] = useState<string>();
-    const [storeId, setStoreId] = useState<string>(""); // TODO: Obter do contexto do usuário
 
-    const [category, setcategory] = useState([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    const fecthCategory = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const res = await CategoryService.list();
-            setcategory(res.items || []);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        fecthCategory();
-    }, [fecthCategory]);
+    const aboutVerifyFieldsRef = useRef<(() => Promise<boolean>) | undefined>(undefined);
+    const categoriesVerifyFieldsRef = useRef<(() => Promise<boolean>) | undefined>(undefined);
+    const stockVerifyFieldsRef = useRef<(() => Promise<boolean>) | undefined>(undefined);
 
     const createProductMutation = useMutation({
-        mutationFn: async (params: ProductCreateRequest) => {
-            return await ProductService.create(params);
+        mutationFn: async (params: ProductFormData) => {
+            const productParams: ProductCreateRequest = {
+                name: params.name,
+                description: params.description,
+                unitOfMeasure: params.unitOfMeasure,
+                referencePrice: parseFloat(params.referencePrice),
+                categoryIds: params.categoryIds,
+                stockMin: parseInt(params.stockMin),
+                stockMax: parseInt(params.stockMax),
+                alertPercentage: parseInt(params.alertPercentage),
+                status: params.status,
+            };
+            return await ProductService.create(productParams);
         },
         onSuccess: () => {
             toast.showSuccess('Produto criado com sucesso!');
@@ -72,191 +117,194 @@ export default function ProductAddScreen({ navigation, route }) {
             }, 1000);
         },
         onError: (error) => {
+            console.log(error);
             toast.showError(error.message || 'Erro ao criar produto');
         }
     });
 
-    const handleCreate = () => {
-        if (!storeId) {
-            toast.showError('StoreId é obrigatório');
-            return;
+    const onSubmit = (data: ProductFormData) => {
+        createProductMutation.mutate(data);
+    };
+
+    const handleNext = async () => {
+        let isValid = false;
+
+        if (tab === "Sobre" && aboutVerifyFieldsRef.current) {
+            isValid = await aboutVerifyFieldsRef.current();
+            if (isValid) {
+                settab("Categorias");
+            }
+        } else if (tab === "Categorias" && categoriesVerifyFieldsRef.current) {
+            isValid = await categoriesVerifyFieldsRef.current();
+            if (isValid) {
+                settab("Estoque");
+            }
+        } else if (tab === "Estoque" && stockVerifyFieldsRef.current) {
+            isValid = await stockVerifyFieldsRef.current();
+            if (isValid) {
+                handleSubmit(onSubmit)();
+            }
         }
+    };
 
-        const params: ProductCreateRequest = {
-            name: aboutValues.name,
-            description: aboutValues.description,
-            unitOfMeasure: medida,
-            referencePrice: parseFloat(aboutValues.referencePrice) || 0,
-            categoryId: selectCategory,
-            storeId: storeId,
-            stockMin: parseInt(stockValues.stockMin) || 0,
-            stockMax: parseInt(stockValues.stockMax) || 0,
-            alertPercentage: parseInt(stockValues.alertPercentage) || 10,
-            status: status,
-        };
-
-        createProductMutation.mutate(params);
-    }
-
-    return (<Main>
-        <KeyboardAvoidingView behavior="padding">
-            <Tabs types={types} value={tab} setValue={settab} />
-            <ScrollVertical>
-                {tab === "Sobre" && <About values={values} setmedida={setmedida} medida={medida} settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
-                {tab === "Categorias" && <Categories category={category} settab={settab} selectCategory={selectCategory} setselectCategory={setselectCategory} />}
-                {tab === "Estoque" && <Stock isLoading={createProductMutation.isLoading} setstatus={setstatus} status={status} stockValues={stockValues} setstockValues={setstockValues} handleCreate={handleCreate} />}
-            </ScrollVertical>
-        </KeyboardAvoidingView>
-    </Main>)
+    return (
+        <Main>
+            <KeyboardAvoidingView behavior="padding">
+                <Tabs types={types} value={tab} setValue={settab} />
+                <ScrollVertical>
+                    {tab === "Sobre" && <About control={control} errors={errors} values={values} settab={settab} verifyFieldsRef={aboutVerifyFieldsRef} watch={watch} trigger={trigger} />}
+                    {tab === "Categorias" && <Categories errors={errors} settab={settab} setValue={setValue} watch={watch} verifyFieldsRef={categoriesVerifyFieldsRef} trigger={trigger} />}
+                    {tab === "Estoque" && <Stock control={control} errors={errors} isLoading={createProductMutation.isLoading} onSubmit={handleSubmit(onSubmit)} verifyFieldsRef={stockVerifyFieldsRef} watch={watch} trigger={trigger} />}
+                </ScrollVertical>
+            </KeyboardAvoidingView>
+            <Column style={{ position: "absolute", bottom: 20, left: 0, right: 0, backgroundColor: theme.color.foreground, borderRadius: 6, }} pv={26} ph={26}>
+                <Label>Passo {tab === "Sobre" ? 1 : tab === "Categorias" ? 2 : 3} de 3</Label>
+                <MultiStep steps={3} currentStep={tab === "Sobre" ? 0 : tab === "Categorias" ? 1 : 2} />
+                <Row>
+                    <Button label="Voltar" onPress={() => settab(tab === "Sobre" ? "Sobre" : tab === "Categorias" ? "Categorias" : "Estoque")} disabled={tab === "Sobre"} variant="tertiary" />
+                    <Button label={tab === "Estoque" ? "Criar produto" : "Próximo"} onPress={handleNext} variant="tertiary" />
+                </Row>
+            </Column>
+        </Main>
+    )
 }
 
 interface AboutProps {
+    control: any;
+    errors: any;
     settab: (tab: string) => void;
-    aboutValues: {
-        name: string;
-        description: string;
-        referencePrice: string;
-    };
-    setaboutValues: React.Dispatch<React.SetStateAction<{
-        name: string;
-        description: string;
-        referencePrice: string;
-    }>>;
     values: ProductCreateRequest['unitOfMeasure'][];
-    setmedida: React.Dispatch<React.SetStateAction<ProductCreateRequest['unitOfMeasure']>>;
-    medida: ProductCreateRequest['unitOfMeasure'];
+    verifyFieldsRef: React.MutableRefObject<(() => Promise<boolean>) | undefined>;
+    watch: any;
+    trigger: any;
 }
 
-const About = React.memo(({ settab, aboutValues, setaboutValues, values, setmedida, medida }: AboutProps) => {
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+const About = ({ control, errors, settab, values, verifyFieldsRef, watch, trigger }: AboutProps) => {
+    const nameRef = useRef(null);
+    const descriptionRef = useRef(null);
+    const priceRef = useRef(null);
 
-    const refs = useRef({
-        name: null as any,
-        description: null as any,
-        referencePrice: null as any,
-    });
-
-    const fieldProperties = {
-        name: {
-            label: "Nome do Produto",
-            placeholder: "Ex.: Produto X",
-            keyboardType: "default",
-        },
-        description: {
-            label: "Descrição",
-            placeholder: "Ex.: Uma breve descrição",
-            keyboardType: "default",
-        },
-        referencePrice: {
-            label: "Preço de Referência",
-            placeholder: "Ex.: 25.50",
-            keyboardType: "numeric",
-        },
+    const handleNext = () => {
+        settab("Categorias");
     };
 
-    // Validações dinâmicas
-    const validations = {
-        name: (value) => !!value || "Por favor, insira o nome do produto.",
-        description: (value) => !!value || "Por favor, insira uma descrição.",
-        referencePrice: (value) => {
-            if (!value) return "Por favor, insira o preço de referência.";
-            if (isNaN(parseFloat(value))) return "Por favor, insira um preço válido.";
-            if (parseFloat(value) < 0) return "O preço não pode ser negativo.";
-            return true;
-        },
+    const verifyFields = async (): Promise<boolean> => {
+        // Valida apenas os campos da tab Sobre usando React Hook Form
+        const fieldsToValidate = ['name', 'description', 'referencePrice', 'unitOfMeasure'];
+        const isValid = await trigger(fieldsToValidate);
+        return isValid;
     };
 
-    // Função para validar todos os campos
-    const validateForm = () => {
-        for (const field of Object.keys(validations)) {
-            const error = validations[field](aboutValues[field]);
-            if (error !== true) {
-                setError(error); // Define o erro do primeiro campo inválido
-                return false;
-            }
-        }
-        setError(""); // Nenhum erro
-        return true;
-    };
-    // Atualiza o estado dinamicamente
-    const handleChange = (field, value) => {
-        setaboutValues((prev) => ({ ...prev, [field]: value }));
-        setError(""); // Limpa os erros ao alterar o valor
-    };
-
-    // Função para lidar com o cadastro
-    const handleNext = async () => {
-        setSuccess("");
-        setError(""); // Limpa os erros ao tentar submeter
-        if (!validateForm()) return;
-        else {
-            settab("Categorias");
-        }
-    };
-
+    // Passa a função verifyFields para a referência
+    useEffect(() => {
+        verifyFieldsRef.current = verifyFields;
+    }, [verifyFieldsRef]);
 
     return (
         <Column mh={26} gv={26}>
-            <Input
-                label="Nome do Produto"
-                value={aboutValues.name}
-                setValue={(value) => handleChange('name', value)}
-                placeholder="Ex.: Produto X"
-                keyboardType="default"
-                ref={(el) => { refs.current.name = el; }}
-                onSubmitEditing={() => {
-                    refs.current.description?.focus();
-                }}
+            <Controller
+                control={control}
+                name="name"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={nameRef}
+                        label="Nome do Produto"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: Produto X"
+                        keyboardType="default"
+                        errorMessage={errors.name?.message}
+                        onSubmitEditing={() => descriptionRef.current?.focus()}
+                        returnKeyType="next"
+                    />
+                )}
             />
-            <Input
-                label="Descrição"
-                value={aboutValues.description}
-                setValue={(value) => handleChange('description', value)}
-                placeholder="Ex.: Uma breve descrição"
-                keyboardType="default"
-                ref={(el) => { refs.current.description = el; }}
-                onSubmitEditing={() => {
-                    refs.current.referencePrice?.focus();
-                }}
+
+            <Controller
+                control={control}
+                name="description"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={descriptionRef}
+                        label="Descrição"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: Uma breve descrição"
+                        keyboardType="default"
+                        errorMessage={errors.description?.message}
+                        onSubmitEditing={() => priceRef.current?.focus()}
+                        returnKeyType="next"
+                    />
+                )}
             />
-            <Input
-                label="Preço de Referência"
-                value={aboutValues.referencePrice}
-                setValue={(value) => handleChange('referencePrice', value)}
-                placeholder="Ex.: 25.50"
-                keyboardType="numeric"
-                ref={(el) => { refs.current.referencePrice = el; }}
-                onSubmitEditing={() => {
-                    handleNext();
-                }}
+
+            <Controller
+                control={control}
+                name="referencePrice"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={priceRef}
+                        label="Preço de Referência"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: 25.50"
+                        keyboardType="numeric"
+                        errorMessage={errors.referencePrice?.message}
+                        onSubmitEditing={handleNext}
+                        returnKeyType="done"
+                    />
+                )}
             />
-            <Medida values={values} setvalue={setmedida} value={medida} />
-            <Message success={success} error={error} />
+
+            <Controller
+                control={control}
+                name="unitOfMeasure"
+                render={({ field: { onChange, value } }) => (
+                    <Medida values={values} setValue={onChange} value={value} />
+                )}
+            />
+            {errors.unitOfMeasure && (
+                <Text style={{ color: 'red', fontSize: 12, marginTop: 5 }}>
+                    {errors.unitOfMeasure.message}
+                </Text>
+            )}
+
             <Button
                 label="Próximo"
                 onPress={handleNext}
             />
         </Column>
     )
-})
-
-interface CategoriesProps {
-    settab: (tab: string) => void;
-    setselectCategory: React.Dispatch<React.SetStateAction<string | undefined>>;
-    selectCategory: string | undefined;
-    category: any[];
 }
 
-const Categories = React.memo(({ settab, setselectCategory, selectCategory, category }: CategoriesProps) => {
+interface CategoriesProps {
+    errors: any;
+    settab: (tab: string) => void;
+    setValue: any;
+    watch: any;
+    verifyFieldsRef: React.MutableRefObject<(() => Promise<boolean>) | undefined>;
+    trigger: any;
+}
+
+const Categories = ({ errors, settab, setValue, watch, verifyFieldsRef, trigger }: CategoriesProps) => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [error, setError] = useState("");
+    const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
     const theme = colors();
+    const watchedCategoryIds = watch("categoryIds");
+
+    useEffect(() => {
+        setSelectedCategoryIds(watchedCategoryIds || []);
+    }, [watchedCategoryIds]);
 
     const { data: categories, isLoading, refetch } = useFetch({
         key: CategoryService.keys.list,
         fetcher: async () => {
-            const res = await CategoryService.list(); console.log(res); return res;
+            const res = await CategoryService.list();
+            console.log(res);
+            return res;
         }
     });
 
@@ -270,58 +318,100 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
         enabled: searchTerm.length >= 2
     });
 
-    // Executa a busca automaticamente quando o termo muda
-    useEffect(() => {
-        if (searchTerm.length >= 2) {
-            handleSearch();
-        } else if (searchTerm.length === 0) {
-            // Limpa a seleção quando o campo de busca é limpo
-            setselectCategory(undefined);
-        }
-    }, [searchTerm, handleSearch, setselectCategory]);
-    const handleNext = async () => {
-        if (!selectCategory) {
-            setError('Selecione uma categoria');
-            return;
-        }
-        else {
-            settab("Estoque");
-        }
+    const handleNext = () => {
+        settab("Estoque");
     };
 
-    const toggleCategory = (categoryId) => {
-        setselectCategory(categoryId);
+    const verifyFields = async (): Promise<boolean> => {
+        // Valida apenas o campo categoryIds usando React Hook Form
+        const isValid = await trigger(['categoryIds']);
+        return isValid;
+    };
+
+    // Passa a função verifyFields para a referência
+    useEffect(() => {
+        verifyFieldsRef.current = verifyFields;
+    }, [verifyFieldsRef]);
+
+    const toggleCategory = (categoryId: string) => {
+        const currentIds = watchedCategoryIds || [];
+        const newIds = currentIds.includes(categoryId)
+            ? currentIds.filter(id => id !== categoryId)
+            : [...currentIds, categoryId];
+        setValue("categoryIds", newIds);
     };
 
     const Card = ({ item }) => {
-        const { name, status, id, } = item;
-        const theme = colors();
-        const isSelected = selectCategory === id;
+        const { name, status, id, color, icon, description } = item;
+        const isSelected = selectedCategoryIds.includes(id);
+
         return (
-            <Pressable onPress={() => toggleCategory(id)} style={{
-                backgroundColor: "#fff",
-                borderColor: isSelected ? theme.color.green : "#fff",
-                borderWidth: 2,
-                paddingVertical: 12, paddingHorizontal: 12,
-                borderRadius: 6,
-                marginVertical: 6,
-            }}>
-                <Row justify='space-between'>
-                    <Title size={18} fontFamily='Font_Book'>{name}</Title>
-                    <Column style={{ width: 36, height: 36, borderColor: isSelected ? theme.color.green : '#d1d1d1', borderWidth: 2, borderRadius: 8, backgroundColor: isSelected ? theme.color.green : '#fff', justifyContent: 'center', alignItems: 'center', }}>
-                        {isSelected && <Check color='#FFF' size={24} />}
-                    </Column>
+            <Pressable
+                onPress={() => toggleCategory(id)}
+                style={{
+                    borderColor: isSelected ? theme.color.primary : theme.color.border,
+                    borderWidth: 1,
+                    paddingVertical: 12,
+                    paddingHorizontal: 12,
+                    borderRadius: 6,
+                }}
+            >
+                <Row align='center'>
+                    {/* Ícone da categoria */}
+                    {icon && (
+                        <Column
+                            style={{
+                                width: 40,
+                                height: 40,
+                                borderRadius: 20,
+                                backgroundColor: color ? color + "60" : theme.color.primary + '20',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginRight: 12,
+                            }}
+                        >
+                            <Icon
+                                name={icon as any}
+                                size={20}
+                                color={theme.color.tertiary}
+                            />
+                        </Column>
+                    )}
+
+                    {/* Conteúdo do card */}
+                    <Row justify='space-between' align='center' style={{ flexGrow: 1, }}>
+                        <Column>
+                            <Title size={16} fontFamily='Font_Medium'>{name}</Title>
+                            {description && (
+                                <Label size={12}>
+                                    {description.length > 40 ? `${description.substring(0, 40)}...` : description}
+                                </Label>
+                            )}
+                        </Column>
+                        <Column style={{
+                            width: 32,
+                            height: 32,
+                            borderColor: isSelected ? theme.color.primary : theme.color.foreground,
+                            borderWidth: 2,
+                            borderRadius: 100,
+                            backgroundColor: isSelected ? theme.color.primary : theme.color.foreground,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            {isSelected && <Check color='#FFF' size={20} />}
+                        </Column>
+                    </Row>
+
                 </Row>
             </Pressable>
         )
     }
 
-    // Determina quais dados mostrar (busca ou lista completa)
     const displayData = searchTerm.length >= 2 ? searchResults?.categories : categories?.items;
 
     return (
-        <Column gv={26}>
-            <Column mh={26} gv={26}>
+        <Column >
+            <Column mh={26} gv={16}>
                 <Input
                     label="Buscar categorias"
                     value={searchTerm}
@@ -334,6 +424,26 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
                         handleSearch();
                     }}
                 />
+
+                {selectedCategoryIds.length > 0 && (
+                    <Row justify='space-between' align='center'>
+                        <Label fontFamily='Font_Medium'>
+                            {selectedCategoryIds.length} categoria{selectedCategoryIds.length > 1 ? 's' : ''} selecionada{selectedCategoryIds.length > 1 ? 's' : ''}
+                        </Label>
+                        <Pressable
+                            onPress={() => setValue("categoryIds", [])}
+                            style={{
+                                backgroundColor: theme.color.red + '20',
+                                padding: 8,
+                                borderRadius: 6
+                            }}
+                        >
+                            <Label color={theme.color.red} size={12} fontFamily='Font_Medium'>
+                                Limpar
+                            </Label>
+                        </Pressable>
+                    </Row>
+                )}
                 {isSearching ? (
                     <Column style={{ paddingVertical: 20, alignItems: 'center' }}>
                         <Loader size={32} color={theme.color.primary} />
@@ -343,156 +453,122 @@ const Categories = React.memo(({ settab, setselectCategory, selectCategory, cate
                         data={displayData}
                         renderItem={({ item }) => <Card item={item} />}
                         keyExtractor={(item) => item.id}
+                        ListEmptyComponent={<CategoryEmpty />}
                     />
                 )}
-                <Message error={error} />
+                {errors.categoryIds && (
+                    <Text style={{ color: 'red', fontSize: 12, marginTop: 5 }}>
+                        {errors.categoryIds.message}
+                    </Text>
+                )}
                 <Button
                     label="Próximo"
                     onPress={handleNext}
                 />
             </Column>
         </Column>
-    )
-})
-
-interface StockProps {
-    stockValues: {
-        stockMin: string;
-        stockMax: string;
-        alertPercentage: string;
-    };
-    isLoading: boolean;
-    setstockValues: React.Dispatch<React.SetStateAction<{
-        stockMin: string;
-        stockMax: string;
-        alertPercentage: string;
-    }>>;
-    handleCreate: () => void;
-    status: boolean;
-    setstatus: React.Dispatch<React.SetStateAction<boolean>>;
+    );
 }
 
-const Stock = React.memo(({ stockValues, isLoading, setstockValues, handleCreate, status, setstatus }: StockProps) => {
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+interface StockProps {
+    control: any;
+    errors: any;
+    isLoading: boolean;
+    onSubmit: () => void;
+    verifyFieldsRef: React.MutableRefObject<(() => Promise<boolean>) | undefined>;
+    watch: any;
+    trigger: any;
+}
 
-    const refs = useRef({
-        stockMin: null as any,
-        stockMax: null as any,
-        alertPercentage: null as any,
-    });
+const Stock = ({ control, errors, isLoading, onSubmit, verifyFieldsRef, watch, trigger }: StockProps) => {
+    const stockMinRef = useRef(null);
+    const stockMaxRef = useRef(null);
+    const alertPercentageRef = useRef(null);
 
-    const fieldProperties = {
-        stockMin: {
-            label: "Estoque minímo",
-            placeholder: "Ex.: 200",
-            keyboardType: "numeric",
-        },
-        stockMax: {
-            label: "Estoque máximo",
-            placeholder: "Ex.: 500",
-            keyboardType: "numeric",
-        },
-        alertPercentage: {
-            label: "Percentual de Alerta (%)",
-            placeholder: "Ex.: 10",
-            keyboardType: "numeric",
-        },
+    const verifyFields = async (): Promise<boolean> => {
+        // Valida apenas os campos da tab Estoque usando React Hook Form
+        const fieldsToValidate = ['stockMin', 'stockMax', 'alertPercentage'];
+        const isValid = await trigger(fieldsToValidate);
+        return isValid;
     };
 
-    // Validações dinâmicas
-    const validations = {
-        stockMin: (value) => {
-            if (!value) return "Por favor, insira o estoque mínimo.";
-            if (parseInt(value) < 0) return "O estoque mínimo não pode ser menor que 0.";
-            if (parseInt(value) > parseInt(stockValues.stockMax)) return "O estoque mínimo não pode ser maior que o estoque máximo.";
-            return true;
-        },
-        stockMax: (value) => {
-            if (!value) return "Por favor, insira o estoque máximo.";
-            if (parseInt(value) < 0) return "O estoque máximo não pode ser menor que 0.";
-            if (parseInt(value) < parseInt(stockValues.stockMin)) return "O estoque máximo não pode ser menor que o estoque mínimo.";
-            return true;
-        },
-        alertPercentage: (value) => {
-            if (!value) return "Por favor, insira o percentual de alerta.";
-            if (isNaN(parseInt(value))) return "Por favor, insira um percentual válido.";
-            if (parseInt(value) < 0 || parseInt(value) > 100) return "O percentual deve estar entre 0 e 100.";
-            return true;
-        },
-    };
-
-    // Função para validar todos os campos
-    const validateForm = () => {
-        for (const field of Object.keys(validations)) {
-            const error = validations[field](stockValues[field]);
-            if (error !== true) {
-                setError(error); // Define o erro do primeiro campo inválido
-                return false;
-            }
-        }
-        setError(""); // Nenhum erro
-        return true;
-    };
-    // Atualiza o estado dinamicamente
-    const handleChange = (field, value) => {
-        setstockValues((prev) => ({ ...prev, [field]: value }));
-        setError(""); // Limpa os erros ao alterar o valor
-    };
-
-    // Função para lidar com o cadastro
-    const handleNext = async () => {
-        setSuccess("");
-        setError(""); // Limpa os erros ao tentar submeter
-        if (!validateForm()) return;
-        else {
-            handleCreate();
-        }
-    };
-
+    // Passa a função verifyFields para a referência
+    useEffect(() => {
+        verifyFieldsRef.current = verifyFields;
+    }, [verifyFieldsRef]);
 
     return (
         <Column mh={26} gv={26}>
-            <Input
-                label="Estoque minímo"
-                value={stockValues.stockMin}
-                setValue={(value) => handleChange('stockMin', value)}
-                placeholder="Ex.: 200"
-                keyboardType="numeric"
-                ref={(el) => { refs.current.stockMin = el; }}
-                onSubmitEditing={() => {
-                    refs.current.stockMax?.focus();
-                }}
+            <Controller
+                control={control}
+                name="stockMin"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={stockMinRef}
+                        label="Estoque mínimo"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: 200"
+                        keyboardType="numeric"
+                        errorMessage={errors.stockMin?.message}
+                        onSubmitEditing={() => stockMaxRef.current?.focus()}
+                        returnKeyType="next"
+                    />
+                )}
             />
-            <Input
-                label="Estoque máximo"
-                value={stockValues.stockMax}
-                setValue={(value) => handleChange('stockMax', value)}
-                placeholder="Ex.: 500"
-                keyboardType="numeric"
-                ref={(el) => { refs.current.stockMax = el; }}
-                onSubmitEditing={() => {
-                    refs.current.alertPercentage?.focus();
-                }}
+
+            <Controller
+                control={control}
+                name="stockMax"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={stockMaxRef}
+                        label="Estoque máximo"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: 500"
+                        keyboardType="numeric"
+                        errorMessage={errors.stockMax?.message}
+                        onSubmitEditing={() => alertPercentageRef.current?.focus()}
+                        returnKeyType="next"
+                    />
+                )}
             />
-            <Input
-                label="Percentual de Alerta (%)"
-                value={stockValues.alertPercentage}
-                setValue={(value) => handleChange('alertPercentage', value)}
-                placeholder="Ex.: 10"
-                keyboardType="numeric"
-                ref={(el) => { refs.current.alertPercentage = el; }}
-                onSubmitEditing={() => {
-                    handleNext();
-                }}
+
+            <Controller
+                control={control}
+                name="alertPercentage"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={alertPercentageRef}
+                        label="Percentual de Alerta (%)"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: 10"
+                        keyboardType="numeric"
+                        errorMessage={errors.alertPercentage?.message}
+                        onSubmitEditing={onSubmit}
+                        returnKeyType="done"
+                    />
+                )}
             />
-            <Status setvalue={setstatus} value={status} />
-            <Message success={success} error={error} />
+
+            <Controller
+                control={control}
+                name="status"
+                render={({ field: { onChange, value } }) => (
+                    <Status setValue={onChange} value={value} />
+                )}
+            />
+
             <Button
-                label="Próximo"
-                onPress={handleNext}
+                label="Criar produto"
+                onPress={onSubmit}
                 loading={isLoading}
             />
         </Column>
     )
-})
+}

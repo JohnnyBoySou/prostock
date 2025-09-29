@@ -458,4 +458,13 @@ export const SupplierService = {
     count: number;
   }>> => 
     fetchAuth(`${URI}/cities`, { method: "GET", params: { state } }),
+
+  keys: {
+    list: ["suppliers"],
+    get: ["supplier"],
+    create: ["suppliers"],
+    update: ["supplier"],
+    delete: ["supplier"],
+    search: ["suppliers", "search"],
+  }
 };

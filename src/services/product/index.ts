@@ -54,8 +54,8 @@ export interface ProductCreateRequest {
     unitOfMeasure: 'UNIDADE' | 'KG' | 'L' | 'ML' | 'M' | 'CM' | 'MM' | 'UN' | 'DZ' | 'CX' | 'PCT' | 'KIT' | 'PAR' | 'H' | 'D';
     referencePrice: number;
     categoryId?: string;
+    categoryIds?: string[];
     supplierId?: string;
-    storeId: string;
     stockMin: number;
     stockMax: number;
     alertPercentage: number;
@@ -291,4 +291,32 @@ export const ProductService = {
         format?: 'csv' | 'xlsx';
     }): Promise<{ downloadUrl: string }> => 
         fetchAuth(`${URI}/export`, { method: "POST", data: filters }),
+
+    keys: {
+        list: ["products"],
+        get: ["product"],
+        create: ["products"],
+        update: ["product"],
+        delete: ["product"],
+        search: ["products", "search"],
+        stats: ["products", "stats"],
+        active: ["products", "active"],
+        byCategory: ["products", "byCategory"],
+        bySupplier: ["products", "bySupplier"],
+        byStore: ["products", "byStore"],
+        stock: ["products", "stock"],
+        lowStock: ["products", "lowStock"],
+        movements: ["products", "movements"],
+        analytics: ["products", "analytics"],
+        recent: ["products", "recent"],
+        topSelling: ["products", "topSelling"],
+        slowMoving: ["products", "slowMoving"],
+        zeroStock: ["products", "zeroStock"],
+        expiringSoon: ["products", "expiringSoon"],
+        byPriceRange: ["products", "byPriceRange"],
+        byStockStatus: ["products", "byStockStatus"],
+        bulkUpdate: ["products", "bulkUpdate"],
+        bulkDelete: ["products", "bulkDelete"],
+        export: ["products", "export"],
+    }
 };

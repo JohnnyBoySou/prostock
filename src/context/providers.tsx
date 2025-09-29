@@ -17,7 +17,14 @@ export default function AppProviders({ children }) {
             <GestureHandlerRootView style={{ flex: 1 }}>
                 <QueryClientProvider client={queryClient}>
                     <UserProvider>
-                        <CopilotProvider>
+                        <CopilotProvider 
+                         labels={{
+                            previous: "Anterior",
+                            next: "Próximo",
+                            skip: "Pular",
+                            finish: "Finalizar"
+                          }}
+                        >
                             {children}
                             <ToastManager
                                 position="bottom"

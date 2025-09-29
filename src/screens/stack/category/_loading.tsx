@@ -1,11 +1,18 @@
 import React from 'react';
-import { Column, Loader, colors } from '@/ui';
+import { Column, Skeleton, Main } from '@/ui';
 
 export default function CategoryLoading() {
-    const theme = colors();
     return (
-        <Column style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Loader size={32} color={theme.color.primary} />
-        </Column>
+        <Main >
+            <Column ph={26} pv={12} gv={16}>
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+            </Column>
+        </Main>
     );
 }

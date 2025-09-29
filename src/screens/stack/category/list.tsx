@@ -1,5 +1,5 @@
 import { Main, Row, colors, Title, Column, Label, Button, useFetch, Pressable, Icon, Input, useToast } from "@/ui";
-import { RefreshControl, FlatList, } from "react-native";
+import { RefreshControl, FlatList } from "react-native";
 
 import { type Category, CategoryService } from "@/services/category";
 
@@ -59,9 +59,8 @@ export default function CategoryListScreen({ navigation }) {
 
     if (isLoading) return <CategoryLoading />
     if (error) return <CategoryError />
-    if (!categories) return <CategoryEmpty />
 
-
+    const isEmpty = showSearchResults ? searchResults.length === 0 : categories.items?.length === 0;
     const currentData = showSearchResults ? searchResults : categories.items;
 
     return (
@@ -72,16 +71,18 @@ export default function CategoryListScreen({ navigation }) {
                 renderItem={({ item }) => <Card category={item} navigation={navigation} />}
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={isLoading || isSearching} onRefresh={() => { refetch() }} />}
-                style={{ paddingVertical: 12, paddingHorizontal: 16, }}
+                style={{ paddingHorizontal: 26, }}
                 contentContainerStyle={{ gap: 16 }}
                 ListHeaderComponent={
-                    <Column>
+                    <Column style={{ marginTop: -24, }}>
                         <Input
                             placeholder="Pesquisar categoria"
                             setValue={setSearch}
                             value={search}
                             search
                             onSearch={handleSearch}
+                            onSubmitEditing={handleSearch}
+                            disabled={isLoading || isSearching || isEmpty}
                         />
                         {showSearchResults && (
                             <Row justify='space-between' align='center' mt={12}>
@@ -100,7 +101,7 @@ export default function CategoryListScreen({ navigation }) {
                 ListEmptyComponent={
                     showSearchResults ? (
                         <Column align='center' gv={16} mv={40}>
-                            <Label color={theme.color.muted} fontFamily='Font_Medium'>
+                            <Label fontFamily='Font_Medium'>
                                 Nenhuma categoria encontrada para "{search}"
                             </Label>
                             <Button
@@ -114,38 +115,100 @@ export default function CategoryListScreen({ navigation }) {
                     )
                 }
             />
-            <Column style={{ position: 'absolute', bottom: 40, flexGrow: 1, left: 26, right: 26, }}>
-                <Button label='Criar categoria' route="CategoryAdd" />
-            </Column>
+            {showSearchResults && searchResults.length === 0 && (
+                <Column style={{ position: 'absolute', bottom: 40, flexGrow: 1, left: 26, right: 26, }}>
+                    <Button label='Criar categoria' route="CategoryAdd" />
+                </Column>
+            )}
         </Main>)
 }
 
 const Card = ({ category, navigation }: { category: Category, navigation: any }) => {
-    const { name, status, id, description, code, color, _count } = category;
+    const { name, status, id, description, code, color, icon, _count } = category;
     const theme = colors();
     return (
         <Pressable style={{
-            backgroundColor: theme.color.card,
+            borderColor: theme.color.border,
+            borderWidth: 1,
             paddingVertical: 16,
-            paddingHorizontal: 20,
-            borderRadius: 12,
+            borderRadius: 8,
+            paddingHorizontal: 16,
         }}
             onPress={() => { navigation.navigate('CategorySingle', { id: id }) }}
         >
-            <Column gv={8}>
-                <Row justify='space-between' align='center'>
-                    <Title size={18} fontFamily='Font_Medium'>
-                        {name}
-                    </Title>
-                    <Icon name="ChevronRight" color={theme.color.primary} size={20} />
-                </Row>
-
-                {description && (
-                    <Label size={12}>
-                        {description.length > 50 ? `${description.substring(0, 50)}...` : description}
-                    </Label>
+            <Row align='center' gv={12}>
+                {/* Ícone da categoria */}
+                {icon && (
+                    <Column
+                        style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                            backgroundColor: color ? color + "60" : theme.color.primary + '20',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginRight: 12,
+                        }}
+                    >
+                        <Icon
+                            name={icon as any}
+                            size={20}
+                            color={theme.color.tertiary}
+                        />
+                    </Column>
                 )}
-            </Column>
+
+                {/* Conteúdo do card */}
+                <Column gv={8} style={{ flex: 1 }}>
+                    <Row justify='space-between' align='center'>
+                        <Title size={18} fontFamily='Font_Medium'>
+                            {name}
+                        </Title>
+                        <Icon name="ChevronRight" color={theme.color.primary} size={20} />
+                    </Row>
+
+                    {description && (
+                        <Label size={12}>
+                            {description.length > 50 ? `${description.substring(0, 50)}...` : description}
+                        </Label>
+                    )}
+
+
+                    <Row justify='space-between' align='center'>
+                        {/* Status 
+                        <Row align='center' gh={8}>
+                            <Column
+                                style={{
+                                    width: 12,
+                                    height: 12,
+                                    borderRadius: 6,
+                                    backgroundColor: status ? theme.color.green : theme.color.red,
+                                }}
+                            />
+                            <Label
+                                size={11}
+                                color={status ? theme.color.green : theme.color.red}
+                                fontFamily='Font_Medium'
+                            >
+                                {status ? "Ativo" : "Inativo"}
+                            </Label>
+                        </Row>
+                        */}
+                        {code && (
+                            <Row align='center' gh={4}>
+                                <Label size={11} fontFamily='Font_Medium'>
+                                    Código: #{code}
+                                </Label>
+                            </Row>
+                        )}
+                        {_count && (
+                            <Label size={11}>
+                                {_count.products || 0} produto{_count.products > 1 ? 's' : ''}
+                            </Label>
+                        )}
+                    </Row>
+                </Column>
+            </Row>
         </Pressable>
     )
 }

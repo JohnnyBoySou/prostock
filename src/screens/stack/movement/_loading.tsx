@@ -1,7 +1,7 @@
 import React from 'react';
 import { Column, Skeleton, Main } from '@/ui';
 
-export default function ProductLoading() {
+export default function MoveLoading() {
     return (
         <Main >
             <Column ph={26} pv={12} gv={16}>

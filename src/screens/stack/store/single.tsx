@@ -1,50 +1,50 @@
 import { Main, Row, colors, Title, Column, Label, Button, useFetch, Pressable, Icon, ScrollVertical, } from "@/ui";
-import { type Category, CategoryService } from "@/services/category";
+import { type Store, StoreService } from "@/services/store";
 
-import CategoryLoading from "./_loading";
-import CategoryError from "./_error";
-import CategoryEmpty from "./_empty";
+import StoreLoadingScreen from "./_loading";
+import StoreError from "./_error";
+import StoreEmpty from "./_empty";
 import { Alert } from "react-native";
 import { toast } from "../../../hooks/useToast";
 
-export default function CategorySingleScreen({ navigation, route }) {
+export default function StoreSingleScreen({ navigation, route }) {
     const id = route.params.id;
-    const { data: categories, isLoading, error } = useFetch({
-        key: CategoryService.keys.single + id,
+    const { data: store, isLoading, error } = useFetch({
+        key: ['store', id],
         fetcher: async () => {
-            return await CategoryService.single(id);
+            return await StoreService.single(id);
         }
     });
 
-    if (isLoading) return <CategoryLoading />
-    if (error) return <CategoryError />
-    if (!categories) return <CategoryEmpty />
+    if (isLoading) return <StoreLoadingScreen />
+    if (error) return <StoreError />
+    if (!store) return <StoreEmpty />
 
     return (
         <Main>
             <ScrollVertical>
-                <About category={categories} navigation={navigation} />
+                <About store={store} navigation={navigation} />
             </ScrollVertical>
         </Main>)
 }
 
-const About = ({ category, navigation }: { category: Category, navigation: any }) => {
+const About = ({ store, navigation }: { store: Store, navigation: any }) => {
     const {
         name,
+        cnpj,
+        email,
+        phone,
         status,
         id,
-        description,
-        code,
-        color,
-        icon,
-        parentId,
+        cep,
+        city,
+        state,
+        address,
         createdAt,
         updatedAt,
-        parent,
-        children,
-        products,
+        owner,
         _count
-    } = category;
+    } = store;
     const theme = colors();
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('pt-BR', {
@@ -56,13 +56,25 @@ const About = ({ category, navigation }: { category: Category, navigation: any }
         });
     };
 
+    const formatCNPJ = (cnpj: string) => {
+        return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+    };
+
+    const formatPhone = (phone: string) => {
+        return phone.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+    };
+
+    const formatCEP = (cep: string) => {
+        return cep.replace(/^(\d{5})(\d{3})$/, "$1-$2");
+    };
 
     const handleDelete = () => {
-        Alert.alert('Excluir categoria', 'Tem certeza que deseja excluir esta categoria?', [
+        Alert.alert('Excluir loja', 'Tem certeza que deseja excluir esta loja?', [
             { text: 'Cancelar', style: 'cancel' },
-            { text: 'Excluir', onPress: () => { CategoryService.delete(id); toast.showSuccess('Categoria excluída com sucesso!'); navigation.navigate('CategoryList') }, style: 'destructive' }
+            { text: 'Excluir', onPress: () => { StoreService.delete(id); toast.showSuccess('Loja excluída com sucesso!'); navigation.navigate('StoreList') }, style: 'destructive' }
         ]);
     }
+
     return (
         <Column mh={20} gv={20}>
             {/* Header com nome e status */}
@@ -75,7 +87,7 @@ const About = ({ category, navigation }: { category: Category, navigation: any }
                     borderColor: theme.color.border,
                     borderWidth: 1,
                 }}
-                onPress={() => { navigation.navigate('CategoryEdit', { id: id }) }}
+                onPress={() => { navigation.navigate('StoreEdit', { id: id }) }}
             >
                 <Row justify='space-between' align='center'>
                     <Column gv={8} style={{ flex: 1 }}>
@@ -88,11 +100,7 @@ const About = ({ category, navigation }: { category: Category, navigation: any }
                             >
                                 {status ? "Ativo" : "Inativo"}
                             </Label>
-                            {code && (
-                                <>
-                                    <Label  > • #{code}</Label>
-                                </>
-                            )}
+                            <Label> • CNPJ: {formatCNPJ(cnpj)}</Label>
                         </Row>
                     </Column>
                     <Icon name='PenLine' color={theme.color.primary} size={24} />
@@ -104,44 +112,48 @@ const About = ({ category, navigation }: { category: Category, navigation: any }
                 <Title size={18} fontFamily='Font_Medium'>Informações</Title>
 
                 <Column gv={12}>
-                    {description && (
-                        <InfoRow label="Descrição" value={description} />
-                    )}
-
-                    {code && (
-                        <InfoRow label="Código" value={code} />
-                    )}
-
-                    {color && (
-                        <InfoRow
-                            label="Cor"
-                            value={
-                                <Row align='center' gv={8}>
-                                    <Column
-                                        style={{
-                                            width: 20,
-                                            height: 20,
-                                            borderRadius: 10,
-                                            backgroundColor: color,
-                                            borderWidth: 1,
-                                            borderColor: theme.color.muted
-                                        }}
-                                    />
-                                </Row>
-                            }
-                        />
-                    )}
-
-                    {icon && (
-                        <InfoRow label="Ícone" value={<Row><Icon name={icon as any} size={24} color={theme.color.label} /></Row>} />
-                    )}
-
-                    {parent && (
-                        <InfoRow label="Categoria Pai" value={parent.name} />
-                    )}
+                    <InfoRow label="Nome" value={name} />
+                    <InfoRow label="CNPJ" value={formatCNPJ(cnpj)} />
+                    <InfoRow label="Email" value={email} />
+                    <InfoRow label="Telefone" value={formatPhone(phone)} />
                 </Column>
             </Column>
 
+            {/* Endereço */}
+            <Column gv={16}>
+                <Title size={18} fontFamily='Font_Medium'>Endereço</Title>
+
+                <Column gv={12}>
+                    <InfoRow label="CEP" value={formatCEP(cep)} />
+                    <InfoRow label="Cidade" value={city} />
+                    <InfoRow label="Estado" value={state} />
+                    <InfoRow label="Endereço" value={address} />
+                </Column>
+            </Column>
+
+            {/* Proprietário */}
+            {owner && (
+                <Column gv={16}>
+                    <Title size={18} fontFamily='Font_Medium'>Proprietário</Title>
+
+                    <Column gv={12}>
+                        <InfoRow label="Nome" value={owner.name} />
+                        <InfoRow label="Email" value={owner.email} />
+                    </Column>
+                </Column>
+            )}
+
+            {/* Estatísticas */}
+            {_count && (
+                <Column gv={16}>
+                    <Title size={18} fontFamily='Font_Medium'>Estatísticas</Title>
+
+                    <Column gv={12}>
+                        <InfoRow label="Total de Produtos" value={_count.products || 0} />
+                        <InfoRow label="Total de Usuários" value={_count.users || 0} />
+                    </Column>
+                </Column>
+            )}
 
             {/* Datas */}
             <Column gv={16}>
@@ -157,7 +169,7 @@ const About = ({ category, navigation }: { category: Category, navigation: any }
             <Row gh={12} mv={20}>
                 <Button
                     label="Editar"
-                    onPress={() => navigation.navigate('CategoryEdit', { id: id })}
+                    onPress={() => navigation.navigate('StoreEdit', { id: id })}
                     style={{ flex: 1 }}
                 />
                 <Button
@@ -184,5 +196,3 @@ const InfoRow = ({ label, value }: { label: string, value: any }) => {
         </Row>
     )
 }
-
-

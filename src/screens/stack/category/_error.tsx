@@ -1,62 +1,20 @@
 import React from 'react';
-import { Column, Title, Label, Button, colors } from '@/ui';
-import { AlertTriangle, RefreshCw } from 'lucide-react-native';
-import { Pressable } from 'react-native';
+import { Column, Title, Label, Image } from '@/ui';
 
 interface CategoryErrorProps {
-    onRetry?: () => void;
     message?: string;
 }
 
-export default function CategoryError({ onRetry, message = "Ops! Algo deu errado" }: CategoryErrorProps) {
-    const theme = colors();
+export default function CategoryError({ message = "Ops! Algo deu errado" }: CategoryErrorProps) {
     return (
-        <Column style={{ 
-            backgroundColor: '#fff', 
-            borderRadius: 12, 
-            margin: 20,
-            padding: 20 
-        }} justify='center' align='center' gv={16}>
-            <Column style={{ 
-                backgroundColor: '#ffebee', 
-                borderRadius: 50, 
-                padding: 16 
-            }} align='center' justify='center'>
-                <AlertTriangle size={48} color={theme.color.red || '#f44336'} />
-            </Column>
-            
-            <Title align='center' size={20} fontFamily="Font_Medium">
-                {message}
+        <Column justify='center' align='center' gv={16} pv={40}>
+            <Image src={require("@/imgs/error_img.png")} w={156} h={156} />
+            <Title align='center' size={32} spacing={-2} style={{ lineHeight: 32 }} fontFamily="Font_Medium">
+                Ops! Algo deu errado
             </Title>
-            
-            <Label align='center' size={14} color='#666'>
-                Verifique sua conexão e tente novamente
+            <Label align='center' size={14}>
+                {message}
             </Label>
-            
-            {onRetry && (
-                <Pressable 
-                    style={{ 
-                        backgroundColor: theme.color.primary, 
-                        borderRadius: 8,
-                        marginTop: 8
-                    }} 
-                    onPress={onRetry}
-                >
-                    <Column 
-                        style={{ 
-                            flexDirection: 'row', 
-                            alignItems: 'center', 
-                            justifyContent: 'center',
-                            paddingHorizontal: 16,
-                            paddingVertical: 12
-                        }} 
-                        gh={8}
-                    >
-                        <RefreshCw size={20} color='#fff' />
-                        <Label size={16} color='#fff'>Tentar novamente</Label>
-                    </Column>
-                </Pressable>
-            )}
         </Column>
     );
 }

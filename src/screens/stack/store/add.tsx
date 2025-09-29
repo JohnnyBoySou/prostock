@@ -1,179 +1,378 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Status, fields, validations, Form, colors, } from "@/ui";
-import { KeyboardAvoidingView } from "react-native";
-import { StoreService } from "@/services/store";
+import React, { useRef, useEffect, useState } from "react";
+import { Main, Button, Column, Input, ScrollVertical, Status, useMutation, useToast, colors, Tabs } from "@/ui";
+import { KeyboardAvoidingView, TextInput } from "react-native";
+import { StoreService, StoreCreateRequest } from "@/services/store";
+import { useQueryClient } from "@tanstack/react-query";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useUser } from "@/context/user";
+
+const storeSchema = z.object({
+    name: z
+        .string()
+        .min(1, "O nome da loja é obrigatório")
+        .min(2, "O nome deve ter pelo menos 2 caracteres")
+        .max(100, "O nome deve ter no máximo 100 caracteres"),
+
+    cnpj: z
+        .string()
+        .min(1, "O CNPJ é obrigatório")
+        .min(14, "CNPJ deve ter 14 dígitos")
+        .max(18, "CNPJ inválido"),
+
+    email: z
+        .string()
+        .min(1, "O email é obrigatório")
+        .email("Email inválido"),
+
+    phone: z
+        .string()
+        .min(1, "O telefone é obrigatório")
+        .min(10, "Telefone deve ter pelo menos 10 dígitos"),
+
+    cep: z
+        .string()
+        .min(1, "O CEP é obrigatório")
+        .min(8, "CEP deve ter 8 dígitos"),
+
+    city: z
+        .string()
+        .min(1, "A cidade é obrigatória")
+        .min(2, "Nome da cidade deve ter pelo menos 2 caracteres"),
+
+    state: z
+        .string()
+        .min(1, "O estado é obrigatório")
+        .min(2, "Nome do estado deve ter pelo menos 2 caracteres"),
+
+    street: z
+        .string()
+        .min(1, "O endereço é obrigatório")
+        .min(5, "Endereço deve ter pelo menos 5 caracteres"),
+
+    status: z.boolean()
+});
+
+type StoreFormData = z.infer<typeof storeSchema>;
+
+interface AboutTabProps {
+    control: any;
+    errors: any;
+    onNext: () => void;
+}
+
+interface AddressTabProps {
+    control: any;
+    errors: any;
+    loading: boolean;
+    onSubmit: () => void;
+}
 
 export default function StoreAddScreen({ navigation }) {
-    const [tab, settab] = useState("Sobre");
-    const types = ["Sobre", "Endereço",];
+    const toast = useToast();
+    const queryClient = useQueryClient();
+    const { user } = useUser();
+    const [activeTab, setActiveTab] = useState("Sobre");
 
-    const [status, setstatus] = useState(true);
-
-    const [aboutValues, setaboutValues] = useState();
-    const [addressValues, setaddressValues] = useState({
+    const {
+        control,
+        handleSubmit,
+        watch,
+        setValue,
+        formState: { errors }
+    } = useForm<StoreFormData>({
+        resolver: zodResolver(storeSchema),
+        defaultValues: {
+            name: "",
+            cnpj: "",
+            email: "",
+            phone: "",
         cep: "",
         city: "",
         state: "",
         street: "",
+            status: true,
+        },
+        mode: "onChange"
     });
 
-    const [isLoading, setIsLoading] = useState();
+    const watchedCep = watch("cep");
 
-    const [success, setsuccess] = useState();
-    const [error, seterror] = useState();
-    const handleCreate = async () => {
-        seterror('')
-        setsuccess('')
-        setIsLoading(true);
-        try {
-            const params = {
-                nome: aboutValues.name,
-                cnpj: aboutValues.cnpj,
-                email: aboutValues.email,
-                telefone: aboutValues.phone,
-                status: status,
-                cep: addressValues.cep,
-                cidade: addressValues.city,
-                estado: addressValues.state,
-                endereco: addressValues.street,
-            }
-            const res = await StoreService.create(params)
-            setsuccess(res.message);
+    const createStoreMutation = useMutation({
+        mutationFn: async (params: StoreFormData) => {
+            const apiParams: StoreCreateRequest = {
+                name: params.name,
+                cnpj: params.cnpj,
+                email: params.email,
+                phone: params.phone,
+                status: params.status,
+                cep: params.cep,
+                city: params.city,
+                state: params.state,
+                address: params.street,
+            };
+            return await StoreService.create(apiParams);
+        },
+        onSuccess: () => {
+            toast.showSuccess('Loja criada com sucesso!');
+            queryClient.invalidateQueries({ queryKey: ['stores'] });
             setTimeout(() => {
                 navigation.replace('StoreList');
             }, 1000);
-        } catch (error) {
-            seterror(error.message);
-        } finally {
-            setIsLoading(false);
+        },
+        onError: (error) => {
+            toast.showError(error.message || 'Erro ao criar loja');
         }
-    }
+    });
 
-    return (<Main>
-        <KeyboardAvoidingView behavior="padding">
-            <Column>
-                <Tabs types={types} value={tab} setValue={settab} />
-            </Column>
-            <ScrollVertical>
-                {tab === "Sobre" && <About settab={settab} aboutValues={aboutValues} setaboutValues={setaboutValues} />}
-                {tab === "Endereço" && <Address isLoading={isLoading} setstatus={setstatus} status={status} addressValues={addressValues} setaddressValues={setaddressValues} handleCreate={handleCreate} />}
-                <Column mh={26} mv={26}>
-                    <Message error={error} success={success} />
-                </Column>
-            </ScrollVertical>
-        </KeyboardAvoidingView>
-    </Main>)
-}
+    const onSubmit = (data: StoreFormData) => {
+        createStoreMutation.mutate(data);
+    };
 
-const About = React.memo(({ settab, aboutValues, setaboutValues, }) => {
-    const fieldKeys = [
-        'cnpj',
-        'name',
-        'email',
-        'phone'
-    ];
-    return (
-        <Form fieldKeys={fieldKeys} initialValue={aboutValues} onSubmit={(value) => {
-            setaboutValues(value);
-            settab('Endereço');
-        }} />
-    )
-})
-
-
-const Address = React.memo(({ setaddressValues, addressValues, isLoading, status, setstatus, handleCreate }) => {
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
-
-    const values = addressValues;
-    const setvalue = setaddressValues;
-
-    const refs = useRef(Object.keys(values).reduce((acc, key) => {
-        acc[key] = null;
-        return acc;
-    }, {}));
-
-    const getFieldProperties = (fieldName) => fields[fieldName] || {};
-
-
-    const getLocal = async () => {
-        try {
-            const res = await StoreService.getCep(values.cep);
-            setvalue((prev) => ({ ...prev, city: res.localidade, state: res.estado, street: res.logradouro }));
-        } catch (error) {
-
-        }
-    }
-
+    // Busca CEP automaticamente
     useEffect(() => {
-        if (values.cep.length === 9) {
-            getLocal();
-        }
-    }, [values.cep]);
-
-
-    const validateForm = () => {
-        for (const field of Object.keys(values)) {
-            const validation = validations[field];
-            if (validation) {
-                const error = validation(values[field]);
-                if (error !== true) {
-                    setError(error);
-                    refs.current[field]?.current?.focus();
-                    return false;
+        const fetchCepData = async () => {
+            if (watchedCep && watchedCep.length === 9) {
+                try {
+                    const res = await StoreService.getCep(watchedCep);
+                    setValue("city", res.localidade);
+                    setValue("state", res.estado);
+                    setValue("street", res.logradouro);
+                } catch (error) {
+                    // Silently handle CEP fetch errors
                 }
             }
-        }
-        setError("");
-        return true;
-    };
-    const handleChange = (field, value) => {
-        setvalue((prev) => ({ ...prev, [field]: value }));
-        setError("");
-    };
+        };
 
-    const handleNext = async () => {
-        setSuccess("");
-        setError("");
-        if (!validateForm()) return;
-        else {
-            handleCreate()
-        }
-    };
+        fetchCepData();
+    }, [watchedCep, setValue]);
+
+    return (
+        <Main>
+            <KeyboardAvoidingView behavior="padding">
+                <Column>
+                    <Tabs types={["Sobre", "Endereço"]} value={activeTab} setValue={setActiveTab} />
+                </Column>
+                <ScrollVertical>
+                    {activeTab === "Sobre" && (
+                        <AboutTab 
+                            control={control}
+                            errors={errors}
+                            onNext={() => setActiveTab("Endereço")}
+                        />
+                    )}
+                    {activeTab === "Endereço" && (
+                        <AddressTab
+                            control={control}
+                            errors={errors}
+                            loading={createStoreMutation.isLoading}
+                            onSubmit={handleSubmit(onSubmit)}
+                        />
+                    )}
+                </ScrollVertical>
+            </KeyboardAvoidingView>
+        </Main>
+    )
+}
+
+const AboutTab = React.memo(({ control, errors, onNext }: AboutTabProps) => {
+    const nameRef = useRef<TextInput>(null);
+    const cnpjRef = useRef<TextInput>(null);
+    const emailRef = useRef<TextInput>(null);
+    const phoneRef = useRef<TextInput>(null);
+
     return (
         <Column mh={26} gv={26}>
-            {Object.keys(values).map((key, index, fields) => {
-                const fieldProps = getFieldProperties(key);
-                return (
+            <Controller
+                control={control}
+                name="name"
+                render={({ field: { onChange, value } }) => (
                     <Input
-                        key={key}
-                        label={fieldProps.label}
-                        placeholder={fieldProps.placeholder}
-                        keyboard={fieldProps.keyboardType}
-                        value={values[key]}
-                        setValue={(value) => handleChange(key, value)}
-                        mask={fieldProps.mask}
-                        pass={fieldProps.pass}
-                        lock={fieldProps.lock}
-                        ref={(el) => (refs.current[key] = el)} // Atribui dinamicamente a ref
-                        onSubmitEditing={() => {
-                            const nextField = fields[index + 1]; // Campo seguinte
-                            if (nextField) {
-                                refs.current[nextField]?.focus(); // Foca no próximo campo
-                            } else {
-                                handleNext(); // Envia o formulário
-                            }
-                        }}
-                        returnKeyType={index === fields.length - 1 ? "done" : "next"} // Define o botão do teclado
+                        ref={nameRef}
+                        label="Nome da loja"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: Loja Central"
+                        keyboardType="default"
+                        errorMessage={errors.name?.message}
+                        returnKeyType="next"
+                        onSubmitEditing={() => cnpjRef.current?.focus()}
                     />
-                );
-            })}
-            <Status setvalue={setstatus} value={status} />
-            <Message success={success} error={error} />
+                )}
+            />
+
+            <Controller
+                control={control}
+                name="cnpj"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={cnpjRef}
+                        label="CNPJ"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="00.000.000/0000-00"
+                        keyboardType="numeric"
+                        mask="CNPJ"
+                        errorMessage={errors.cnpj?.message}
+                        returnKeyType="next"
+                        onSubmitEditing={() => emailRef.current?.focus()}
+                    />
+                )}
+            />
+
+            <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={emailRef}
+                        label="Email"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: contato@loja.com"
+                        keyboardType="email-address"
+                        errorMessage={errors.email?.message}
+                        returnKeyType="next"
+                        onSubmitEditing={() => phoneRef.current?.focus()}
+                    />
+                )}
+            />
+
+            <Controller
+                control={control}
+                name="phone"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={phoneRef}
+                        label="Telefone"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="(00) 00000-0000"
+                        keyboardType="phone-pad"
+                        mask="PHONE"
+                        errorMessage={errors.phone?.message}
+                        returnKeyType="done"
+                        onSubmitEditing={() => {
+                            phoneRef.current?.blur();
+                            onNext();
+                        }}
+                    />
+                )}
+            />
+
+            <Button
+                label="Próximo"
+                onPress={onNext}
+            />
+        </Column>
+    )
+});
+
+const AddressTab = React.memo(({ control, errors, loading, onSubmit }: AddressTabProps) => {
+    const cepRef = useRef<TextInput>(null);
+    const cityRef = useRef<TextInput>(null);
+    const stateRef = useRef<TextInput>(null);
+    const streetRef = useRef<TextInput>(null);
+
+    return (
+        <Column mh={26} gv={26}>
+            <Controller
+                control={control}
+                name="cep"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={cepRef}
+                        label="CEP"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="00000-000"
+                        keyboardType="numeric"
+                        mask="CEP"
+                        errorMessage={errors.cep?.message}
+                        returnKeyType="next"
+                        onSubmitEditing={() => cityRef.current?.focus()}
+                    />
+                )}
+            />
+
+            <Controller
+                control={control}
+                name="city"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={cityRef}
+                        label="Cidade"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: São Paulo"
+                        keyboardType="default"
+                        errorMessage={errors.city?.message}
+                        returnKeyType="next"
+                        onSubmitEditing={() => stateRef.current?.focus()}
+                    />
+                )}
+            />
+
+            <Controller
+                control={control}
+                name="state"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={stateRef}
+                        label="Estado"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: SP"
+                        keyboardType="default"
+                        errorMessage={errors.state?.message}
+                        returnKeyType="next"
+                        onSubmitEditing={() => streetRef.current?.focus()}
+                    />
+                )}
+            />
+
+            <Controller
+                control={control}
+                name="street"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={streetRef}
+                        label="Endereço"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        placeholder="Ex.: Rua das Flores, 123"
+                        keyboardType="default"
+                        errorMessage={errors.street?.message}
+                        returnKeyType="done"
+                        onSubmitEditing={() => {
+                            streetRef.current?.blur();
+                            onSubmit();
+                        }}
+                    />
+                )}
+            />
+
+            <Controller
+                control={control}
+                name="status"
+                render={({ field: { onChange, value } }) => (
+                    <Status setValue={onChange} value={value} />
+                )}
+            />
+
             <Button
                 label="Criar loja"
-                onPress={handleNext}
-                loading={isLoading}
+                loading={loading}
+                onPress={onSubmit}
             />
         </Column>
     )

@@ -1,17 +1,22 @@
-import { ChevronLeft, Forward } from "lucide-react-native";
-import { View, Pressable, Text } from "react-native";
-import { colors } from "@/ui";
+import { ChevronLeft, } from "lucide-react-native";
+import { colors, Column, Label, Row, Title, Pressable } from "@/ui";
 
-export default function StackMenu({ navigation, name }: { navigation: any, name: string }) {
+export default function StackMenu({ navigation, name, description }: { navigation: any, name: string, description?: string }) {
   const theme = colors();
   return (
-    <View style={{ alignItems: "center", flexDirection: "row", paddingTop: 50, paddingHorizontal: 26, paddingBottom: 16, flexGrow: 1, backgroundColor: theme.color.header, }}>
+    <Row ph={26} gh={12} style={{ alignItems: "center", paddingTop: 46, paddingBottom: 16,  flexGrow: 1, backgroundColor: theme.color.header, }}>
       <Pressable onPress={() => {
         navigation.goBack();
-      }} style={{ width: 42, height: 42, justifyContent: "center", alignItems: "center", borderRadius: 100, backgroundColor: theme.color.background, }} >
+      }} style={{ width: 42, height: 42, justifyContent: "center", alignItems: "center", borderRadius: 100, backgroundColor: theme.color.foreground, }} >
         <ChevronLeft size={24} color={theme.color.text} />
       </Pressable>
-      <Text style={{ fontFamily: 'Font_Medium', color: theme.color.text, fontSize: 22, marginLeft: 12 }}>{name}</Text>
-    </View>
+      <Column
+      >
+        <Title size={24} fontFamily='Font_Medium' spacing={-1}>{name}</Title>
+        {description && (
+          <Label size={12} >{description}</Label>
+        )}
+      </Column>
+    </Row>
   );
 }

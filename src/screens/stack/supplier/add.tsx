@@ -1,154 +1,202 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Status } from "@/ui";
-import { KeyboardAvoidingView } from "react-native";
+import { Main, Button, Message, Column, Input, ScrollVertical, Tabs, Status, useMutation, useToast } from "@/ui";
+import { KeyboardAvoidingView, Text } from "react-native";
 import { StoreService } from "@/services/store";
 import { SupplierService, CreateSupplierRequest } from "@/services/supplier";
-import { useMutation } from "@/hooks/useMutation";
-import { toast, useToast } from "@/hooks/useToast";
+import { useQueryClient } from "@tanstack/react-query";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const supplierSchema = z.object({
+    corporateName: z
+        .string()
+        .min(1, "A razão social é obrigatória")
+        .min(2, "A razão social deve ter pelo menos 2 caracteres")
+        .max(100, "A razão social deve ter no máximo 100 caracteres"),
+
+    tradeName: z
+        .string()
+        .optional(),
+
+    cnpj: z
+        .string()
+        .min(1, "O CNPJ é obrigatório")
+        .min(14, "CNPJ deve ter pelo menos 14 caracteres")
+        .max(18, "CNPJ deve ter no máximo 18 caracteres"),
+
+    cep: z
+        .string()
+        .min(1, "O CEP é obrigatório")
+        .min(8, "CEP deve ter pelo menos 8 caracteres")
+        .max(9, "CEP deve ter no máximo 9 caracteres"),
+
+    city: z
+        .string()
+        .min(1, "A cidade é obrigatória")
+        .min(2, "A cidade deve ter pelo menos 2 caracteres")
+        .max(50, "A cidade deve ter no máximo 50 caracteres"),
+
+    state: z
+        .string()
+        .min(1, "O estado é obrigatório")
+        .min(2, "O estado deve ter pelo menos 2 caracteres"),
+
+    address: z
+        .string()
+        .min(1, "O endereço é obrigatório")
+        .min(5, "O endereço deve ter pelo menos 5 caracteres")
+        .max(200, "O endereço deve ter no máximo 200 caracteres"),
+
+    status: z.boolean()
+});
+
+type SupplierFormData = z.infer<typeof supplierSchema>;
 
 export default function SupplierAddScreen({ navigation, route }) {
+    const toast = useToast();
+    const queryClient = useQueryClient();
     const data = route?.params?.data
     const [tab, settab] = useState("Sobre");
     const types = ["Sobre", "Endereço"];
-    const [status, setstatus] = useState(true);
-    const toast = useToast();
 
-    const [formData, setFormData] = useState<CreateSupplierRequest>({
-        corporateName: data?.razaosocial || '',
-        tradeName: data?.razaosocial || '',
-        cnpj: data?.cnpj || '',
-        cep: data?.cep || '',
-        city: data?.municipio || '',
-        state: data?.estado || '',
-        address: data?.endereco || '',
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+        watch,
+        setValue
+    } = useForm<SupplierFormData>({
+        resolver: zodResolver(supplierSchema),
+        defaultValues: {
+            corporateName: data?.razaosocial || "",
+            tradeName: data?.razaosocial || "",
+            cnpj: data?.cnpj || "",
+            cep: data?.cep || "",
+            city: data?.municipio || "",
+            state: data?.estado || "",
+            address: data?.endereco || "",
+            status: true,
+        },
+        mode: "onChange"
     });
 
     const createSupplierMutation = useMutation({
-        mutationFn: (params: CreateSupplierRequest) => SupplierService.create(params),
-        onSuccess: (data) => {
+        mutationFn: async (params: SupplierFormData) => {
+            const supplierParams: CreateSupplierRequest = {
+                corporateName: params.corporateName,
+                tradeName: params.tradeName,
+                cnpj: params.cnpj,
+                cep: params.cep,
+                city: params.city,
+                state: params.state,
+                address: params.address,
+            };
+            return await SupplierService.create(supplierParams);
+        },
+        onSuccess: () => {
             toast.showSuccess('Fornecedor criado com sucesso!');
+            queryClient.invalidateQueries({ queryKey: ['suppliers'] });
             setTimeout(() => {
                 navigation.replace('SupplierList');
             }, 1000);
         },
         onError: (error: any) => {
-            const errorMessage = error?.message || 'Erro ao criar fornecedor';
-            toast.showError(errorMessage);
+            console.log(error);
+            toast.showError(error.message || 'Erro ao criar fornecedor');
         }
     });
 
-    const handleCreate = async () => {
+    const onSubmit = (data: SupplierFormData) => {
+        createSupplierMutation.mutate(data);
+    };
 
-        // Validação básica
-        if (!formData.corporateName.trim()) {
-            toast.showError('Razão social é obrigatória');
-            return;
-        }
-        if (!formData.cnpj.trim()) {
-            toast.showError('CNPJ é obrigatório');
-            return;
-        }
-        if (!formData.cep.trim()) {
-            toast.showError('CEP é obrigatório');
-            return;
-        }
-        if (!formData.city.trim()) {
-            toast.showError('Cidade é obrigatória');
-            return;
-        }
-        if (!formData.state.trim()) {
-            toast.showError('Estado é obrigatório');
-            return;
-        }
-        if (!formData.address.trim()) {
-            toast.showError('Endereço é obrigatório');
-            return;
-        }
-
-        createSupplierMutation.mutate(formData);
-    }
-
-    return (<Main>
-        <KeyboardAvoidingView behavior="padding">
-            <Tabs types={types} value={tab} setValue={settab} />
-            <ScrollVertical>
-                {tab === "Sobre" && <AboutTab formData={formData} setFormData={setFormData} settab={settab} />}
-                {tab === "Endereço" && <AddressTab formData={formData} setFormData={setFormData} isLoading={createSupplierMutation.isLoading} setstatus={setstatus} status={status} handleCreate={handleCreate} />}
-            </ScrollVertical>
-        </KeyboardAvoidingView>
-    </Main>)
+    return (
+        <Main>
+            <KeyboardAvoidingView behavior="padding">
+                <Tabs types={types} value={tab} setValue={settab} />
+                <ScrollVertical>
+                    {tab === "Sobre" && <AboutTab control={control} errors={errors} settab={settab} />}
+                    {tab === "Endereço" && <AddressTab control={control} errors={errors} isLoading={createSupplierMutation.isLoading} onSubmit={handleSubmit(onSubmit)} setValue={setValue} watch={watch} />}
+                </ScrollVertical>
+            </KeyboardAvoidingView>
+        </Main>
+    )
 }
 
 interface AboutTabProps {
-    formData: CreateSupplierRequest;
-    setFormData: React.Dispatch<React.SetStateAction<CreateSupplierRequest>>;
+    control: any;
+    errors: any;
     settab: (tab: string) => void;
 }
 
-const AboutTab = ({ formData, setFormData, settab }: AboutTabProps) => {
-    const handleChange = (field: keyof CreateSupplierRequest, value: string) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-    };
+const AboutTab = ({ control, errors, settab }: AboutTabProps) => {
+    const corporateNameRef = useRef(null);
+    const tradeNameRef = useRef(null);
+    const cnpjRef = useRef(null);
 
     const handleNext = () => {
-        if (!formData.corporateName.trim()) {
-            return;
-        }
-        if (!formData.cnpj.trim()) {
-            return;
-        }
         settab('Endereço');
     };
 
-    const refs = useRef<{
-        corporateName: any;
-        tradeName: any;
-        cnpj: any;
-    }>({
-        corporateName: null,
-        tradeName: null,
-        cnpj: null,
-    });
-
     return (
         <Column mh={26} gv={26}>
-            <Input
-                label="Razão Social"
-                placeholder="Digite a razão social"
-                value={formData.corporateName}
-                setValue={(value) => handleChange('corporateName', value)}
-                ref={(el) => { refs.current.corporateName = el; }}
-                onSubmitEditing={() => {
-                    refs.current.tradeName?.focus();
-                }}
-                returnKeyType="next"
+            <Controller
+                control={control}
+                name="corporateName"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={corporateNameRef}
+                        label="Razão Social"
+                        placeholder="Digite a razão social"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        keyboardType="default"
+                        errorMessage={errors.corporateName?.message}
+                        onSubmitEditing={() => tradeNameRef.current?.focus()}
+                        returnKeyType="next"
+                    />
+                )}
             />
 
-            <Input
-                label="Nome Fantasia"
-                placeholder="Digite o nome fantasia"
-                value={formData.tradeName || ''}
-                setValue={(value) => handleChange('tradeName', value)}
-                ref={(el) => { refs.current.tradeName = el; }}
-                onSubmitEditing={() => {
-                    refs.current.cnpj?.focus();
-                }}
-                returnKeyType="next"
+            <Controller
+                control={control}
+                name="tradeName"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={tradeNameRef}
+                        label="Nome Fantasia"
+                        placeholder="Digite o nome fantasia"
+                        value={value || ''}
+                        setValue={onChange}
+                        keyboardType="default"
+                        errorMessage={errors.tradeName?.message}
+                        onSubmitEditing={() => cnpjRef.current?.focus()}
+                        returnKeyType="next"
+                    />
+                )}
             />
 
-            <Input
-                label="CNPJ"
-                placeholder="Digite o CNPJ"
-                value={formData.cnpj}
-                setValue={(value) => handleChange('cnpj', value)}
-                mask="CNPJ"
-                keyboard="numeric"
-                ref={(el) => { refs.current.cnpj = el; }}
-                onSubmitEditing={() => {
-                    handleNext();
-                }}
-                returnKeyType="done"
+            <Controller
+                control={control}
+                name="cnpj"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={cnpjRef}
+                        label="CNPJ"
+                        placeholder="Digite o CNPJ"
+                        value={value}
+                        setValue={onChange}
+                        required={true}
+                        mask="CNPJ"
+                        keyboardType="numeric"
+                        errorMessage={errors.cnpj?.message}
+                        onSubmitEditing={handleNext}
+                        returnKeyType="done"
+                    />
+                )}
             />
 
             <Button
@@ -159,42 +207,31 @@ const AboutTab = ({ formData, setFormData, settab }: AboutTabProps) => {
     );
 }
 interface AddressTabProps {
-    formData: CreateSupplierRequest;
-    setFormData: React.Dispatch<React.SetStateAction<CreateSupplierRequest>>;
+    control: any;
+    errors: any;
     isLoading: boolean;
-    status: boolean;
-    setstatus: (status: boolean) => void;
-    handleCreate: () => void;
+    onSubmit: () => void;
+    setValue: any;
+    watch: any;
 }
 
-const AddressTab = ({ formData, setFormData, isLoading, status, setstatus, handleCreate }: AddressTabProps) => {
-    const refs = useRef<{
-        cep: any;
-        city: any;
-        state: any;
-        address: any;
-    }>({
-        cep: null,
-        city: null,
-        state: null,
-        address: null,
-    });
-
-    const handleChange = (field: keyof CreateSupplierRequest, value: string) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-    };
+const AddressTab = ({ control, errors, isLoading, onSubmit, setValue, watch }: AddressTabProps) => {
+    const cepRef = useRef(null);
+    const cityRef = useRef(null);
+    const stateRef = useRef(null);
+    const addressRef = useRef(null);
+    const toast = useToast();
 
     const [loading, setLoading] = useState(false);
-    const getLocal = async () => {
+    const watchedCep = watch("cep");
+
+    const getLocal = async (cep: string) => {
         try {
             setLoading(true);
-            const res = await StoreService.getCep(formData.cep);
-            setFormData(prev => ({
-                ...prev,
-                city: res.localidade,
-                state: res.estado,
-                address: res.logradouro
-            }));
+            const res = await StoreService.getCep(cep);
+            setValue("city", res.localidade);
+            setValue("state", res.estado);
+            setValue("address", res.logradouro);
         } catch (error) {
             toast.showError('Erro ao buscar CEP');
         } finally {
@@ -203,68 +240,101 @@ const AddressTab = ({ formData, setFormData, isLoading, status, setstatus, handl
     }
 
     useEffect(() => {
-        if (formData?.cep?.length === 9) {
-            getLocal();
+        if (watchedCep?.length === 9) {
+            getLocal(watchedCep);
         }
-    }, [formData?.cep]);
+    }, [watchedCep]);
 
     return (
         <Column mh={26} gv={26}>
-            <Input
-                label="CEP"
-                placeholder="Digite o CEP"
-                keyboard="numeric"
-                loading={loading}
-                value={formData.cep || ''}
-                setValue={(value) => handleChange('cep', value)}
-                mask="CEP"
-                ref={(el) => { refs.current.cep = el; }}
-                onSubmitEditing={() => {
-                    refs.current.city?.focus();
-                }}
-                returnKeyType="next"
+            <Controller
+                control={control}
+                name="cep"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={cepRef}
+                        label="CEP"
+                        placeholder="Digite o CEP"
+                        keyboardType="numeric"
+                        loading={loading}
+                        value={value || ''}
+                        setValue={onChange}
+                        mask="CEP"
+                        errorMessage={errors.cep?.message}
+                        onSubmitEditing={() => cityRef.current?.focus()}
+                        returnKeyType="next"
+                    />
+                )}
             />
 
-            <Input
-                label="Cidade"
-                placeholder="Digite a cidade"
-                value={formData.city || ''}
-                setValue={(value) => handleChange('city', value)}
-                ref={(el) => { refs.current.city = el; }}
-                onSubmitEditing={() => {
-                    refs.current.state?.focus();
-                }}
-                returnKeyType="next"
+            <Controller
+                control={control}
+                name="city"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={cityRef}
+                        label="Cidade"
+                        placeholder="Digite a cidade"
+                        value={value || ''}
+                        setValue={onChange}
+                        required={true}
+                        keyboardType="default"
+                        errorMessage={errors.city?.message}
+                        onSubmitEditing={() => stateRef.current?.focus()}
+                        returnKeyType="next"
+                    />
+                )}
             />
 
-            <Input
-                label="Estado"
-                placeholder="Digite o estado"
-                value={formData.state || ''}
-                setValue={(value) => handleChange('state', value)}
-                ref={(el) => { refs.current.state = el; }}
-                onSubmitEditing={() => {
-                    refs.current.address?.focus();
-                }}
-                returnKeyType="next"
+            <Controller
+                control={control}
+                name="state"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={stateRef}
+                        label="Estado"
+                        placeholder="Digite o estado"
+                        value={value || ''}
+                        setValue={onChange}
+                        required={true}
+                        keyboardType="default"
+                        errorMessage={errors.state?.message}
+                        onSubmitEditing={() => addressRef.current?.focus()}
+                        returnKeyType="next"
+                    />
+                )}
             />
 
-            <Input
-                label="Endereço"
-                placeholder="Digite o endereço completo"
-                value={formData.address || ''}
-                setValue={(value) => handleChange('address', value)}
-                ref={(el) => { refs.current.address = el; }}
-                onSubmitEditing={() => {
-                    handleCreate();
-                }}
-                returnKeyType="done"
+            <Controller
+                control={control}
+                name="address"
+                render={({ field: { onChange, value } }) => (
+                    <Input
+                        ref={addressRef}
+                        label="Endereço"
+                        placeholder="Digite o endereço completo"
+                        value={value || ''}
+                        setValue={onChange}
+                        required={true}
+                        keyboardType="default"
+                        errorMessage={errors.address?.message}
+                        onSubmitEditing={onSubmit}
+                        returnKeyType="done"
+                    />
+                )}
             />
 
-            <Status setvalue={setstatus} value={status} />
+            <Controller
+                control={control}
+                name="status"
+                render={({ field: { onChange, value } }) => (
+                    <Status setValue={onChange} value={value} />
+                )}
+            />
+
             <Button
                 label="Criar fornecedor"
-                onPress={handleCreate}
+                onPress={onSubmit}
                 loading={isLoading}
             />
         </Column>

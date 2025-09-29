@@ -2,7 +2,10 @@ import { Main, Row, colors, Title, Column, Label, Button, useFetch, Pressable, I
 import { RefreshControl, FlatList } from "react-native";
 import { useState, useEffect } from "react";
 import { type Supplier, SupplierService } from "@/services/supplier";
-import { SupplierEmpty } from "@/ui/Emptys/supplier";
+
+import SupplierEmpty from "./_empty";
+import SupplierLoading from "./_loading";
+import SupplierError from "./_error";
 
 export default function SupplierListScreen({ navigation }) {
     const toast = useToast();
@@ -15,8 +18,7 @@ export default function SupplierListScreen({ navigation }) {
     const { data: suppliers, isLoading, error, refetch } = useFetch({
         key: 'suppliers-list',
         fetcher: async () => {
-            const res = await SupplierService.list(); 
-            console.log(res); 
+            const res = await SupplierService.list();
             return res;
         }
     });
@@ -56,31 +58,8 @@ export default function SupplierListScreen({ navigation }) {
         }
     }, [search]);
 
-    if (isLoading) return (
-        <Main>
-            <Column align="center" justify="center" style={{ flex: 1 }}>
-                <Loader />
-                <Label mt={16}>Carregando fornecedores...</Label>
-            </Column>
-        </Main>
-    )
-    
-    if (error) return (
-        <Main>
-            <Column align="center" justify="center" style={{ flex: 1 }}>
-                <Label color={theme.color.red} fontFamily="Font_Medium">
-                    Erro ao carregar fornecedores
-                </Label>
-                <Column mt={16}>
-                    <Button 
-                        label="Tentar novamente" 
-                        onPress={() => refetch()}
-                    />
-                </Column>
-            </Column>
-        </Main>
-    )
-    
+    if (isLoading) return <SupplierLoading />
+    if (error) return <SupplierError message={error.message} />
     if (!suppliers) return <SupplierEmpty />
 
     const currentData = showSearchResults ? searchResults : suppliers.suppliers;
@@ -94,10 +73,10 @@ export default function SupplierListScreen({ navigation }) {
                 renderItem={({ item }) => <Card supplier={item} navigation={navigation} />}
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={isLoading || isSearching} onRefresh={() => { refetch() }} />}
-                style={{ paddingVertical: 12, paddingHorizontal: 16, }}
+                style={{ paddingHorizontal: 26, }}
                 contentContainerStyle={{ gap: 16 }}
                 ListHeaderComponent={
-                    <Column>
+                    <Column style={{ marginTop: -24, }}>
                         <Input
                             placeholder="Pesquisar fornecedor"
                             setValue={setSearch}
@@ -136,9 +115,9 @@ export default function SupplierListScreen({ navigation }) {
                     )
                 }
             />
-            <Column style={{ position: 'absolute', bottom: 40, flexGrow: 1, left: 26, right: 26, }}>
+            {isEmpty && <Column style={{ position: 'absolute', bottom: 40, flexGrow: 1, left: 26, right: 26, }}>
                 <Button label='Criar fornecedor' route="SupplierAdd" />
-            </Column>
+            </Column>}
         </Main>)
 }
 
@@ -147,16 +126,19 @@ const Card = ({ supplier, navigation }: { supplier: Supplier, navigation: any })
     const theme = colors();
     return (
         <Pressable style={{
-            backgroundColor: "#fff",
+            borderColor: theme.color.border,
+            borderWidth: 1,
             paddingVertical: 16,
-            paddingHorizontal: 20,
-            borderRadius: 12,
+            borderRadius: 8,
+            paddingHorizontal: 16,
         }}
-            onPress={() => { navigation.navigate('SupplierEdit', { id: id }) }}
+            onPress={() => {
+                navigation.navigate('SupplierSingle', { id: id })
+            }}
         >
             <Row justify='space-between' align='center'>
                 <Column gv={8} style={{ flex: 1 }}>
-                    <Title size={18} fontFamily='Font_Medium' color={theme.color.primary}>
+                    <Title size={18} fontFamily='Font_Medium'>
                         {tradeName || corporateName}
                     </Title>
 
@@ -169,17 +151,11 @@ const Card = ({ supplier, navigation }: { supplier: Supplier, navigation: any })
                         </Label>
 
                         {cnpj && (
-                            <>
-                                <Label size={12}>•</Label>
-                                <Label size={12}>{cnpj}</Label>
-                            </>
+                            <Label size={12}>• {cnpj}</Label>
                         )}
 
-                        {city && state && (
-                            <>
-                                <Label size={12}>•</Label>
-                                <Label size={12}>{city} - {state}</Label>
-                            </>
+                        {city && (
+                            <Label size={12}>• {city}</Label>
                         )}
                     </Row>
 
@@ -198,19 +174,6 @@ const Card = ({ supplier, navigation }: { supplier: Supplier, navigation: any })
                     )}
                 </Column>
 
-                <Pressable
-                    onPress={(e) => {
-                        e.stopPropagation();
-                        navigation.navigate('SupplierEdit', { id: id })
-                    }}
-                    style={{
-                        padding: 8,
-                        borderRadius: 6,
-                        backgroundColor: theme.color.primary + 20
-                    }}
-                >
-                    <Icon name='PenLine' color={theme.color.primary} size={20} />
-                </Pressable>
             </Row>
         </Pressable>
     )

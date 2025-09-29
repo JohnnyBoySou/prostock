@@ -10,7 +10,7 @@ import Animated, {
   Easing,
   runOnJS,
 } from 'react-native-reanimated';
-import { Main, Title, Image, colors } from '@/ui';
+import { Main, Image, colors } from '@/ui';
 import { useUser } from '@/context/user';
 
 const { width, height } = Dimensions.get('window');
@@ -28,9 +28,9 @@ export default function AsyncStaticScreen({ navigation }) {
 
   const navigateToNextScreen = () => {
     if (isSignedIn) {
-      navigation.navigate('Drawer');
+      navigation.replace('Drawer');
     } else {
-      navigation.navigate('Onboarding');
+      navigation.replace('Onboarding');
     }
   };
 

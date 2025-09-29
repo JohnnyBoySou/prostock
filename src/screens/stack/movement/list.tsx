@@ -19,7 +19,7 @@ export default function MoveListScreen({ navigation }) {
     const { data: movements, isLoading, error, refetch } = useFetch({
         key: 'movements-list',
         fetcher: async () => {
-            return await MovementService.list();
+            return await MovementService.listByStore();
         }
     });
 
@@ -61,7 +61,7 @@ export default function MoveListScreen({ navigation }) {
     if (error) return <MoveError />
     if (!movements) return <MoveEmpty />
 
-    const currentData = showSearchResults ? searchResults : movements.movements;
+    const currentData = showSearchResults ? searchResults : movements.items;
 
     return (
         <Main>
@@ -153,7 +153,7 @@ const Card = ({ movement, navigation }: { movement: Movement, navigation: any })
             paddingHorizontal: 20,
             borderRadius: 12,
         }}
-            onPress={() => { navigation.navigate('MoveEdit', { id: id }) }}
+            onPress={() => { navigation.navigate('MoveSingle', { id: id }) }}
         >
             <Column gv={8}>
                 <Row justify='space-between' align='center'>

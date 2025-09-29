@@ -62,6 +62,8 @@ export default function ProductListScreen() {
     if (isLoading) return <ProductLoading />
     if (error) return <ProductError />
 
+    const isEmpty = showSearchResults ? searchResults.length === 0 : products?.items?.length === 0;
+
     const currentData = showSearchResults ? searchResults : products?.items || [];
 
     return (
@@ -72,15 +74,16 @@ export default function ProductListScreen() {
                 renderItem={({ item }) => <ProductCard product={item} />}
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={isLoading || isSearching} onRefresh={() => { refetch() }} />}
-                style={{ paddingVertical: 12, paddingHorizontal: 16, }}
+                style={{ paddingHorizontal: 26, }}
                 contentContainerStyle={{ gap: 16 }}
                 ListHeaderComponent={
-                    <Column>
+                    <Column style={{ marginTop: -24, }}>
                         <Input
                             placeholder="Pesquisar produto"
                             setValue={setSearch}
                             value={search}
                             search
+                            disabled={isLoading || isSearching || isEmpty}
                             onSearch={handleSearch}
                         />
                         {showSearchResults && (
@@ -114,9 +117,11 @@ export default function ProductListScreen() {
                     )
                 }
             />
-            <Column style={{ position: 'absolute', bottom: 40, flexGrow: 1, left: 26, right: 26, }}>
-                <Button label='Criar produto' route="ProductAdd" />
-            </Column>
+            {showSearchResults && searchResults.length === 0 && (
+                <Column style={{ position: 'absolute', bottom: 40, flexGrow: 1, left: 26, right: 26, }}>
+                    <Button label='Criar produto' route="ProductAdd" />
+                </Column>
+            )}
         </Main>)
 }
 

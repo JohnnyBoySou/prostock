@@ -1,7 +1,7 @@
-import { useRef, useState, useContext, useEffect, forwardRef } from "react";
-import { useAnimationState, MotiText } from "moti";
+import { useState, useEffect, forwardRef } from "react";
+import { useAnimationState, } from "moti";
 import { colors, Column, Label, Row } from "@/ui";
-import { Pressable, TextInput, TextInputProps, KeyboardTypeOptions, ActivityIndicator } from "react-native";
+import { Pressable, TextInput, TextInputProps, KeyboardTypeOptions, ActivityIndicator, } from "react-native";
 import { ChevronDown, Eye, EyeOff, Lock, Search } from "lucide-react-native";
 
 // Tipos para as máscaras disponíveis
@@ -10,7 +10,7 @@ type MaskType = "CPF" | "PHONE" | "CEP" | "NASCIMENTO" | "CNPJ" | "DATE" | "PRIC
 // Interface para as propriedades do Input
 interface InputProps extends Omit<TextInputProps, 'onChangeText' | 'value' | 'defaultValue'> {
   focused?: boolean;
-  defaultValue?: string;
+  defaultValue?: string | number;
   value?: string;
   setValue: (value: string) => void;
   disabled?: boolean;
@@ -18,15 +18,17 @@ interface InputProps extends Omit<TextInputProps, 'onChangeText' | 'value' | 'de
   select?: boolean;
   selectAction?: () => void;
   mask?: MaskType;
-  keyboard?: KeyboardTypeOptions;
+  keyboardType?: KeyboardTypeOptions;
   onSubmitEditing?: () => void;
   pass?: boolean;
   lock?: boolean;
   placeholder?: string;
   errorMessage?: string;
+  successMessage?: string;
   search?: boolean;
   onSearch?: () => void;
   loading?: boolean;
+  required?: boolean;
 }
 
 // Interface para o retorno das funções de máscara
@@ -34,6 +36,8 @@ interface MaskFunction {
   maskFunction: (text: string) => string;
   maxLength?: number;
 }
+
+const INPUT_HEIGHT = 56;
 
 const Input = forwardRef<TextInput, InputProps>(({
   focused = false,
@@ -45,15 +49,17 @@ const Input = forwardRef<TextInput, InputProps>(({
   select = false,
   selectAction = () => { },
   mask,
-  keyboard = "default",
+  keyboardType = "default",
   onSubmitEditing = () => { },
   pass = false,
   lock = false,
   placeholder,
   errorMessage,
+  successMessage,
   search = false,
   loading = false,
   onSearch = () => { },
+  required = false,
   ...props
 }, ref) => {
   const theme = colors();
@@ -91,21 +97,20 @@ const Input = forwardRef<TextInput, InputProps>(({
     if (maxLength && maskedText.length > maxLength) {
       maskedText = maskedText.slice(0, maxLength);
     }
-
     setValue(maskedText);
   };
 
   // Função para determinar a cor da borda baseada no estado
   const getBorderColor = () => {
     if (errorMessage) return "#FF4444"; // Vermelho para erro
-    if (disabled || lock || select) return "#D6D6D6"; // Cinza para desabilitado
+    if (disabled || lock || select) return theme.color.border; // Cinza para desabilitado
     if (focus) return theme.color.primary; // Preto para focado
-    return "#FFFfff"; // Branco para normal
+    return theme.color.foreground; // Branco para normal
   };
 
   return (
-    <Column>
-      <Label color='#484848'>{label}</Label>
+    <Column gv={8}>
+      <Label color={theme.color.text}>{label} {required && <Label color={theme.color.red}>*</Label>}</Label>
       <Row
         style={{
           borderWidth: 2,
@@ -113,16 +118,16 @@ const Input = forwardRef<TextInput, InputProps>(({
           borderRadius: 8,
           borderBottomWidth: 2,
           backgroundColor: theme.color.header,
-          marginTop: 8,
           alignItems: 'center',
-        }}>
+        }}
+      >
         <TextInput
           {...props}
           style={{
             fontSize: 18,
             fontFamily: 'Font_Book',
-            color: disabled ? "#00000090" : theme.color.text, height: 64,
-            paddingHorizontal: 16,
+            color: disabled ? "#00000090" : theme.color.text, height: INPUT_HEIGHT,
+            paddingLeft: 12,
             borderRadius: 12,
             flexGrow: 1,
           }}
@@ -133,31 +138,30 @@ const Input = forwardRef<TextInput, InputProps>(({
           editable={!disabled && !lock && !select}
           onChangeText={handleChangeText}
           value={value}
-          defaultValue={defaultValue}
+          defaultValue={defaultValue?.toString()}
           onSubmitEditing={onSubmitEditing}
           secureTextEntry={secure}
-          keyboardType={keyboard}
+          keyboardType={keyboardType}
           placeholder={placeholder}
           placeholderTextColor={theme.color.text}
-
         />
         {select &&
-          <Column style={{ width: 64, height: 64, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
-            <Pressable onPress={selectAction} style={{ backgroundColor: '#f1f1f1', borderRadius: 8, width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
+          <Column style={{ width: INPUT_HEIGHT, height: INPUT_HEIGHT, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
+            <Pressable onPress={selectAction} style={{ backgroundColor: '#f1f1f1', borderRadius: 8, width: 50, height: 50, justifyContent: "center", alignItems: "center" }}>
               <ChevronDown size={24} color='#7B7B7B' />
             </Pressable>
           </Column>
         }
         {lock &&
-          <Column style={{ width: 64, height: 64, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
-            <Pressable style={{ backgroundColor: '#f1f1f1', borderRadius: 8, width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
+          <Column style={{ width: INPUT_HEIGHT, height: INPUT_HEIGHT, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
+            <Pressable style={{ backgroundColor: '#f1f1f1', borderRadius: 8, width: 50, height: 50, justifyContent: "center", alignItems: "center" }}>
               <Lock size={24} color='#7B7B7B' />
             </Pressable>
           </Column>
         }
         {pass && (
-          <Column style={{ width: 64, height: 64, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
-            <Pressable onPress={() => setsecure(!secure)} style={{ backgroundColor: '#f1f1f1', borderRadius: 8, width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
+          <Column style={{ width: INPUT_HEIGHT, height: INPUT_HEIGHT, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
+            <Pressable onPress={() => setsecure(!secure)} style={{ backgroundColor: theme.color.foreground, borderRadius: 8, width: 50, height: 50, justifyContent: "center", alignItems: "center" }}>
               {secure ? (
                 <Eye size={24} color='#7B7B7B' />
               ) : (
@@ -166,17 +170,16 @@ const Input = forwardRef<TextInput, InputProps>(({
             </Pressable>
           </Column>
         )}
-
         {search && (
-          <Column style={{ width: 64, height: 64, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
-            <Pressable onPress={() => onSearch()} style={{ backgroundColor: focus ? theme.color.primary : '#f1f1f1', borderRadius: 8, width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
+          <Column style={{ width: INPUT_HEIGHT, height: INPUT_HEIGHT, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
+            <Pressable onPress={() => onSearch()} style={{ backgroundColor: focus ? theme.color.primary : '#f1f1f1', borderRadius: 8, width: 50, height: 50, justifyContent: "center", alignItems: "center" }}>
               <Search size={24} color={focus ? '#fff' : '#7B7B7B'} />
             </Pressable>
           </Column>
         )}
         {loading && (
-          <Column style={{ width: 64, height: 64, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
-            <Pressable style={{ backgroundColor: focus ? theme.color.primary : '#f1f1f1', borderRadius: 8, width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
+          <Column style={{ width: INPUT_HEIGHT, height: INPUT_HEIGHT, zIndex: 99, justifyContent: "center", alignItems: "center" }}>
+            <Pressable style={{ backgroundColor: focus ? theme.color.primary : '#f1f1f1', borderRadius: 8, width: 50, height: 50, justifyContent: "center", alignItems: "center" }}>
               <ActivityIndicator size={24} color={focus ? '#fff' : '#7B7B7B'} />
             </Pressable>
           </Column>
@@ -184,8 +187,13 @@ const Input = forwardRef<TextInput, InputProps>(({
 
       </Row>
       {errorMessage && (
-        <Label color={theme.color.red} style={{ marginTop: 4, fontSize: 14 }}>
+        <Label color={theme.color.red} style={{ fontSize: 14 }}>
           {errorMessage}
+        </Label>
+      )}
+      {successMessage && (
+        <Label color={theme.color.green} style={{ fontSize: 14 }}>
+          {successMessage}
         </Label>
       )}
     </Column>

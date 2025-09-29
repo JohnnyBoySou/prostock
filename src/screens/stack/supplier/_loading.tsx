@@ -1,17 +1,17 @@
 import React from 'react';
-import { Main, Column, Loader, Title, Label, colors } from '@/ui';
+import { Column, Skeleton, Main } from '@/ui';
 
-export default function SupplierLoadingScreen() {
+export default function SupplierLoading() {
     return (
-        <Main>
-            <Column style={{ flex: 1 }} justify='center' align="center">
-                <Column mh={10} gv={16} pv={20} ph={20} style={{ borderRadius: 12 }}>
-                    <Loader color={colors().color.primary} size={32} />
-                    <Column gv={12} align="center">
-                        <Title size={22} fontFamily="Font_Medium">Carregando fornecedores...</Title>
-                        <Label>Aguarde enquanto buscamos seus fornecedores.</Label>
-                    </Column>
-                </Column>
+        <Main >
+            <Column ph={26} pv={12} gv={16}>
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
+                <Skeleton w="100%" h={80} />
             </Column>
         </Main>
     );

@@ -8,6 +8,7 @@ const TIMEOUT = 5000;
 const getBaseURL = () => {
   if (__DEV__) {
     const possibleURLs = [
+      "https://api.25stock.com",
       "http://localhost:3000", 
       "http://192.168.3.56:3000", 
     ];
@@ -64,12 +65,19 @@ export async function fetch<T = unknown>(
     if (method !== "GET" && !options.data) {
       throw new Error(`Data is required for ${method} requests.`);
     }
-    const response: AxiosResponse<T> = await apiClient.request({
+    
+    const requestConfig = {
       url,
       method,
       params: options.params,
       ...options,
-    });
+    };
+    
+    console.log(`🌐 [FETCH] ${method} ${BASE_URL}${url}`);
+    console.log(`📦 [FETCH] Body:`, JSON.stringify(requestConfig.data, null, 2));
+    console.log(`🔍 [FETCH] Params:`, JSON.stringify(requestConfig.params, null, 2));
+    
+    const response: AxiosResponse<T> = await apiClient.request(requestConfig);
 
     return response.data;
   } catch (error: any) {
@@ -103,7 +111,7 @@ export async function fetchAuth<T = unknown>(
     }
 
     const method = options.method?.toUpperCase() || "GET";
-    const response: AxiosResponse<T> = await apiClient.request({
+    const requestConfig = {
       url,
       method,
       headers: {
@@ -113,7 +121,14 @@ export async function fetchAuth<T = unknown>(
       },
       params: method === "GET" ? { ...options.params, ...options.data } : options.params,
       data: method !== "GET" ? options.data : undefined,
-    });
+    };
+    
+    console.log(`🔐 [FETCH_AUTH] ${method} ${BASE_URL}${url}`);
+    console.log(`🏪 [FETCH_AUTH] Store ID: ${store.id}`);
+    console.log(`📦 [FETCH_AUTH] Body:`, JSON.stringify(requestConfig.data, null, 2));
+    console.log(`🔍 [FETCH_AUTH] Params:`, JSON.stringify(requestConfig.params, null, 2));
+    
+    const response: AxiosResponse<T> = await apiClient.request(requestConfig);
 
     return response.data;
   } catch (error: any) {
@@ -145,7 +160,7 @@ export async function fetchAuthOtherStore<T = unknown>(
     }
 
     const method = options.method?.toUpperCase() || "GET";
-    const response: AxiosResponse<T> = await apiClient.request({
+    const requestConfig = {
       url,
       method,
       headers: {
@@ -154,7 +169,13 @@ export async function fetchAuthOtherStore<T = unknown>(
       },
       params: options.params,
       data: options.data,
-    });
+    };
+    
+    console.log(`🔓 [FETCH_AUTH_OTHER] ${method} ${BASE_URL}${url}`);
+    console.log(`📦 [FETCH_AUTH_OTHER] Body:`, JSON.stringify(requestConfig.data, null, 2));
+    console.log(`🔍 [FETCH_AUTH_OTHER] Params:`, JSON.stringify(requestConfig.params, null, 2));
+    
+    const response: AxiosResponse<T> = await apiClient.request(requestConfig);
 
     return response.data;
   } catch (error: any) {
@@ -180,21 +201,26 @@ export async function fetchNoAuth<T = unknown>(
   options: FetchApiOptions = {}
 ): Promise<ApiResponse<T>> {
   try {
-    
-
     const method = options.method?.toUpperCase() || "GET";
     if (method !== "GET" && !options.data) {
       throw new Error(`Data is required for ${method} requests.`);
     }
-    const response: AxiosResponse<T> = await apiClient.request({
+    
+    const requestConfig = {
       url,
       method,
       headers: {
-      ...options.headers,
+        ...options.headers,
       },
       params: options.params,
       data: options.data,
-    });
+    };
+    
+    console.log(`🌍 [FETCH_NO_AUTH] ${method} ${BASE_URL}${url}`);
+    console.log(`📦 [FETCH_NO_AUTH] Body:`, JSON.stringify(requestConfig.data, null, 2));
+    console.log(`🔍 [FETCH_NO_AUTH] Params:`, JSON.stringify(requestConfig.params, null, 2));
+    
+    const response: AxiosResponse<T> = await apiClient.request(requestConfig);
 
     return response.data;
   } catch (error) {

@@ -38,7 +38,7 @@ export default function OnboardingScreen({ navigation }) {
     const theme = colors();
 
     return (
-        <Main style={{ backgroundColor: "#fff" }}>
+        <Main style={{ backgroundColor: theme.color.background }}>
             <Column gv={12} ph={26} pv={40} style={{ flex: 1, }}>
                 <Column>
                     <Image src={require('@/imgs/logo_img.png')} w={80} h={80} r={12} />

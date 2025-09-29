@@ -1,31 +1,20 @@
 import React from 'react';
-import { Main, Column, Title, Label, colors, Button, Icon } from '@/ui';
+import { Column, Title, Label, Image, Button,  } from '@/ui';
 import { useNavigation } from '@react-navigation/native';
 
-export default function StoreEmptyScreen() {
-    const navigation = useNavigation();
+export default function StoreEmpty() {
+    const navigation = useNavigation() as any;
 
     return (
-        <Main>
-            <Column style={{ flex: 1 }} justify='center' align="center">
-                <Column mh={26} gv={20} pv={20} ph={20} style={{ backgroundColor: '#fff', borderRadius: 12 }}>
-                    <Column align="center" gv={12}>
-                        <Icon name="Store" size={52} color='#FFB238' />
-                        <Title size={22} fontFamily="Font_Medium" align='center'>
-                            Nenhuma loja encontrada
-                        </Title>
-                        <Label align='center' color={colors.color.muted}>
-                            Você ainda não possui lojas cadastradas. Crie sua primeira loja para começar.
-                        </Label>
-                    </Column>
-                    
-                    <Button 
-                        label="Criar primeira loja" 
-                        onPress={() => (navigation as any).navigate('StoreAdd')}
-                        icon={<Icon name="Plus" size={20} color="#fff" />}
-                    />
-                </Column>
-            </Column>
-        </Main>
+        <Column justify='center' gv={16} pv={40}>
+            <Image src={require("@/imgs/empty_img.png")} w={156} h={156} />
+            <Title align='center' size={32} spacing={-2} style={{ lineHeight: 32 }} fontFamily="Font_Medium">
+                Nenhuma loja encontrada...
+            </Title>
+            <Label align='center' size={14}>
+                Crie sua primeira loja para começar a gerenciar seus produtos
+            </Label>
+            <Button variant="ghost" label="Criar loja" onPress={() => navigation.navigate("StoreAdd")} />
+        </Column>
     );
 }

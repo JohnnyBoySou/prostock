@@ -1,31 +1,20 @@
 import React from 'react';
-import { Main, Column, Title, Label, colors, Button, Icon } from '@/ui';
+import { Column, Title, Label, Button, Image } from '@/ui';
 import { useNavigation } from '@react-navigation/native';
 
-export default function SupplierEmptyScreen() {
-    const navigation = useNavigation();
+export default function SupplierEmpty() {
+    const navigation = useNavigation<any>();
 
     return (
-        <Main>
-            <Column style={{ flex: 1 }} justify='center' align="center">
-                <Column mh={26} gv={20} pv={20} ph={20} style={{ backgroundColor: '#fff', borderRadius: 12 }}>
-                    <Column align="center" gv={12}>
-                        <Icon name="Truck" size={52} color='#9747FF' />
-                        <Title size={22} fontFamily="Font_Medium" align='center'>
-                            Nenhum fornecedor encontrado
-                        </Title>
-                        <Label align='center' color={colors().color.muted}>
-                            Você ainda não possui fornecedores cadastrados. Crie seu primeiro fornecedor para começar.
-                        </Label>
-                    </Column>
-                    
-                    <Button 
-                        label="Criar primeiro fornecedor" 
-                        onPress={() => (navigation as any).navigate('SupplierAdd')}
-                        icon={<Icon name="Plus" size={20} color="#fff" />}
-                    />
-                </Column>
-            </Column>
-        </Main>
+        <Column justify='center'  gv={16} pv={40}>
+        <Image src={require("@/imgs/empty_img.png")} w={156} h={156} />
+        <Title align='center' size={32} spacing={-2} style={{ lineHeight: 32 }} fontFamily="Font_Medium">
+            Nenhuma fornecedor encontrado...
+        </Title>
+        <Label align='center' size={14}>
+            Crie seu primeiro fornecedor para começar a gerenciar seu estoque
+        </Label>
+        <Button variant="ghost" label="Criar fornecedor" onPress={() => navigation.navigate("SupplierAdd")} />
+    </Column>
     );
 }

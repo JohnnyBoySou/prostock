@@ -1,9 +1,7 @@
-import { colors } from "./colors"
-import { Column, ScrollHorizontal } from "./layout"
-import { Pressable } from "react-native"
-import { Label } from "./text"
+import { Column, ScrollHorizontal, colors, Pressable, Label, Row } from "@/ui/index"
 
-export default function Status({ setvalue, value, spacing = false }) {
+export default function Tipo({ setValue, value, }: { setValue: (value: string) => void, value: string }) {
+    const theme = colors();
     const values = [
         {
             name: 'Entrada',
@@ -17,24 +15,25 @@ export default function Status({ setvalue, value, spacing = false }) {
             name: 'Perda',
             id: 'perda'
         },
-        {
+        ]
+/*
+{
             name: 'Devolução',
             id: 'devolucao'
-        }]
-    const theme = colors();
-
+        }
+*/
     return (
-        <Column>
-            <Column mh={spacing ? 26 : 0}>
-                <Label>Tipo</Label>
+        <Column gv={12}>
+            <Column >
+                <Label>Tipo de movimentação</Label>
             </Column>
-            <ScrollHorizontal contentContainerStyle={{ gap: 12, marginVertical: 12, paddingHorizontal: spacing ? 26 : 0, }}>
+            <Row gh={10} pv={10} ph={10} style={{ gap: 12, marginVertical: 12, backgroundColor: theme.color.foreground, borderRadius: 6,}}>
                 {values.map((item, index) => (
-                    <Pressable key={index} onPress={() => { setvalue(item.id) }} style={{ backgroundColor: value == item.id ? theme.color.primary : '#FFF', flexGrow: 1, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 6, justifyContent: 'center', alignItems: 'center', }}>
-                        <Label size={18} fontFamily="Font_Medium" color={item.id == value ? '#fff' : '#000'}>{item.name}</Label>
+                    <Pressable key={index} onPress={() => { setValue(item.id) }} style={{ backgroundColor: value == item.id ? theme.color.primary : theme.color.foreground, flexGrow: 1, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 6, justifyContent: 'center', alignItems: 'center', }}>
+                        <Label size={18} fontFamily="Font_Medium" color={item.id == value ? '#fff' : theme.color.label}>{item.name}</Label>
                     </Pressable>
                 ))}
-            </ScrollHorizontal>
+            </Row>
         </Column>
     )
 }

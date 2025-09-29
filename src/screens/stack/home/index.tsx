@@ -1,11 +1,13 @@
 import React from 'react';
-import { Main, ScrollVertical, Column, Row, Title, HeadTitle, Label, colors, SCREEN_WIDTH, Icon, Pressable, ScrollHorizontal, Image } from '@/ui';
+import { Main, ScrollVertical, Column, Row, Title, Label, colors, Icon, Pressable, Image, Button } from '@/ui';
 import { useUser } from '@/context/user';
 import { MotiView } from 'moti';
 import { useTheme } from '@/hooks/useTheme';
+import { useTutorial } from '@/hooks/useTutorial';
 import { useToast } from '@/hooks/useToast';
 import { View } from 'react-native';
-import Svg, { Defs, Pattern, Line, Circle, Path, Text as SvgText } from 'react-native-svg';
+import Svg, { Defs, Pattern, Line, Path, Text as SvgText } from 'react-native-svg';
+import { useEffect } from 'react';
 
 const FadeUp = ({ children, delay = 200 }) => {
     return (
@@ -15,9 +17,20 @@ const FadeUp = ({ children, delay = 200 }) => {
     )
 }
 
+import {
+    CopilotStep,
+    walkthroughable,
+    useCopilot,
+} from "react-native-copilot";
+
+const CopilotPressable = walkthroughable(Pressable);
+
+
 export default function HomeScreen({ navigation, }) {
-    const { user, role } = useUser();
+    const { user } = useUser();
     const theme = colors();
+    const { start: startCopilot, stop: stopCopilot, currentStep, visible } = useCopilot();
+    
     const greatings = () => {
         const date = new Date();
         const hour = date.getHours();
@@ -26,8 +39,8 @@ export default function HomeScreen({ navigation, }) {
         return 'Boa noite';
     }
 
-
     const { mode, toggleTheme } = useTheme();
+    const { isNotStarted, isInProgress, startTutorial, completeTutorial } = useTutorial();
     const toast = useToast();
 
     const handleToggleTheme = () => {
@@ -35,87 +48,152 @@ export default function HomeScreen({ navigation, }) {
         toast.showSuccess('Tema alterado com sucesso! Reinicie a aplicação para ver as alterações.')
     }
 
+    const handleStartTutorial = () => {
+        startTutorial();
+        startCopilot();
+    }
+
+    const handleSkipTutorial = () => {
+        completeTutorial();
+        toast.showSuccess('Tutorial marcado como completo. Você pode reiniciá-lo nas configurações.');
+    }
+
+    const handleTutorialEnd = () => {
+        completeTutorial();
+        toast.showSuccess('Tutorial concluído! Agora você conhece as principais funcionalidades do sistema.');
+    }
+
+    // Detectar quando o tutorial do copilot termina
+    useEffect(() => {
+        // Quando o tutorial estava visível e agora não está mais, significa que terminou
+        if (isInProgress && !visible && currentStep === null) {
+            handleTutorialEnd();
+        }
+    }, [visible, currentStep, isInProgress]);
+
 
     return (
-        <Main style={{ backgroundColor: "#fff" }}>
+        <Main style={{ backgroundColor: theme.color.background }}>
             <ScrollVertical style={{ zIndex: 2, }}>
-                <Column gv={16} pv={16}>
+                <Column gv={12} pv={16}>
                     <Row ph={26} justify='space-between'>
-                        <Pressable onPress={() => { navigation.toggleDrawer() }} style={{ width: 48, height: 48, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
-                            <Icon name="Menu" color='#8A8A8A' size={24} />
-                        </Pressable>
-
+                        <CopilotStep text="Este é o menu principal. Aqui você pode acessar todas as funcionalidades do sistema." order={1} name="menu">
+                            <CopilotPressable onPress={() => { navigation.toggleDrawer() }} style={{ width: 48, height: 48, backgroundColor: theme.color.foreground, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                                <Icon name="Menu" color={theme.color.label} size={24} />
+                            </CopilotPressable>
+                        </CopilotStep>
                         <Row gh={12}>
-                            <Pressable onPress={() => { navigation.navigate('StoreSelect') }} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
-                                <Icon name="Store" color="#505050" size={24} />
-                            </Pressable>
-                            <Pressable onPress={handleToggleTheme} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
-                                <Icon name={mode == 'dark' ? 'Sun' : 'Moon'} color={mode == 'dark' ? '#fff' : '#505050'} size={24} />
-                            </Pressable>
-                            <Pressable onPress={() => { navigation.navigate('NotifyList') }} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
-                                <Icon name="Bell" color="#505050" size={24} />
-                            </Pressable>
-                            <Pressable onPress={() => { navigation.navigate('Profile') }} style={{ width: 46, height: 46, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
-                                <Icon name="User" color='#505050' size={24} />
-                            </Pressable>
+                            <CopilotStep text="Selecione a loja que você quer gerenciar. Você pode ter múltiplas lojas no sistema." order={2} name="store">
+                                <CopilotPressable onPress={() => { navigation.navigate('StoreList') }} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                                    <Icon name="Store" color={theme.color.label} size={24} />
+                                </CopilotPressable>
+                            </CopilotStep>
+                            <CopilotStep text="Alterne entre tema claro e escuro para melhor visualização." order={3} name="theme">
+                                <CopilotPressable onPress={handleToggleTheme} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                                    <Icon name={mode == 'dark' ? 'Sun' : 'Moon'} color={mode == 'dark' ? theme.color.label : theme.color.label} size={24} />
+                                </CopilotPressable>
+                            </CopilotStep>
+                            <CopilotStep text="Visualize suas notificações e alertas importantes aqui." order={4} name="notifications">
+                                <CopilotPressable onPress={() => { navigation.navigate('NotifyList') }} style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center', borderRadius: 100, }}>
+                                    <Icon name="Bell" color={theme.color.label} size={24} />
+                                </CopilotPressable>
+                            </CopilotStep>
+                            <CopilotStep text="Acesse seu perfil e configurações pessoais." order={5} name="profile">
+                                <CopilotPressable onPress={() => { navigation.navigate('Profile') }} style={{ width: 46, height: 46, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
+                                    <Icon name="User" color={theme.color.label} size={24} />
+                                </CopilotPressable>
+                            </CopilotStep>
                         </Row>
                     </Row>
 
-                    <Row ph={26} justify='space-between' align='center' style={{ width: SCREEN_WIDTH - 50, }}>
-                        <Column>
-                            <FadeUp>
-                                <HeadTitle size={24}>{greatings()},</HeadTitle>
-                            </FadeUp>
-                            <FadeUp delay={500}>
-                                <HeadTitle fontFamily="Font_Bold" mt={-5}>{user?.name}</HeadTitle>
-                            </FadeUp>
+                    <FadeUp delay={500}>
+                        <Column ph={26}>
+                            <Title fontFamily="Font_Book" size={24}>{greatings()},</Title>
+                            <Title fontFamily="Font_Bold" mt={-5}>{user?.name}</Title>
                         </Column>
+                    </FadeUp>
 
-                    </Row>
+                    {!isNotStarted && (
+                        <FadeUp delay={700}>
+                            <Column ph={26} gv={12}>
+                                <Label size={18} mt={12}>Primeiros passos</Label>
+                                <Column pv={16} ph={16} style={{ backgroundColor: theme.color.foreground, borderRadius: 8, overflow: 'hidden' }}>
+                                    <Row justify='space-between' align='center'>
+                                        <Column gv={12} style={{ width: 180, }}>
+                                            <Column gv={12}>
+                                                <Title size={22} spacing={-1}>Comece seu primeiro passo</Title>
+                                                <Label size={14}>Descubra como utilizar o sistema rapidamente e sem complicações</Label>
+                                            </Column>
+                                        </Column>
+                                        <Image src={require('@/imgs/tutorial_img.png')} w={124} h={124} />
+                                    </Row>
+                                    <Column
+                                        style={{
+                                            height: 2,
+                                            backgroundColor: theme.color.border,
+                                            flexGrow: 1,
+                                        }}
+                                        mv={12}
+                                    />
+                                    <Row gh={12} justify='space-between'>
+                                        <Button label="Iniciar tutorial" style={{ flexGrow: 1, }} onPress={handleStartTutorial} variant='default' />
+                                        <Button label="Talvez depois" style={{ flexGrow: 1, }} onPress={handleSkipTutorial} variant='ghost' />
+                                    </Row>
+                                </Column>
+
+                            </Column>
+                        </FadeUp>
+                    )}
+
                     <FadeUp delay={700}>
                         <Column ph={26}>
                             <Label size={18} mt={12}>Acesso rápido</Label>
                         </Column>
                         <Column ph={26} mv={12} gv={12}>
                             <Row gh={12} justify='space-between'>
-                                <Pressable style={{ borderColor: theme.color.border, borderWidth: 1, flexGrow: 1, paddingHorizontal: 24, paddingVertical: 34, borderRadius: 8, }} onPress={() => navigation.navigate('ProductAdd')}>
-                                    <Title spacing={-1} size={20} fontFamily='Font_Light_Italic'>Adicionar</Title>
-                                    <Title spacing={-1} size={22} mt={-4} style={{ width: 100 }}>Produto</Title>
-                                    <Image src={require('@/imgs/product_img.png')} w={64} h={64} style={{ position: 'absolute', bottom: 0, right: 0, }} />
-                                </Pressable>
-                                <Pressable style={{ borderColor: theme.color.border, borderWidth: 1, flexGrow: 1, paddingHorizontal: 24, paddingVertical: 34, borderRadius: 8, }} onPress={() => navigation.navigate('CategoryAdd')}>
-                                    <Title spacing={-1} size={20} fontFamily='Font_Light_Italic' style={{ zIndex: 1000 }}>Adicionar</Title>
-                                    <Title spacing={-1} size={22} mt={-4} style={{ width: 100 }}>Categoria</Title>
-                                    <Image src={require('@/imgs/category_img.png')} w={64} h={64} style={{ position: 'absolute', bottom: 0, right: 0, }} />
-                                </Pressable>
-
+                                <CopilotStep text="Adicione novos produtos ao seu estoque. Aqui você pode cadastrar informações detalhadas como nome, categoria, preço e quantidade." order={6} name="add-product">
+                                    <CopilotPressable style={{ borderColor: theme.color.border, borderWidth: 1, flexGrow: 1, paddingHorizontal: 24, paddingVertical: 34, borderRadius: 8, overflow: 'hidden' }} onPress={() => navigation.navigate('ProductAdd')}>
+                                        <Title spacing={-1} size={20} fontFamily='Font_Light_Italic' style={{ zIndex: 1000 }}>Adicionar</Title>
+                                        <Title spacing={-1} size={22} mt={-4} style={{ width: 100, zIndex: 1000 }}>Produto</Title>
+                                        <Image src={require('@/imgs/product_img.png')} w={64} h={64} style={{ position: 'absolute', bottom: 0, right: 0, }} />
+                                    </CopilotPressable>
+                                </CopilotStep>
+                                <CopilotStep text="Organize seus produtos criando categorias. Isso facilita a busca e organização do seu estoque." order={7} name="add-category">
+                                    <CopilotPressable style={{ borderColor: theme.color.border, borderWidth: 1, flexGrow: 1, paddingHorizontal: 24, paddingVertical: 34, borderRadius: 8, overflow: 'hidden' }} onPress={() => navigation.navigate('CategoryAdd')}>
+                                        <Title spacing={-1} size={20} fontFamily='Font_Light_Italic' style={{ zIndex: 1000 }}>Adicionar</Title>
+                                        <Title spacing={-1} size={22} mt={-4} style={{ width: 100, zIndex: 1000 }}>Categoria</Title>
+                                        <Image src={require('@/imgs/category_img.png')} w={64} h={64} style={{ position: 'absolute', bottom: 0, right: 0, }} />
+                                    </CopilotPressable>
+                                </CopilotStep>
                             </Row>
                             <Row gh={12} justify='space-between'>
-                                <Pressable style={{ borderColor: theme.color.border, borderWidth: 1, flexGrow: 1, paddingHorizontal: 24, paddingVertical: 34, borderRadius: 8, }} onPress={() => navigation.navigate('SupplierAdd')}>
-                                    <Title spacing={-1} size={20} fontFamily='Font_Light_Italic'>Adicionar</Title>
-                                    <Title spacing={-1} size={20} mt={-4} style={{ width: 100 }}>Fornecedor</Title>
-                                    <Image src={require('@/imgs/supplier_img.png')} w={64} h={64} style={{ position: 'absolute', bottom: 0, right: 0, }} />
-                                </Pressable>
-                                <Pressable style={{ borderColor: theme.color.border, borderWidth: 1, flexGrow: 1, paddingHorizontal: 24, paddingVertical: 34, borderRadius: 8, }} onPress={() => navigation.navigate('SupplierList')}>
-                                    <Title spacing={-1} size={20} fontFamily='Font_Light_Italic'>Adicionar</Title>
-                                    <Title spacing={-1} size={22} style={{ width: 100 }} mt={-4}>Alerta</Title>
-                                    <Image src={require('@/imgs/report_img.png')} w={64} h={64} style={{ position: 'absolute', bottom: 0, right: 0, }} />
-                                </Pressable>
+                                <CopilotStep text="Cadastre seus fornecedores para manter um controle completo da sua cadeia de suprimentos." order={8} name="add-supplier">
+                                    <CopilotPressable style={{ borderColor: theme.color.border, borderWidth: 1, flexGrow: 1, paddingHorizontal: 24, paddingVertical: 34, borderRadius: 8, overflow: 'hidden' }} onPress={() => navigation.navigate('SupplierAdd')}>
+                                        <Title spacing={-1} size={20} fontFamily='Font_Light_Italic' style={{ zIndex: 1000 }}>Adicionar</Title>
+                                        <Title spacing={-1} size={20} mt={-4} style={{ width: 100, zIndex: 1000 }}>Fornecedor</Title>
+                                        <Image src={require('@/imgs/supplier_img.png')} w={64} h={64} style={{ position: 'absolute', bottom: 0, right: 0, }} />
+                                    </CopilotPressable>
+                                </CopilotStep>
+                                <CopilotStep 
+                                    text="Configure alertas para ser notificado quando produtos estiverem com estoque baixo ou quando precisar fazer pedidos. Este é o último passo do tutorial!" 
+                                    order={9} 
+                                    name="add-alert"
+                                >
+                                    <CopilotPressable style={{ borderColor: theme.color.border, borderWidth: 1, flexGrow: 1, paddingHorizontal: 24, paddingVertical: 34, borderRadius: 8, overflow: 'hidden' }} onPress={() => navigation.navigate('MoveAdd')}>
+                                        <Title spacing={-1} size={20} fontFamily='Font_Light_Italic' style={{ zIndex: 1000 }}>Adicionar</Title>
+                                        <Title spacing={-1} size={22} style={{ width: 100, zIndex: 1000 }} mt={-4}>Movimentação</Title>
+                                        <Image src={require('@/imgs/report_img.png')} w={64} h={64} style={{ position: 'absolute', bottom: 0, right: 0, }} />
+                                    </CopilotPressable>
+                                </CopilotStep>
                             </Row>
                         </Column>
-
                     </FadeUp>
-
 
                     <FadeUp delay={1000}>
                         <Column ph={26} gv={12}>
-                            <Label size={18} mt={12}>Visão geral</Label>
-                            <MostMovements />
-                            <CategoryChart />
+                            <Label size={18}>Visão geral</Label>
                         </Column>
                     </FadeUp>
-
-
 
                 </Column>
 
@@ -197,8 +275,8 @@ const MostMovements = () => {
 const CategoryChart = () => {
     const theme = colors();
     return (
-        <Column  gv={12} style={{ borderColor: theme.color.border, borderWidth: 1, borderRadius: 8, padding: 12 }}>
-            <Title size={16} mb={12}>Concentração de Produtos por Categoria</Title>
+        <Column gv={12} style={{ borderColor: theme.color.border, borderWidth: 1, borderRadius: 8, padding: 12 }}>
+            <Title size={16}>Concentração de Produtos por Categoria</Title>
             <Row gh={12} align='center'>
                 <PieChart />
                 <Legend />

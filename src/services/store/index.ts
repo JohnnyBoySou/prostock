@@ -42,7 +42,6 @@ export interface StoreListResponse {
 }
 
 export interface StoreCreateRequest extends Record<string, unknown> {
-    ownerId: string;
     name: string;
     cnpj: string;
     email: string;

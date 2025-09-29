@@ -1,11 +1,11 @@
 import React from 'react';
 import { Column, Title, Label, Image } from '@/ui';
 
-interface ProductErrorProps {
+interface MoveErrorProps {
     message?: string;
 }
 
-export default function ProductError({ message = "Ops! Algo deu errado" }: ProductErrorProps) {
+export default function MoveError({ message }: MoveErrorProps) {
     return (
         <Column justify='center' align='center' gv={16} pv={40}>
             <Image src={require("@/imgs/error_img.png")} w={156} h={156} />

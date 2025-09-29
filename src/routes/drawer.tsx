@@ -66,17 +66,22 @@ function CustomDrawerContent({ navigation }) {
 
   return (
     <Column ph={20} style={{ flex: 1, backgroundColor: theme.color.sidebar }}>
+
       <ScrollVertical>
         <Row justify="space-between" align="center" >
-          <Image src={require('@/imgs/logo_img.png')} w={64} h={64} />
+          <Column align="flex-start">
+            <Image src={require('@/imgs/logo_img.png')} w={64} h={64} style={{ marginLeft: -46 }} />
+            <Image src={require('@/imgs/logo_text_img.png')} w={100} h={24}  style={{ marginLeft: 10 }}/>
+          </Column>
           <Pressable onPress={() => navigation.closeDrawer()} style={{ width: 52, height: 52, borderRadius: 100, backgroundColor: theme.color.title + 20, justifyContent: "center", alignItems: "center" }}>
             <Icon name="X" color={theme.color.title} size={24} />
           </Pressable>
         </Row>
-        <Column mh={10} gv={4} align="flex-start">
-          <Image src={require('@/imgs/logo_text_img.png')} w={100} h={24} />
+        
+        <Column mh={10} mv={6} style={{ alignSelf: 'flex-start' }}>
           <Label size={14}>Controle seu estoque na palma da sua mão</Label>
         </Column>
+
         <Column style={{ paddingVertical: 16 }} mb={50} mt={10}>
           {menuItems.map((item, index) => (
             <Pressable key={index} style={{ paddingVertical: 14, paddingHorizontal: 12, borderRadius: 6, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} onPress={item.onPress}>

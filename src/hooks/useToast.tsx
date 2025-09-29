@@ -108,29 +108,28 @@ export const ErrorToast = ({ text1 }: { text1: string }) => {
     >
       <Row
         gh={8}
-        pv={8}
-        ph={8}
+        pv={14}
+        ph={14}
         style={{
-          backgroundColor: theme.color.red,
+          backgroundColor: theme.color.foreground,
           borderRadius: 8,
           width: SCREEN_WIDTH - 52,
         }}
       >
         <Column
           style={{
-            width: 42,
-            height: 42,
-            backgroundColor: "#ffffff30",
-            borderRadius: 4,
+            width: 28,
+            height: 28,
+            backgroundColor: theme.color.red,
+            borderRadius: 100,
           }}
           justify="center"
           align="center"
         >
-          <Icon name="X" color="#fff" />
+          <Icon name="X" color="#fff" size={16} />
         </Column>
         <Label
           style={{ width: SCREEN_WIDTH - 130, letterSpacing: -0.5 }}
-          color="#fff"
         >
           {text1}
         </Label>

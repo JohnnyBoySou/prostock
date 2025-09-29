@@ -52,14 +52,13 @@ export interface Pagination {
 }
 
 export interface MovementListResponse {
-  movements: Movement[];
+  items: Movement[];
   pagination: Pagination;
 }
 
 export interface CreateMovementRequest {
   type: 'ENTRADA' | 'SAIDA' | 'PERDA';
   quantity: number;
-  storeId: string;
   productId: string;
   supplierId?: string;
   batch?: string;
@@ -347,7 +346,7 @@ export const MovementService = {
   getByStore: (storeId: string, filters?: {
     page?: number;
     limit?: number;
-    type?: 'ENTRADA' | 'SAIDA' | 'PERDA';
+    type?: 'entrada' | 'saida' | 'perda';
     startDate?: string;
     endDate?: string;
   }): Promise<MovementListResponse> => 
@@ -356,7 +355,7 @@ export const MovementService = {
   getByProduct: (productId: string, filters?: {
     page?: number;
     limit?: number;
-    type?: 'ENTRADA' | 'SAIDA' | 'PERDA';
+    type?: 'entrada' | 'saida' | 'perda';
     startDate?: string;
     endDate?: string;
   }): Promise<MovementListResponse> => 
@@ -365,11 +364,35 @@ export const MovementService = {
   getBySupplier: (supplierId: string, filters?: {
     page?: number;
     limit?: number;
-    type?: 'ENTRADA' | 'SAIDA' | 'PERDA';
+    type?: 'entrada' | 'saida' | 'perda';
     startDate?: string;
     endDate?: string;
   }): Promise<MovementListResponse> => 
     fetchAuth(`${URI}/supplier/${supplierId}`, { method: "GET", params: filters }),
+
+  // === NOVOS ENDPOINTS ESPECÍFICOS ===
+  // Listar movimentações da loja do usuário autenticado
+  listByStore: (filters?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    type?: 'ENTRADA' | 'SAIDA' | 'PERDA';
+    productId?: string;
+    supplierId?: string;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<MovementListResponse> => 
+    fetchAuth(`${URI}/my-store`, { method: "GET", params: filters }),
+  
+  // Listar movimentações por produto específico na loja do usuário
+  listByProduct: (productId: string, filters?: {
+    page?: number;
+    limit?: number;
+    type?: 'ENTRADA' | 'SAIDA' | 'PERDA';
+    startDate?: string;
+    endDate?: string;
+  }): Promise<MovementListResponse> => 
+    fetchAuth(`${URI}/my-store/product/${productId}`, { method: "GET", params: filters }),
 
   // === HISTÓRICO DE ESTOQUE ===
   getStockHistory: (productId: string, storeId: string, filters?: {
@@ -589,3 +612,23 @@ export const searchMove = (q: string, limit?: number) => MovementService.search(
 export const showMove = (id: string) => MovementService.get(id);
 export const addMove = (params: CreateMovementRequest) => MovementService.create(params);
 export const editMove = (id: string, params: UpdateMovementRequest) => MovementService.update(id, params);
+
+// === NOVAS FUNÇÕES PARA OS NOVOS ENDPOINTS ===
+export const listMoveByStore = (filters?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  type?: 'ENTRADA' | 'SAIDA' | 'PERDA';
+  productId?: string;
+  supplierId?: string;
+  startDate?: string;
+  endDate?: string;
+}) => MovementService.listByStore(filters);
+
+export const listMoveByProduct = (productId: string, filters?: {
+  page?: number;
+  limit?: number;
+  type?: 'ENTRADA' | 'SAIDA' | 'PERDA';
+  startDate?: string;
+  endDate?: string;
+}) => MovementService.listByProduct(productId, filters);

@@ -2,25 +2,30 @@ import { useTheme } from '@/hooks/useTheme';
 
 const whiteTheme = {
   color: {
-    background: "#EDF0F1",
+    background: "#FFFFFF",
+    foreground: "#EDF0F1",
+
     header: "#FFFFFF",
-    card: "#FFFFFF",
+    card: "#f1f1f1",
 
     primary: "#019866",
     secundary: "#fff",
     tertiary: "#043721",
     destructive: "#e74c3c", // Vermelho destrutivo
     ghost: "#D1D1D1", // Azul-escuro ghost
+
+    skeleton: "#D1D1D1",
+
     link: "#EA1E2C", // Cor do link
 
     blue: "#3590F3",
     red: "#EA1E2C",
     green: "#43AA8B",
     yellow: "#FFB238",
-  
+
     alert: "#FF620A",
     warning: "#ebd557",
-    
+
     title: "#053721",
     label: "#666666",
 
@@ -66,7 +71,9 @@ const whiteTheme = {
 const darkTheme = {
   color: {
     background: "#1E1E1E",
-    header: "#000000",
+    foreground: "#303030",
+
+    header: "#1E1E1E",
     card: "#2A2A2A",
 
     primary: "#019866",
@@ -74,16 +81,17 @@ const darkTheme = {
     tertiary: "#043721",
     destructive: "#e74c3c", // Vermelho destrutivo
     ghost: "#404040", // Azul-escuro ghost
+    skeleton: "#404040",
     link: "#EA1E2C", // Cor do link
 
     blue: "#3590F3",
     red: "#EA1E2C",
     green: "#43AA8B",
     yellow: "#FFB238",
-  
+
     alert: "#FF620A",
     warning: "#ebd557",
-    
+
     title: "#f1f1f1",
     label: "#f7f7f7",
 
@@ -128,11 +136,11 @@ const darkTheme = {
 // Hook para retornar o tema de cores correto baseado no modo atual
 const colors = () => {
   const { mode, isLoading } = useTheme();
-  
+
   if (isLoading) {
     return whiteTheme; // Tema padrão enquanto carrega
   }
-  
+
   return mode === 'dark' ? darkTheme : whiteTheme;
 };
 

@@ -1,35 +1,20 @@
 import React from 'react';
-import { Main, Column, Title, Label, colors, Button, Icon } from '@/ui';
+import { Main, Column, Title, Label, Image, Icon } from '@/ui';
 
-interface StoreErrorScreenProps {
-    onRetry?: () => void;
-    error?: string;
+interface StoreErrorProps {
+    message?: string;
 }
 
-export default function StoreErrorScreen({ onRetry, error }: StoreErrorScreenProps) {
+export default function StoreError({ message }: StoreErrorProps) {
     return (
-        <Main>
-            <Column style={{ flex: 1 }} justify='center' align="center">
-                <Column mh={26} gv={20} pv={20} ph={20} style={{ backgroundColor: '#fff', borderRadius: 12 }}>
-                    <Column align="center" gv={12}>
-                        <Icon name="AlertTriangle" size={52} color={colors.color.red} />
-                        <Title size={22} fontFamily="Font_Medium" align='center'>
-                            Ops! Algo deu errado
-                        </Title>
-                        <Label align='center' color={colors.color.muted}>
-                            {error || 'Não foi possível carregar as lojas. Verifique sua conexão e tente novamente.'}
-                        </Label>
-                    </Column>
-                    
-                    {onRetry && (
-                        <Button 
-                            label="Tentar novamente" 
-                            onPress={onRetry}
-                            icon={<Icon name="RefreshCw" size={20} color="#fff" />}
-                        />
-                    )}
-                </Column>
-            </Column>
-        </Main>
+        <Column justify='center' align='center' gv={16} pv={40}>
+        <Image src={require("@/imgs/error_img.png")} w={156} h={156} />
+        <Title align='center' size={32} spacing={-2} style={{ lineHeight: 32 }} fontFamily="Font_Medium">
+            Ops! Algo deu errado
+        </Title>
+        <Label align='center' size={14}>
+            {message}
+        </Label>
+    </Column>
     );
 }

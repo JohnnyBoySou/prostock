@@ -15,6 +15,7 @@
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.2",
     "@gorhom/bottom-sheet": "^5.0.6",
+    "@hookform/resolvers": "^5.2.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/datetimepicker": "8.4.4",
     "@react-navigation/bottom-tabs": "^7.2.0",
@@ -46,12 +47,13 @@
     "expo-screen-orientation": "~9.0.7",
     "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",
-    "lucide-react-native": "^0.469.0",
+    "lucide-react-native": "^0.544.0",
     "moti": "^0.29.0",
     "onesignal-expo-plugin": "^2.0.3",
     "posthog-react-native": "^4.6.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-hook-form": "^7.63.0",
     "react-native": "0.81.4",
     "react-native-copilot": "^3.3.3",
     "react-native-gesture-handler": "~2.28.0",
@@ -65,7 +67,8 @@
     "react-native-worklets": "^0.5.1",
     "styled-components": "*",
     "toastify-react-native": "^7.2.3",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

@@ -9,8 +9,12 @@ export default function Tabs({ types, setValue, value }) {
   const theme = colors();
   const width = SCREEN_WIDTH / types.length;
   return (
-    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ backgroundColor: theme.color.header, }}>
-      {types.map((type, index) => (
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ backgroundColor: theme.color.background, borderBottomWidth: 1, borderBottomColor: theme.color.border }}>
+      {types.map((type, index) => {
+        
+        const isActive = value === type;
+        return (
+          
         <Pressable onPress={() => {
           setValue(type);
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
@@ -18,16 +22,17 @@ export default function Tabs({ types, setValue, value }) {
           style={{
             justifyContent: 'center', alignItems: 'center', paddingVertical: 12,
             width: width,
-            borderBottomWidth: 2, borderBottomColor: value === type ? theme.color.primary : 'transparent'
+            backgroundColor: isActive ? theme.color.primary+10 : 'transparent',
+            borderBottomWidth: 2, borderBottomColor: isActive ? theme.color.primary : 'transparent'
           }}>
           <Text style={{
-            fontFamily: value === type ? 'Font_Medium' : 'Font_Book',
+            fontFamily: isActive ? 'Font_Medium' : 'Font_Book',
             fontSize: 16,
-            color: value === type ? theme.color.primary : '#8C8C8C',
+            color: isActive ? theme.color.primary : '#8C8C8C',
             textTransform: 'uppercase',
           }}>{type}</Text>
         </Pressable>
-      ))}
+      )})}
     </ScrollView>
   )
 

@@ -16,6 +16,7 @@ import Minimal from "@/ui/Header/minimal";
 import ProductAddScreen from "@/screens/stack/product/add";
 import StackMenu from "@/ui/Header";
 import AsyncStaticScreen from "@/screens/stack/auth/async";
+import { colors } from "@/ui";
 
 //import * as Linking from 'expo-linking';
 //const prefix = Linking.createURL('/');
@@ -26,6 +27,8 @@ export function Main() {
   const linking = {
     prefixes: ['prostock://'],
   };
+
+  const theme = colors();
 
   return (
     <NavigationContainer linking={linking}>
@@ -43,21 +46,21 @@ export function Main() {
             <Stack.Screen name="Login" component={LoginScreen}
               options={{
                 title: "Entrar",
-                header: ({ navigation }) => (<Minimal navigation={navigation} />),
-                headerShown: false,
+                header: ({ navigation }) => (<Minimal bg={theme.color.background} navigation={navigation} />),
+                headerShown: true,
                 ...TransitionPresets.SlideFromRightIOS
               }}
             />
             <Stack.Screen name="Register" component={RegisterScreen}
               options={{
-                header: ({ navigation }) => (<Minimal navigation={navigation} />),
+                header: ({ navigation }) => (<Minimal bg={theme.color.background} navigation={navigation} />),
                 headerShown: true,
                 ...TransitionPresets.SlideFromRightIOS
               }}
             />
             <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen}
               options={{
-                header: ({ navigation }) => (<Minimal navigation={navigation} />),
+                header: ({ navigation }) => (<Minimal bg={theme.color.background} navigation={navigation} />),
                 headerShown: true,
                 ...TransitionPresets.SlideFromRightIOS
               }}
